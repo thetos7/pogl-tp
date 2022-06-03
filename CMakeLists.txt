@@ -6,6 +6,7 @@ enable_testing()
 
 add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=0)
 
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
