@@ -2,8 +2,8 @@
 
 #include <iomanip>
 #include <ostream>
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace pogl
 {
@@ -64,6 +64,19 @@ namespace pogl
             idx(elements, i, i) = 1;
         }
         return Matrix4(elements);
+    }
+
+    Matrix4 Matrix4::frustum(float left, float right, float bottom, float top,
+                             float znear, float zfar)
+    {
+        throw std::logic_error("Not implemented yet");
+    }
+
+    Matrix4 Matrix4::lookat(float eyeX, float eyeY, float eyeZ, float centerX,
+                            float centerY, float centerZ, float upX, float upY,
+                            float upZ)
+    {
+        throw std::logic_error("Not implemented yet");
     }
 
     std::ostream &pretty_print_mat(std::ostream &out, const Matrix4 &mat)
@@ -132,13 +145,15 @@ namespace pogl
         out << "[ ";
         for (size_t y = 0; y < DIM; ++y)
         {
-            if (y != 0) {
+            if (y != 0)
+            {
                 out << ',';
             }
             out << " [";
             for (size_t x = 0; x < DIM; ++x)
             {
-                if(x != 0) {
+                if (x != 0)
+                {
                     out << ',';
                 }
                 out << ' ' << mat.at(x, y);

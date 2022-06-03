@@ -78,6 +78,13 @@ namespace pogl
             return elements_[row * DIM + col];
         }
 
+        static Matrix4 frustum(float left, float right, float bottom, float top,
+                               float znear, float zfar);
+
+        static Matrix4 lookat(float eyeX, float eyeY, float eyeZ, float centerX,
+                              float centerY, float centerZ, float upX,
+                              float upY, float upZ);
+
         /**
          * @brief Gets a mutable reference to the element in col, row
          *
@@ -92,7 +99,7 @@ namespace pogl
 
         /**
          * @brief prints self onto output stream and returns stream
-         * 
+         *
          * @param out stream to print on
          * @param pretty whether to do pretty formatting or not
          * @return std::ostream& same as out
