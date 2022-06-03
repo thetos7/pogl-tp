@@ -69,7 +69,20 @@ namespace pogl
     Matrix4 Matrix4::frustum(float left, float right, float bottom, float top,
                              float znear, float zfar)
     {
-        throw std::logic_error("Not implemented yet");
+        const auto E = (2 * znear) / (right - left);
+        const auto F = (2 * znear) / (top - bottom);
+
+        const auto A = (right + left) / (right - left);
+        const auto B = (top + bottom) / (top - bottom);
+        const auto C = -(zfar + znear) / (zfar - znear);
+        const auto D = -(2 * zfar * znear) / (zfar - znear);
+
+        return Matrix4(Matrix4::elements_buffer_type{
+            E, 0, A, 0, // l1
+            0, F, B, 0, // l2
+            0, 0, C, D, // l3
+            0, 0, -1, 0 // l4
+        });
     }
 
     Matrix4 Matrix4::lookat(float eyeX, float eyeY, float eyeZ, float centerX,
