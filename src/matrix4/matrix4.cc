@@ -161,7 +161,7 @@ namespace pogl
     std::ostream &operator<<(std::ostream &out, const Matrix4 &mat)
     {
         // TODO/IMPROVEMENT add pretty print stream modifier
-        return mat.print(out, true);
+        return mat.print(out, false);
     }
 
 } // namespace pogl
