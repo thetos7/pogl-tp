@@ -6,6 +6,10 @@ enable_testing()
 
 add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=0)
 
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
+
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -23,6 +27,19 @@ file(GLOB_RECURSE all_SRCS CONFIGURE_DEPENDS
         )
 
 add_executable(opengl-tp ${all_SRCS})
+
+include_directories(
+    ${OPENGL_INCLUDE_DIRS}
+    ${GLUT_INCLUDE_DIRS}
+    ${GLEW_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+    opengl-tp
+    ${OPENGL_LIBRARIES}
+    ${GLUT_LIBRARY}
+    ${GLEW_LIBRARIES}
+)
 
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
