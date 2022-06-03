@@ -81,7 +81,7 @@ namespace pogl
         static Matrix4 frustum(float left, float right, float bottom, float top,
                                float znear, float zfar);
 
-        static Matrix4 lookat(float eyeX, float eyeY, float eyeZ, float centerX,
+        static Matrix4 look_at(float eyeX, float eyeY, float eyeZ, float centerX,
                               float centerY, float centerZ, float upX,
                               float upY, float upZ);
 
