@@ -132,7 +132,10 @@ namespace pogl
         out << "[ ";
         for (size_t y = 0; y < DIM; ++y)
         {
-            out << "[";
+            if (y != 0) {
+                out << ',';
+            }
+            out << " [";
             for (size_t x = 0; x < DIM; ++x)
             {
                 if(x != 0) {
@@ -140,9 +143,9 @@ namespace pogl
                 }
                 out << ' ' << mat.at(x, y);
             }
-            out << " ] ";
+            out << " ]";
         }
-        out << "]";
+        out << " ]";
         return out;
     }
 
