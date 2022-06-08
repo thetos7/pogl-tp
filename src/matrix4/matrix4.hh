@@ -67,6 +67,25 @@ namespace pogl
         }
 
         /**
+         * @brief Creates a translation transform matrix.
+         * 
+         * The created matrix has the form:
+         * 
+         * ```
+         * | 1 0 0 x |
+         * | 0 1 0 y |
+         * | 0 0 1 z |
+         * | 0 0 0 1 |
+         * ```
+         * 
+         * @param x 
+         * @param y 
+         * @param z 
+         * @return Matrix4 
+         */
+        static Matrix4 translation(ElementType x, ElementType y, ElementType z);
+
+        /**
          * @brief Gets a constant reference to the element in col, row
          *
          * @param col element column

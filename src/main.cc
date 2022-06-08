@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "matrix4/matrix4.hh"
+#include "utils/utils.hh"
 
 int main(/* int argc, char *argv[] */)
 {
@@ -26,5 +27,8 @@ int main(/* int argc, char *argv[] */)
 
     const auto frustum = Matrix4::frustum(-5, 5, -5, 5, 1, 100);
     std::cout << "frustum:\n" << frustum << "\n";
+
+    const auto look_at = Matrix4::look_at(5, 6, 7, 13, 14, 15, 1, 0, 0);
+    std::cout << utils::pretty_print_on << "look_at:\n" << look_at <<"\n";
     return 0;
 }

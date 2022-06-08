@@ -6,6 +6,7 @@
 #include <string>
 
 #include "utils/utils.hh"
+#include "vector3/vector3.hh"
 
 namespace pogl
 {
@@ -68,6 +69,16 @@ namespace pogl
         return Matrix4(elements);
     }
 
+    Matrix4 Matrix4::translation(ElementType x, ElementType y, ElementType z)
+    {
+        return Matrix4(Matrix4::ElementsBufferType{
+            1, 0, 0, x, // l1
+            0, 1, 0, y, // l2
+            0, 0, 1, z, // l3
+            0, 0, 0, 1 //  l4
+        });
+    }
+
     Matrix4 Matrix4::frustum(float left, float right, float bottom, float top,
                              float znear, float zfar)
     {
@@ -88,13 +99,33 @@ namespace pogl
     }
 
     Matrix4 Matrix4::look_at(float eyeX, float eyeY, float eyeZ, float centerX,
-                            float centerY, float centerZ, float upX, float upY,
-                            float upZ)
+                             float centerY, float centerZ, float upX, float upY,
+                             float upZ)
     {
-        const auto fX = centerX-eyeX;
-        const auto fY = centerY-eyeY;
-        const auto fZ = centerZ-eyeZ;
-        throw std::logic_error("Not implemented yet");
+        const auto look_direction =
+            Vector3{
+                centerX - eyeX,
+                centerY - eyeY,
+                centerZ - eyeZ,
+            }
+                .normalized();
+
+        const auto up = Vector3{ upX, upY, upZ }.normalized();
+
+        const auto right = look_direction.cross(up).normalized();
+        const auto view_up = right.cross(look_direction);
+
+        // comment auto formatting abuse to keep source code alignement
+        const auto eyeTranslate = Matrix4::translation(-eyeX, -eyeY, -eyeZ);
+
+        const auto rotation = Matrix4(Matrix4::ElementsBufferType{
+            right.x /*     */, right.y /*     */, right.z /*     */, 0, // l1
+            view_up.x /*   */, view_up.y /*   */, view_up.z /*   */, 0, // l2
+            -look_direction.x, -look_direction.y, -look_direction.z, 0, // l3
+            0 /*           */, 0 /*           */, 0 /*           */, 1 //  l4
+        });
+
+        return rotation * eyeTranslate;
     }
 
     std::ostream &pretty_print_mat(std::ostream &out, const Matrix4 &mat)
