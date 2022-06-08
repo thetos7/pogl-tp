@@ -4,7 +4,7 @@
 #include <vector>
 #include <GL/gl.h>
 
-namespace vectors
+namespace pogl
 {
     class Vector3
     {
@@ -74,4 +74,4 @@ namespace vectors
     Vector3 operator-(const Vector3 &vect);
 
     std::ostream &operator<<(std::ostream &out, const Vector3 &vect);
-} // namespace vectors
+} // namespace pogl

@@ -6,7 +6,7 @@
 
 #include "utils/utils.hh"
 
-namespace vectors
+namespace pogl
 {
     using ComponentType = Vector3::ComponentType;
 
@@ -174,4 +174,4 @@ namespace vectors
                    << ")";
     }
 
-} // namespace vectors
+} // namespace pogl
