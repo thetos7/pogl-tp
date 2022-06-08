@@ -7,16 +7,16 @@
 
 namespace pogl
 {
-    using element_type = Matrix4::element_type;
-    using elements_buffer_type = Matrix4::elements_buffer_type;
+    using ElementType = Matrix4::ElementType;
+    using ElementsBufferType = Matrix4::ElementsBufferType;
 
-    inline element_type &idx(elements_buffer_type &buf, size_t col, size_t row)
+    inline ElementType &idx(ElementsBufferType &buf, size_t col, size_t row)
     {
         return buf[row * Matrix4::DIM + col];
     }
 
     Matrix4::Matrix4()
-        : Matrix4(elements_buffer_type())
+        : Matrix4(ElementsBufferType())
     {
         std::fill(elements_.begin(), elements_.end(), 0);
     }
@@ -25,14 +25,14 @@ namespace pogl
         : Matrix4(other.elements_)
     {}
 
-    Matrix4::Matrix4(elements_buffer_type elements)
+    Matrix4::Matrix4(ElementsBufferType elements)
         : elements_(elements)
     {}
 
     void Matrix4::operator*=(const Matrix4 &rhs)
     {
-        elements_buffer_type results{};
-        element_type sum;
+        ElementsBufferType results{};
+        ElementType sum;
         for (size_t y = 0; y < DIM; ++y)
         {
             for (size_t x = 0; x < DIM; ++x)
@@ -57,7 +57,7 @@ namespace pogl
 
     Matrix4 Matrix4::identity()
     {
-        elements_buffer_type elements{};
+        ElementsBufferType elements{};
         std::fill(elements.begin(), elements.end(), 0);
         for (size_t i = 0; i < DIM; ++i)
         {
@@ -77,7 +77,7 @@ namespace pogl
         const auto C = -(zfar + znear) / (zfar - znear);
         const auto D = -(2 * zfar * znear) / (zfar - znear);
 
-        return Matrix4(Matrix4::elements_buffer_type{
+        return Matrix4(Matrix4::ElementsBufferType{
             E, 0, A, 0, // l1
             0, F, B, 0, // l2
             0, 0, C, D, // l3
@@ -89,6 +89,9 @@ namespace pogl
                             float centerY, float centerZ, float upX, float upY,
                             float upZ)
     {
+        const auto fX = centerX-eyeX;
+        const auto fY = centerY-eyeY;
+        const auto fZ = centerZ-eyeZ;
         throw std::logic_error("Not implemented yet");
     }
 

@@ -11,8 +11,8 @@ namespace pogl
     public:
         constexpr static auto DIM = 4;
         constexpr static auto ELEM_COUNT = DIM * DIM;
-        using element_type = GLfloat;
-        using elements_buffer_type = std::array<element_type, ELEM_COUNT>;
+        using ElementType = GLfloat;
+        using ElementsBufferType = std::array<ElementType, ELEM_COUNT>;
 
         /**
          * @brief Construct a new 4x4 Matrix filled with zeros
@@ -32,7 +32,7 @@ namespace pogl
          *
          * @param elements The initial matrix values
          */
-        Matrix4(elements_buffer_type elements);
+        Matrix4(ElementsBufferType elements);
 
         /**
          * @brief applies the matrix multiplication of self x rhs
@@ -71,9 +71,9 @@ namespace pogl
          *
          * @param col element column
          * @param row element row
-         * @return const element_type& constant reference to element
+         * @return const ElementType& constant reference to element
          */
-        inline const element_type &at(size_t col, size_t row) const
+        inline const ElementType &at(size_t col, size_t row) const
         {
             return elements_[row * DIM + col];
         }
@@ -90,9 +90,9 @@ namespace pogl
          *
          * @param col element column
          * @param row element row
-         * @return const element_type& mutable reference to element
+         * @return const ElementType& mutable reference to element
          */
-        inline element_type &at(size_t col, size_t row)
+        inline ElementType &at(size_t col, size_t row)
         {
             return elements_[row * DIM + col];
         }
@@ -106,25 +106,25 @@ namespace pogl
          */
         std::ostream &print(std::ostream &out, bool pretty) const;
 
-        inline elements_buffer_type::iterator begin()
+        inline ElementsBufferType::iterator begin()
         {
             return elements_.begin();
         }
-        inline elements_buffer_type::iterator end()
+        inline ElementsBufferType::iterator end()
         {
             return elements_.end();
         }
-        inline elements_buffer_type::const_iterator begin() const
+        inline ElementsBufferType::const_iterator begin() const
         {
             return elements_.begin();
         }
-        inline elements_buffer_type::const_iterator end() const
+        inline ElementsBufferType::const_iterator end() const
         {
             return elements_.end();
         }
 
     private:
-        elements_buffer_type elements_;
+        ElementsBufferType elements_;
     };
 
     std::ostream &operator<<(std::ostream &out, const Matrix4 &mat);
