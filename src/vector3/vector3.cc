@@ -38,7 +38,7 @@ namespace pogl
         }
     }
 
-    Vector3 Vector3::lerp_to(const Vector3 &other, ComponentType factor) const
+    Vector3 Vector3::lerp_to(const Vector3 &other, double factor) const
     {
         return Vector3{
             utils::lerp(x, other.x, factor),
