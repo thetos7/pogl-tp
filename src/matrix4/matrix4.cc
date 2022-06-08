@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 
+#include "utils/utils.hh"
+
 namespace pogl
 {
     using ElementType = Matrix4::ElementType;
@@ -194,8 +196,7 @@ namespace pogl
 
     std::ostream &operator<<(std::ostream &out, const Matrix4 &mat)
     {
-        // TODO/IMPROVEMENT add pretty print stream modifier
-        return mat.print(out, false);
+        return mat.print(out, utils::pretty_print_enabled(out));
     }
 
 } // namespace pogl

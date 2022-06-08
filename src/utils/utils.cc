@@ -12,6 +12,12 @@ namespace utils
             static int i = std::ios_base::xalloc();
             return i;
         }
+
+        inline int get_pretty()
+        {
+            static int i = std::ios_base::xalloc();
+            return i;
+        }
     } // namespace
     std::ostream &compact_on(std::ostream &out)
     {
@@ -26,6 +32,23 @@ namespace utils
     }
 
     bool compact_enabled(std::ostream &out)
+    {
+        return out.iword(get_compact()) == 1;
+    }
+    
+    std::ostream &pretty_print_on(std::ostream &out)
+    {
+        out.iword(get_pretty()) = 1;
+        return out;
+    }
+
+    std::ostream &pretty_print_off(std::ostream &out)
+    {
+        out.iword(get_pretty()) = 0;
+        return out;
+    }
+
+    bool pretty_print_enabled(std::ostream &out)
     {
         return out.iword(get_compact()) == 1;
     }

@@ -30,6 +30,11 @@ namespace utils
     std::ostream &compact_on(std::ostream &out);
     std::ostream &compact_off(std::ostream &out);
     bool compact_enabled(std::ostream &out);
+
+    std::ostream &pretty_print_on(std::ostream &out);
+    std::ostream &pretty_print_off(std::ostream &out);
+    bool pretty_print_enabled(std::ostream &out);
+
 } // namespace utils
 
 #include "utils.hxx"
