@@ -78,10 +78,10 @@ namespace pogl
          * | 0 0 0 1 |
          * ```
          * 
-         * @param x 
-         * @param y 
-         * @param z 
-         * @return Matrix4 
+         * @param x Value to translate by along the x axis
+         * @param y Value to translate by along the y axis
+         * @param z Value to translate by along the z axis
+         * @return Matrix4 The translation transform matrix
          */
         static Matrix4 translation(ElementType x, ElementType y, ElementType z);
 
