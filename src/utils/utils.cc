@@ -15,8 +15,8 @@ namespace utils
 
         inline int get_pretty()
         {
-            static int i = std::ios_base::xalloc();
-            return i;
+            static int p = std::ios_base::xalloc();
+            return p;
         }
     } // namespace
     std::ostream &compact_on(std::ostream &out)
@@ -50,7 +50,7 @@ namespace utils
 
     bool pretty_print_enabled(std::ostream &out)
     {
-        return out.iword(get_compact()) == 1;
+        return out.iword(get_pretty()) == 1;
     }
 
     double fract(double x)
