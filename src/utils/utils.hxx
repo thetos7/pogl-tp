@@ -63,8 +63,8 @@ namespace utils
     }
 
     template <typename T>
-    inline auto lerp(const T &a, const T &b, double factor)
+    inline T lerp(const T &a, const T &b, double factor)
     {
-        return a * (1 - factor) + b * factor;
+        return static_cast<T>(a * (1 - factor) + b * factor);
     }
 } // namespace utils

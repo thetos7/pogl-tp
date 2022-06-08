@@ -23,7 +23,7 @@ namespace utils
     inline int signum(const T &v);
 
     template <typename T>
-    inline auto lerp(const T &a, const T &b, double factor);
+    inline T lerp(const T &a, const T &b, double factor);
 
     double fract(double x);
 
