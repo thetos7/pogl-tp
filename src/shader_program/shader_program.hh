@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
+#include <GL/glew.h>
 #include <filesystem>
+#include <string>
 
 namespace pogl
 {
@@ -11,6 +12,8 @@ namespace pogl
     {
     public:
         using Self = ShaderProgram;
+        using ShaderIdType = GLuint;
+        using ProgramIdType = GLuint;
 
         ShaderProgram(const std::string &vertex_src,
                       const std::string &fragment_src, bool ready);
@@ -30,9 +33,15 @@ namespace pogl
         /**
          * @brief Get the compilation log
          *
-         * @return char*
+         * @return string& reference to the log
          */
-        char *get_log();
+        std::string &get_log();
+        /**
+         * @brief Get the compilation log
+         *
+         * @return const string&  constant reference to the log
+         */
+        const std::string &get_log() const;
 
         /**
          * @brief Check that the current program is ready to use (compiled,
@@ -58,14 +67,19 @@ namespace pogl
         }
 
     private:
-        void compile_vertex();
-        void compile_fragment();
-        void link_program();
-        void post_compilation();
+        bool compile_vertex();
+        bool compile_fragment();
+        bool link_program();
+        bool post_compilation();
 
         fs::path _vertexSrc;
         fs::path _fragSrc;
         bool _ready;
+
+        ShaderIdType _vertex;
+        ShaderIdType _fragment;
+        ProgramIdType _program;
+        std::string _compilation_log;
     };
 
 } // namespace pogl
