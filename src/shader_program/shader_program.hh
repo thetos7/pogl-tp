@@ -28,8 +28,9 @@ namespace pogl
          * @param fragment_src Path to the fragment shader source file
          * @return Self
          */
-        static Self make_program(const std::string &vertex_src,
-                                 const std::string &fragment_src);
+        static std::unique_ptr<Self>
+        make_program(const std::string &vertex_src,
+                     const std::string &fragment_src);
         /**
          * @brief Get the compilation log
          *

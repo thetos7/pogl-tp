@@ -27,6 +27,7 @@ namespace pogl
 
     ShaderProgram::~ShaderProgram()
     {
+        std::cout << "Destroying program";
         glDeleteProgram(_program);
         CHECK_GL_ERROR();
     }
@@ -149,30 +150,31 @@ namespace pogl
             return false;
         }
 
+        glDetachShader(_program, _vertex);
+        CHECK_GL_ERROR();
+        glDetachShader(_program, _fragment);
+        CHECK_GL_ERROR();
         return true;
     }
 
     bool ShaderProgram::post_compilation()
     {
-        glDetachShader(_program, _vertex);
-        CHECK_GL_ERROR();
-        glDetachShader(_program, _fragment);
-        CHECK_GL_ERROR();
+        bool errored = false;
         glDeleteShader(_vertex);
-        CHECK_GL_ERROR();
+        errored = errored || CHECK_GL_ERROR();
         glDeleteShader(_fragment);
-        CHECK_GL_ERROR();
+        errored = errored || CHECK_GL_ERROR();
 
-        _ready = true;
-        return true;
+        _ready = !errored;
+        return !errored;
     }
 
-    Self ShaderProgram::make_program(const std::string &vertex_src,
+    std::unique_ptr<Self> ShaderProgram::make_program(const std::string &vertex_src,
                                      const std::string &fragment_src)
     {
-        auto prog = Self(vertex_src, fragment_src, false);
-        const auto vert_compiled = prog.compile_vertex();
-        const auto frag_compiled = prog.compile_fragment();
+        auto prog = std::make_unique<Self>(vertex_src, fragment_src, false);
+        const auto vert_compiled = prog->compile_vertex();
+        const auto frag_compiled = prog->compile_fragment();
 
         if (!vert_compiled || !frag_compiled)
         {
@@ -182,14 +184,20 @@ namespace pogl
             throw std::runtime_error(msg);
         }
 
-        const auto linked = prog.link_program();
+        const auto linked = prog->link_program();
         if (!linked)
         {
             constexpr auto msg = "Shader program linking failed";
             std::cerr << msg << std::endl;
             throw std::runtime_error(msg);
         }
-        prog.post_compilation();
+        const auto post = prog->post_compilation();
+        if (!post)
+        {
+            constexpr auto msg = "Error in post compilation";
+            std::cerr << msg << std::endl;
+            throw std::runtime_error(msg);
+        }
         return prog;
     }
 
@@ -210,6 +218,9 @@ namespace pogl
 
     void ShaderProgram::activate()
     {
+        bool is_program = glIsProgram(_program);
+        std::cout << "program: " << _program << "\n";
+        std::cout << "is_program: " << std::boolalpha << is_program << '\n';
         glUseProgram(_program);
         CHECK_GL_ERROR();
     }

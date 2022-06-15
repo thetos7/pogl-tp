@@ -11,6 +11,8 @@
 
 using namespace pogl;
 
+std::unique_ptr<ShaderProgram> shader;
+
 void display();
 void window_resize(int width, int height);
 
@@ -54,15 +56,16 @@ bool init_GL()
 
 bool init_shaders()
 {
-    auto prog = ShaderProgram::make_program(
+    shader = ShaderProgram::make_program(
         "../resources/shaders/uniform/uniform.vert",
         "../resources/shaders/uniform/uniform.frag");
-    prog.use();
+    shader->use();
     return true;
 }
 
 bool init_object()
 {
+
     return true;
 }
 
@@ -87,20 +90,20 @@ void display()
 
 int main(int argc, char *argv[])
 {
-    std::cout << "intialising GLUT...\n";
+    std::cout << "initialising GLUT...\n";
     init_glut(argc, argv);
-    std::cout << "intialising GLEW...\n";
+    std::cout << "initialising GLEW...\n";
     init_glew();
-    std::cout << "intialising GL...\n";
+    std::cout << "initialising GL...\n";
     init_GL();
-    std::cout << "intialising shaders...\n";
+    std::cout << "initialising shaders...\n";
     init_shaders();
-    std::cout << "intialising objects...\n";
+    std::cout << "initialising objects...\n";
     init_object();
-    std::cout << "intialising POV...\n";
+    std::cout << "initialising POV...\n";
     init_POV();
     std::cout << "launching\n";
-    // glutMainLoop();
+    glutMainLoop();
     std::cout << "exiting\n";
 
     return 0;
