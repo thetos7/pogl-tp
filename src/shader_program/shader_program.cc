@@ -221,4 +221,9 @@ namespace pogl
         CHECK_GL_ERROR();
     }
 
+    ShaderProgram::ProgramIdType ShaderProgram::get_program()
+    {
+        return _program;
+    }
+
 } // namespace pogl

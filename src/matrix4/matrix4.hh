@@ -68,16 +68,16 @@ namespace pogl
 
         /**
          * @brief Creates a translation transform matrix.
-         * 
+         *
          * The created matrix has the form:
-         * 
+         *
          * ```
          * | 1 0 0 x |
          * | 0 1 0 y |
          * | 0 0 1 z |
          * | 0 0 0 1 |
          * ```
-         * 
+         *
          * @param x Value to translate by along the x axis
          * @param y Value to translate by along the y axis
          * @param z Value to translate by along the z axis
@@ -100,9 +100,9 @@ namespace pogl
         static Matrix4 frustum(float left, float right, float bottom, float top,
                                float znear, float zfar);
 
-        static Matrix4 look_at(float eyeX, float eyeY, float eyeZ, float centerX,
-                              float centerY, float centerZ, float upX,
-                              float upY, float upZ);
+        static Matrix4 look_at(float eyeX, float eyeY, float eyeZ,
+                               float centerX, float centerY, float centerZ,
+                               float upX, float upY, float upZ);
 
         /**
          * @brief Gets a mutable reference to the element in col, row
@@ -140,6 +140,11 @@ namespace pogl
         inline ElementsBufferType::const_iterator end() const
         {
             return elements_.end();
+        }
+
+        inline const ElementType *data() const
+        {
+            return elements_.data();
         }
 
     private:

@@ -12,6 +12,7 @@
 using namespace pogl;
 
 std::unique_ptr<ShaderProgram> shader;
+GLuint main_vao_id;
 
 void display();
 void window_resize(int width, int height);
@@ -60,17 +61,43 @@ bool init_shaders()
         "../resources/shaders/uniform/vertex.glsl",
         "../resources/shaders/uniform/fragment.glsl");
     shader->use();
+
+    const auto prog = shader->get_program();
+    const auto obj_color_loc = glGetUniformLocation(prog, "obj_color");
+    glUniform4f(obj_color_loc, 1., 0., 0., 1.);
     return true;
 }
 
 bool init_object()
 {
+    std::vector<float> vertex_data{
+        0.5,  0.75, 0.5, // v1
+        0.75, 0.25, 0.5, // v2
+        0.25, 0.25, 0.5 // v3
+    };
+    glGenVertexArrays(1, &main_vao_id);
+    CHECK_GL_ERROR();
 
+    glBindVertexArray(main_vao_id);
+    CHECK_GL_ERROR();
     return true;
 }
 
 bool init_POV()
 {
+    const auto model_view_matrix = Matrix4::identity();
+    const auto projection_matrix = Matrix4::identity();
+
+    const auto prog = shader->get_program();
+    const auto model_view_matrix_loc =
+        glGetUniformLocation(prog, "model_view_matrix");
+    const auto projection_matrix_loc =
+        glGetUniformLocation(prog, "projection_matrix");
+
+    glUniformMatrix4fv(model_view_matrix_loc, 1, false,
+                       model_view_matrix.data());
+    glUniformMatrix4fv(projection_matrix_loc, 1, false,
+                       projection_matrix.data());
     return true;
 }
 
@@ -83,6 +110,9 @@ void window_resize(int width, int height)
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    CHECK_GL_ERROR();
+
+    glBindVertexArray(main_vao_id);
     CHECK_GL_ERROR();
 
     glutSwapBuffers();

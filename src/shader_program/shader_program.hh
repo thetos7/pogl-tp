@@ -67,6 +67,8 @@ namespace pogl
             activate();
         }
 
+        ProgramIdType get_program();
+
     private:
         bool compile_vertex();
         bool compile_fragment();
