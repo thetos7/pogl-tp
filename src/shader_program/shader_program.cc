@@ -27,7 +27,6 @@ namespace pogl
 
     ShaderProgram::~ShaderProgram()
     {
-        std::cout << "Destroying program";
         glDeleteProgram(_program);
         CHECK_GL_ERROR();
     }
@@ -218,9 +217,6 @@ namespace pogl
 
     void ShaderProgram::activate()
     {
-        bool is_program = glIsProgram(_program);
-        std::cout << "program: " << _program << "\n";
-        std::cout << "is_program: " << std::boolalpha << is_program << '\n';
         glUseProgram(_program);
         CHECK_GL_ERROR();
     }
