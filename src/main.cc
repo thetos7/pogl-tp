@@ -57,8 +57,8 @@ bool init_GL()
 bool init_shaders()
 {
     shader = ShaderProgram::make_program(
-        "../resources/shaders/uniform/uniform.vert",
-        "../resources/shaders/uniform/uniform.frag");
+        "../resources/shaders/uniform/vertex.glsl",
+        "../resources/shaders/uniform/fragment.glsl");
     shader->use();
     return true;
 }
