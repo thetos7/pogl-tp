@@ -13,9 +13,15 @@ using namespace pogl;
 
 std::unique_ptr<ShaderProgram> shader;
 GLuint main_vao_id;
+const std::vector<GLfloat> vertex_data{
+    0.0,  1.0,  1.0, // v1
+    1.0,  -1.0, 1.0, // v2
+    -1.0, -1.0, 1.0 // v3
+};
 
 void display();
 void window_resize(int width, int height);
+void keyboard(unsigned char key, int x, int y);
 
 bool init_glut(int &argc, char *argv[])
 {
@@ -26,8 +32,10 @@ bool init_glut(int &argc, char *argv[])
     glutInitWindowSize(1024, 1024);
     glutInitWindowPosition(10, 10);
     glutCreateWindow("Test OpenGL - POGL");
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
     glutDisplayFunc(display);
     glutReshapeFunc(window_resize);
+    glutKeyboardFunc(keyboard);
     return true;
 }
 
@@ -70,23 +78,39 @@ bool init_shaders()
 
 bool init_object()
 {
-    std::vector<float> vertex_data{
-        0.5,  0.75, 0.5, // v1
-        0.75, 0.25, 0.5, // v2
-        0.25, 0.25, 0.5 // v3
-    };
+    const auto prog = shader->get_program();
+
     glGenVertexArrays(1, &main_vao_id);
     CHECK_GL_ERROR();
 
     glBindVertexArray(main_vao_id);
     CHECK_GL_ERROR();
+
+    auto position_location = glGetAttribLocation(prog, "position");
+    GLuint position_buffer;
+    glGenBuffers(1, &position_buffer);
+    CHECK_GL_ERROR();
+    glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
+    CHECK_GL_ERROR();
+    glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(GLfloat),
+                 vertex_data.data(), GL_STATIC_DRAW);
+    CHECK_GL_ERROR();
+    glVertexAttribPointer(position_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    CHECK_GL_ERROR();
+    glEnableVertexAttribArray(position_location);
+    CHECK_GL_ERROR();
+
+    glBindVertexArray(0);
+    CHECK_GL_ERROR();
+
     return true;
 }
 
 bool init_POV()
 {
-    const auto model_view_matrix = Matrix4::identity();
-    const auto projection_matrix = Matrix4::identity();
+    const auto model_view_matrix =
+        Matrix4::look_at(0, 0, 0, 0.0, 0.0, 1, 0, 1, 0);
+    const auto projection_matrix = Matrix4::frustum(-1, 1, -1, 1, 0.1, 20);
 
     const auto prog = shader->get_program();
     const auto model_view_matrix_loc =
@@ -107,12 +131,26 @@ void window_resize(int width, int height)
     CHECK_GL_ERROR();
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    case 'q':
+        glutLeaveMainLoop();
+        break;
+    }
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     CHECK_GL_ERROR();
 
     glBindVertexArray(main_vao_id);
+    CHECK_GL_ERROR();
+    glDrawArrays(GL_TRIANGLES, 0, vertex_data.size());
+    CHECK_GL_ERROR();
+    glBindVertexArray(0);
     CHECK_GL_ERROR();
 
     glutSwapBuffers();
