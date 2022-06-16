@@ -142,6 +142,11 @@ namespace pogl
             return elements_.end();
         }
 
+        /**
+         * @brief Returns a pointer to the internal array of values
+         * 
+         * @return const ElementType* pointer to the begining of the Matrix's element array
+         */
         inline const ElementType *data() const
         {
             return elements_.data();

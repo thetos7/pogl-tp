@@ -67,6 +67,11 @@ namespace pogl
             activate();
         }
 
+        /**
+         * @brief Get the wrapped program id
+         * 
+         * @return ProgramIdType 
+         */
         ProgramIdType get_program();
 
     private:
