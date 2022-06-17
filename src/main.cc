@@ -14,9 +14,22 @@ using namespace pogl;
 std::unique_ptr<ShaderProgram> shader;
 GLuint main_vao_id;
 const std::vector<GLfloat> vertex_data{
-    0.0,  1.0,  1.0, // v1
-    1.0,  -1.0, 1.0, // v2
-    -1.0, -1.0, 1.0 // v3
+    // v3
+    1.0, -1.0, 1., 1, 0, 0,
+    // v2
+    -1.0, 1.0, 1., 0, 1, 0,
+    // v1
+    1.0, 1.0, 1., 0, 0, 1,
+    // // v4
+    // -1.0, 1.0, 1.0,
+    // // v7
+    // 1.0, 1.0, -1.0,
+    // // v8
+    // 1.0, 1.0, 1.0,
+    // // v5
+    // 1.0, -1.0, -1.0,
+    // // v6
+    // 1.0, -1.0, 1.0,
 };
 
 void display();
@@ -29,7 +42,7 @@ bool init_glut(int &argc, char *argv[])
     glutInitContextVersion(4, 5);
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(1024, 1024);
+    glutInitWindowSize(700, 700);
     glutInitWindowPosition(10, 10);
     glutCreateWindow("Test OpenGL - POGL");
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
@@ -86,18 +99,29 @@ bool init_object()
     glBindVertexArray(main_vao_id);
     CHECK_GL_ERROR();
 
-    auto position_location = glGetAttribLocation(prog, "position");
-    GLuint position_buffer;
-    glGenBuffers(1, &position_buffer);
+    auto position_location = glGetAttribLocation(prog, "vPosition");
+    auto color_location = glGetAttribLocation(prog, "vColor");
+
+    const GLintptr position_offset = 0 * sizeof(GLfloat);
+    const GLintptr color_offset = 3 * sizeof(GLfloat);
+    const auto vertex_stride = 6 * sizeof(GLfloat);
+    GLuint vertex_buffer;
+    glGenBuffers(1, &vertex_buffer);
     CHECK_GL_ERROR();
-    glBindBuffer(GL_ARRAY_BUFFER, position_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     CHECK_GL_ERROR();
     glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(GLfloat),
                  vertex_data.data(), GL_STATIC_DRAW);
     CHECK_GL_ERROR();
-    glVertexAttribPointer(position_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(position_location, 3, GL_FLOAT, GL_FALSE,
+                          vertex_stride, (GLvoid *)position_offset);
     CHECK_GL_ERROR();
     glEnableVertexAttribArray(position_location);
+    CHECK_GL_ERROR();
+    glVertexAttribPointer(color_location, 3, GL_FLOAT, GL_FALSE, vertex_stride,
+                          (GLvoid *)color_offset);
+    CHECK_GL_ERROR();
+    glEnableVertexAttribArray(color_location);
     CHECK_GL_ERROR();
 
     glBindVertexArray(0);
@@ -108,9 +132,12 @@ bool init_object()
 
 bool init_POV()
 {
-    const auto model_view_matrix =
-        Matrix4::look_at(0, 0, 0, 0.0, 0.0, 1, 0, 1, 0);
-    const auto projection_matrix = Matrix4::frustum(-1, 1, -1, 1, 0.1, 20);
+    const auto model_view_matrix = Matrix4::look_at( //
+        0., 0., 0., // eye
+        0., 0., 1., // center
+        0., 1., 0. // up
+    );
+    const auto projection_matrix = Matrix4::frustum(-5, 5, -5, 5, 1, 100);
 
     const auto prog = shader->get_program();
     const auto model_view_matrix_loc =
