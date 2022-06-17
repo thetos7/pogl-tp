@@ -113,7 +113,7 @@ namespace pogl
         const auto up = Vector3{ upX, upY, upZ }.normalized();
 
         const auto right = look_direction.cross(up).normalized();
-        const auto view_up = right.cross(look_direction);
+        const auto view_up = right.cross(look_direction).normalized();
 
         // comment auto formatting abuse to keep source code alignement
         const auto eyeTranslate = Matrix4::translation(-eyeX, -eyeY, -eyeZ);
