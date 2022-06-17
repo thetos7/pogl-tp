@@ -270,7 +270,7 @@ bool init_POV()
         0., 0., 0., // center
         0., 0., 1. // up
     );
-    const auto projection_matrix = Matrix4::frustum(-1, 1, -1, 1, 0.1, 500);
+    const auto projection_matrix = Matrix4::frustum(-1, 1, -1, 1, 0.1, 100);
 
     const auto prog = shader->get_program();
     const auto model_view_matrix_loc =
