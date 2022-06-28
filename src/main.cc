@@ -81,6 +81,16 @@ const std::vector<GLfloat> vertex_color_data{
     0, 0.5, 0.5, //
     0, 0.5, 0.5, //
     0, 0.5, 0.5, //
+
+    // North plane
+    // tri1
+    0.7, 0.7, 0.7, //
+    0.7, 0.7, 0.7, //
+    0.7, 0.7, 0.7, //
+    // tri2
+    0.3, 0.3, 0.3, //
+    0.3, 0.3, 0.3, //
+    0.3, 0.3, 0.3, //
 };
 #endif // COLOR
 const std::vector<GLfloat> vertex_position_data{
@@ -142,8 +152,38 @@ const std::vector<GLfloat> vertex_position_data{
     // tri2
     -1.0, 1.0, -1.0, // v3
     -1.0, -1.0, -1.0, // v1
-    -1.0, 1.0, 1.0 // v7
+    -1.0, 1.0, 1.0, // v7
+
+    //------------------------
+    // North Plane
+    // tri1
+    0.0, -1.0, 2.0, // v1
+    0.0, 1.0, 4.0, // v2
+    0.0, -1.0, 4.0, // v3
+    // tri2
+    0.0, -1.0, 2.0, // v1
+    0.0, 1.0, 2.0, // v4
+    0.0, 1.0, 4.0, // v2
 };
+
+/* to make a plane:
+ *  (0, 1) A---------B (1, 1)
+ *         |       _/|
+ *         |    __/  |
+ *         |  _/     |
+ *         |_/       |
+ *  (0, 0) C---------D (1, 0)
+ * 
+ *  trangle vertices should be sent in counter-clockwise order,
+ * buffer should look like:
+ * C
+ * B
+ * A
+ * 
+ * C
+ * D
+ * B
+ */
 
 void display();
 void window_resize(int width, int height);
@@ -270,7 +310,7 @@ bool init_POV()
         0., 0., 0., // center
         0., 0., 1. // up
     );
-    const auto projection_matrix = Matrix4::frustum(-1, 1, -1, 1, 0.1, 100);
+    const auto projection_matrix = Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 0.1, 100);
 
     const auto prog = shader->get_program();
     const auto model_view_matrix_loc =
