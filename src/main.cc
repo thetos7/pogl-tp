@@ -331,7 +331,6 @@ bool init_object()
 bool init_POV()
 {
     camera = std::make_shared<Camera>(Vector3(2.5, 0, 0), 0.0, M_PI);
-    std::cerr << "camera_forward: " << camera->get_forward() << "\n";
     const auto projection_matrix =
         Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
 
