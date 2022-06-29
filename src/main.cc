@@ -2,22 +2,27 @@
 #include <GL/glew.h>
 // then others
 #include <GL/freeglut.h>
+#include <chrono>
 #include <cmath>
 #include <iostream>
 
+#include "camera/camera.hh"
+#include "keystate/keystate.hh"
 #include "matrix4/matrix4.hh"
 #include "shader_program/shader_program.hh"
 #include "utils/gl_check.hh"
 #include "utils/utils.hh"
 
-// enables animation
-#define ANIMATED 0
 // enables color
 #define COLOR 0
 
 using namespace pogl;
 
+using TickTimeType = std::chrono::time_point<std::chrono::steady_clock>;
+
 std::unique_ptr<ShaderProgram> shader;
+std::shared_ptr<Camera> camera;
+TickTimeType last_tick;
 GLuint main_vao_id;
 
 #if COLOR
@@ -187,11 +192,9 @@ const std::vector<GLfloat> vertex_position_data{
 
 void display();
 void window_resize(int width, int height);
-void keyboard(unsigned char key, int x, int y);
-
-#if ANIMATED
+void keydown(unsigned char key, int x, int y);
+void keyup(unsigned char key, int x, int y);
 void timer(int value);
-#endif // ANIMATED
 
 bool init_glut(int &argc, char *argv[])
 {
@@ -203,12 +206,12 @@ bool init_glut(int &argc, char *argv[])
     glutInitWindowPosition(10, 10);
     glutCreateWindow("Test OpenGL - POGL");
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
+    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
     glutDisplayFunc(display);
     glutReshapeFunc(window_resize);
-    glutKeyboardFunc(keyboard);
-#if ANIMATED
+    glutKeyboardFunc(keydown);
+    glutKeyboardUpFunc(keyup);
     glutTimerFunc(20, timer, 0);
-#endif // ANIMATED
     return true;
 }
 
@@ -312,11 +315,12 @@ bool init_object()
 
 bool init_POV()
 {
-    const auto model_view_matrix = Matrix4::look_at( //
-        1.5, 1.5, 1.5, // eye
-        0., 0., 0., // center
-        0., 0., 1. // up
-    );
+    camera = std::make_shared<Camera>(Vector3(-1.5, 0, 0), 0.0, 0.0);
+    // const auto model_view_matrix = Matrix4::look_at( //
+    //     1.5, 1.5, 1.5, // eye
+    //     0., 0., 0., // center
+    //     0., 0., 1. // up
+    // );
     const auto projection_matrix =
         Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 0.1, 100);
 
@@ -326,7 +330,8 @@ bool init_POV()
     const auto projection_matrix_loc =
         glGetUniformLocation(prog, "projection_matrix");
 
-    glUniformMatrix4fv(view_matrix_loc, 1, GL_TRUE, model_view_matrix.data());
+    glUniformMatrix4fv(view_matrix_loc, 1, GL_TRUE,
+                       camera->get_transform().data());
     glUniformMatrix4fv(projection_matrix_loc, 1, GL_TRUE,
                        projection_matrix.data());
     return true;
@@ -338,12 +343,62 @@ void window_resize(int width, int height)
     CHECK_GL_ERROR();
 }
 
-void keyboard(unsigned char key, int x, int y)
+void keydown(unsigned char key, int, int)
 {
+    auto &key_state = get_key_state();
+
     switch (key)
     {
-    case 'q':
+    case 27: // escape
         glutLeaveMainLoop();
+        break;
+    case 'z':
+        key_state.forward = true;
+        break;
+    case 'q':
+        key_state.left = true;
+        break;
+    case 's':
+        key_state.backward = true;
+        break;
+    case 'd':
+        key_state.right = true;
+        break;
+    case ' ':
+        key_state.up = true;
+        break;
+    case 'c':
+        key_state.down = true;
+        break;
+    }
+}
+
+void keyup(unsigned char key, int, int)
+{
+    auto &key_state = get_key_state();
+
+    switch (key)
+    {
+    case 27: // escape
+        glutLeaveMainLoop();
+        break;
+    case 'z':
+        key_state.forward = false;
+        break;
+    case 'q':
+        key_state.left = false;
+        break;
+    case 's':
+        key_state.backward = false;
+        break;
+    case 'd':
+        key_state.right = false;
+        break;
+    case ' ':
+        key_state.up = false;
+        break;
+    case 'c':
+        key_state.down = false;
         break;
     }
 }
@@ -363,35 +418,34 @@ void display()
     glutSwapBuffers();
 }
 
-#if ANIMATED
 void timer(int value)
 {
-    float time = value * 0.001;
+    const auto now = std::chrono::steady_clock::now();
+    const double delta =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now - last_tick)
+            .count()
+        / 1000.;
+    last_tick = now;
 
-    GLfloat x_pos = 2.0 * std::cos(M_PI * time);
-    GLfloat y_pos = 2.0 * std::sin(M_PI * time);
-    GLfloat z_pos = 1.5 * std::cos(time);
+    // update objects
+    camera->update(delta);
 
-    const auto model_view_matrix = Matrix4::look_at( //
-        x_pos, y_pos, z_pos, // eye
-        0, 0, 0, // center
-        0, 0, 1 // up
-    );
-
+    // update rendering parameters
     const auto prog = shader->get_program();
 
     const auto view_matrix_loc =
         glGetUniformLocation(prog, "view_transform_matrix");
 
-    glUniformMatrix4fv(view_matrix_loc, 1, GL_TRUE, model_view_matrix.data());
+    glUniformMatrix4fv(view_matrix_loc, 1, GL_TRUE,
+                       camera->get_transform().data());
 
     glutPostRedisplay();
     glutTimerFunc(20, timer, value + 20);
 }
-#endif // ANIMATED
 
 int main(int argc, char *argv[])
 {
+    last_tick = std::chrono::steady_clock::now();
     std::cout << "initialising GLUT...\n";
     init_glut(argc, argv);
     std::cout << "initialising GLEW...\n";
