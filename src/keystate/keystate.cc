@@ -16,4 +16,13 @@ namespace pogl
         static auto key_state = Keystate();
         return key_state;
     }
+
+    std::ostream &operator<<(std::ostream &out, const Keystate &ks)
+    {
+        out << std::boolalpha << "Keystate { forward: " << ks.forward
+            << ", backward: " << ks.backward << ", left: " << ks.left
+            << ", right: " << ks.right << ", up: " << ks.up
+            << ", down: " << ks.down << " }" << std::noboolalpha;
+        return out;
+    }
 } // namespace pogl

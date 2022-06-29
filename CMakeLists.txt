@@ -8,7 +8,14 @@ add_compile_definitions(_GLIBCXX_USE_CXX11_ABI=0)
 
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
+find_package(glfw3 REQUIRED)
+
+if(${glfw3_FOUND})
+    message(STATUS "Found GLFW3")
+else()
+    message(FATAL_ERROR "GLFW3 not found")
+endif()
+
 find_package(GLEW REQUIRED)
 
 # specify the C++ standard
@@ -32,15 +39,14 @@ add_executable(opengl-tp ${all_SRCS})
 
 include_directories(
     ${OPENGL_INCLUDE_DIRS}
-    ${GLUT_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS}
 )
 
 target_link_libraries(
     opengl-tp
     ${OPENGL_LIBRARIES}
-    ${GLUT_LIBRARY}
     ${GLEW_LIBRARIES}
+    glfw
 )
 
 

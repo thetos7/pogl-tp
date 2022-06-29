@@ -11,7 +11,7 @@ namespace pogl
         using Self = Camera;
 
         static constexpr auto UP = Vector3(0, 0, 1);
-        static constexpr double SPEED = 0.5;
+        static constexpr double SPEED = 1.0;
 
         Camera(const Vector3 &initial_position, double pitch, double yaw);
         Matrix4 get_transform() const;

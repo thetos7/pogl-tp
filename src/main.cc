@@ -1,8 +1,7 @@
 // include glew first
 #include <GL/glew.h>
 // then others
-#include <GL/freeglut.h>
-#include <chrono>
+#include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
 
@@ -18,12 +17,11 @@
 
 using namespace pogl;
 
-using TickTimeType = std::chrono::time_point<std::chrono::steady_clock>;
 
 std::unique_ptr<ShaderProgram> shader;
 std::shared_ptr<Camera> camera;
-TickTimeType last_tick;
 GLuint main_vao_id;
+GLFWwindow *window;
 
 #if COLOR
 const std::vector<GLfloat> vertex_color_data{
@@ -191,28 +189,39 @@ const std::vector<GLfloat> vertex_position_data{
  */
 
 void display();
-void window_resize(int width, int height);
-void keydown(unsigned char key, int x, int y);
-void keyup(unsigned char key, int x, int y);
-void timer(int value);
+void window_resize(GLFWwindow *window, int width, int height);
 
-bool init_glut(int &argc, char *argv[])
+void error_callback(int error, const char *description);
+void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                  int mods);
+
+bool init_glfw()
 {
-    glutInit(&argc, argv);
-    glutInitContextVersion(4, 5);
-    glutInitContextProfile(GLUT_CORE_PROFILE);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(700, 700);
-    glutInitWindowPosition(10, 10);
-    glutCreateWindow("Test OpenGL - POGL");
-    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
-    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
-    glutDisplayFunc(display);
-    glutReshapeFunc(window_resize);
-    glutKeyboardFunc(keydown);
-    glutKeyboardUpFunc(keyup);
-    glutTimerFunc(20, timer, 0);
+    if (!glfwInit())
+    {
+        std::cerr << "ERROR: GLFW initialisation failed.\n";
+        return false;
+    }
+    glfwSetErrorCallback(error_callback);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    window = glfwCreateWindow(700, 700, "Test OpenGl - POGL (GLFW)", nullptr,
+                              nullptr);
+    if (!window)
+    {
+        std::cerr << "ERROR: GLFW Window creation failed.\n";
+        return false;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetWindowSizeCallback(window, window_resize);
+
     return true;
+}
+
+void error_callback(int error, const char *description)
+{
+    std::cerr << "GLFW ERROR: " << description << "\n";
 }
 
 bool init_glew()
@@ -337,68 +346,42 @@ bool init_POV()
     return true;
 }
 
-void window_resize(int width, int height)
+void window_resize(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
     CHECK_GL_ERROR();
 }
 
-void keydown(unsigned char key, int, int)
+void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                  int mods)
 {
     auto &key_state = get_key_state();
 
     switch (key)
     {
-    case 27: // escape
-        glutLeaveMainLoop();
+    case GLFW_KEY_ESCAPE:
+        if (action == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
         break;
-    case 'z':
-        key_state.forward = true;
+    case GLFW_KEY_W:
+        key_state.forward = (action != GLFW_RELEASE);
         break;
-    case 'q':
-        key_state.left = true;
+    case GLFW_KEY_A:
+        key_state.left = (action != GLFW_RELEASE);
         break;
-    case 's':
-        key_state.backward = true;
+    case GLFW_KEY_S:
+        key_state.backward = (action != GLFW_RELEASE);
         break;
-    case 'd':
-        key_state.right = true;
+    case GLFW_KEY_D:
+        key_state.right = (action != GLFW_RELEASE);
         break;
-    case ' ':
-        key_state.up = true;
+    case GLFW_KEY_SPACE:
+        key_state.up = (action != GLFW_RELEASE);
         break;
-    case 'c':
-        key_state.down = true;
-        break;
-    }
-}
-
-void keyup(unsigned char key, int, int)
-{
-    auto &key_state = get_key_state();
-
-    switch (key)
-    {
-    case 27: // escape
-        glutLeaveMainLoop();
-        break;
-    case 'z':
-        key_state.forward = false;
-        break;
-    case 'q':
-        key_state.left = false;
-        break;
-    case 's':
-        key_state.backward = false;
-        break;
-    case 'd':
-        key_state.right = false;
-        break;
-    case ' ':
-        key_state.up = false;
-        break;
-    case 'c':
-        key_state.down = false;
+    case GLFW_KEY_LEFT_SHIFT:
+        key_state.down = (action != GLFW_RELEASE);
         break;
     }
 }
@@ -415,16 +398,13 @@ void display()
     glBindVertexArray(0);
     CHECK_GL_ERROR();
 
-    glutSwapBuffers();
 }
 
-void timer(int value)
+void update()
 {
-    const auto now = std::chrono::steady_clock::now();
-    const double delta =
-        std::chrono::duration_cast<std::chrono::milliseconds>(now - last_tick)
-            .count()
-        / 1000.;
+    static double last_tick = 0;
+    const double now = glfwGetTime();
+    const double delta = now - last_tick;
     last_tick = now;
 
     // update objects
@@ -433,21 +413,17 @@ void timer(int value)
     // update rendering parameters
     const auto prog = shader->get_program();
 
-    const auto view_matrix_loc =
+    const auto view_transform_loc =
         glGetUniformLocation(prog, "view_transform_matrix");
 
-    glUniformMatrix4fv(view_matrix_loc, 1, GL_TRUE,
+    glUniformMatrix4fv(view_transform_loc, 1, GL_TRUE,
                        camera->get_transform().data());
-
-    glutPostRedisplay();
-    glutTimerFunc(20, timer, value + 20);
 }
 
 int main(int argc, char *argv[])
 {
-    last_tick = std::chrono::steady_clock::now();
-    std::cout << "initialising GLUT...\n";
-    init_glut(argc, argv);
+    std::cout << "initialising GLFW...\n";
+    init_glfw();
     std::cout << "initialising GLEW...\n";
     init_glew();
     std::cout << "initialising GL...\n";
@@ -459,8 +435,18 @@ int main(int argc, char *argv[])
     std::cout << "initialising POV...\n";
     init_POV();
     std::cout << "launching\n";
-    glutMainLoop();
+
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+        update();
+        display();
+        glfwSwapBuffers(window);
+    }
     std::cout << "exiting\n";
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
     return 0;
 }

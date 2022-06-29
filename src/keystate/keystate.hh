@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 namespace pogl
 {
     struct Keystate
@@ -14,4 +16,5 @@ namespace pogl
     };
 
     Keystate &get_key_state();
+    std::ostream &operator<<(std::ostream &out, const Keystate &ks);
 } // namespace pogl
