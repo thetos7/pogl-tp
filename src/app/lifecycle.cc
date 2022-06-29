@@ -26,7 +26,7 @@ namespace pogl
             std::cerr << "ERROR: GLFW initialisation failed.\n";
             return false;
         }
-        glfwSetErrorCallback(error_callback);
+        glfwSetErrorCallback(on_error);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         window = glfwCreateWindow(700, 700, "Test OpenGl - POGL (GLFW)",
@@ -37,12 +37,12 @@ namespace pogl
             return false;
         }
         glfwMakeContextCurrent(window);
-        glfwSetKeyCallback(window, key_callback);
-        glfwSetWindowSizeCallback(window, window_resize);
+        glfwSetKeyCallback(window, on_key_update);
+        glfwSetWindowSizeCallback(window, on_window_resize);
 
         update_cursor_capture(window, get_input_state());
 
-        glfwSetCursorPosCallback(window, cursor_callback);
+        glfwSetCursorPosCallback(window, on_mouse_move);
 
         return true;
     }

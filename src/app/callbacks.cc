@@ -9,18 +9,18 @@
 namespace pogl
 {
 
-    void error_callback(int error, const char *description)
+    void on_error(int error, const char *description)
     {
         std::cerr << "GLFW ERROR: " << description << "\n";
     }
 
-    void window_resize(GLFWwindow *window, int width, int height)
+    void on_window_resize(GLFWwindow *window, int width, int height)
     {
         glViewport(0, 0, width, height);
         CHECK_GL_ERROR();
     }
 
-    void key_callback(GLFWwindow *window, int key, int scancode, int action,
+    void on_key_update(GLFWwindow *window, int key, int scancode, int action,
                       int mods)
     {
         auto &input_state = get_input_state();
@@ -61,7 +61,7 @@ namespace pogl
         }
     }
 
-    void cursor_callback(GLFWwindow *window, double xpos, double ypos)
+    void on_mouse_move(GLFWwindow *window, double xpos, double ypos)
     {
         static double last_x = 0;
         static double last_y = 0;

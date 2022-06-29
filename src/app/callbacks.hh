@@ -6,9 +6,9 @@
 
 namespace pogl
 {
-    void window_resize(GLFWwindow *window, int width, int height);
-    void error_callback(int error, const char *description);
-    void key_callback(GLFWwindow *window, int key, int scancode, int action,
+    void on_window_resize(GLFWwindow *window, int width, int height);
+    void on_error(int error, const char *description);
+    void on_key_update(GLFWwindow *window, int key, int scancode, int action,
                       int mods);
-    void cursor_callback(GLFWwindow *window, double xpos, double ypos);
+    void on_mouse_move(GLFWwindow *window, double xpos, double ypos);
 } // namespace pogl
