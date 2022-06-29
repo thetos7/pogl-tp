@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "camera/camera.hh"
-#include "keystate/keystate.hh"
+#include "inputstate/inputstate.hh"
 #include "matrix4/matrix4.hh"
 #include "shader_program/shader_program.hh"
 #include "utils/gl_check.hh"
@@ -355,7 +355,7 @@ void window_resize(GLFWwindow *window, int width, int height)
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods)
 {
-    auto &key_state = get_key_state();
+    auto &input_state = get_input_state();
 
     switch (key)
     {
@@ -366,22 +366,22 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
         }
         break;
     case GLFW_KEY_W:
-        key_state.forward = (action != GLFW_RELEASE);
+        input_state.forward = (action != GLFW_RELEASE);
         break;
     case GLFW_KEY_A:
-        key_state.left = (action != GLFW_RELEASE);
+        input_state.left = (action != GLFW_RELEASE);
         break;
     case GLFW_KEY_S:
-        key_state.backward = (action != GLFW_RELEASE);
+        input_state.backward = (action != GLFW_RELEASE);
         break;
     case GLFW_KEY_D:
-        key_state.right = (action != GLFW_RELEASE);
+        input_state.right = (action != GLFW_RELEASE);
         break;
     case GLFW_KEY_SPACE:
-        key_state.up = (action != GLFW_RELEASE);
+        input_state.up = (action != GLFW_RELEASE);
         break;
     case GLFW_KEY_LEFT_SHIFT:
-        key_state.down = (action != GLFW_RELEASE);
+        input_state.down = (action != GLFW_RELEASE);
         break;
     }
 }

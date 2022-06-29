@@ -4,9 +4,9 @@
 
 namespace pogl
 {
-    struct Keystate
+    struct InputState
     {
-        Keystate();
+        InputState();
         bool forward;
         bool backward;
         bool left;
@@ -15,6 +15,6 @@ namespace pogl
         bool down;
     };
 
-    Keystate &get_key_state();
-    std::ostream &operator<<(std::ostream &out, const Keystate &ks);
+    InputState &get_input_state();
+    std::ostream &operator<<(std::ostream &out, const InputState &ks);
 } // namespace pogl

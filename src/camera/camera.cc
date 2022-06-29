@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "keystate/keystate.hh"
+#include "inputstate/inputstate.hh"
 
 namespace pogl
 {
@@ -56,10 +56,10 @@ namespace pogl
 
     void Camera::update(double delta)
     {
-        auto &key_state = get_key_state();
-        const auto x_input = (int)key_state.forward - (int)key_state.backward;
-        const auto y_input = (int)key_state.right - (int)key_state.left;
-        const auto z_input = (int)key_state.up - (int)key_state.down;
+        auto &input_state = get_input_state();
+        const auto x_input = (int)input_state.forward - (int)input_state.backward;
+        const auto y_input = (int)input_state.right - (int)input_state.left;
+        const auto z_input = (int)input_state.up - (int)input_state.down;
 
         const auto movement_direction =
             Vector3(x_input, y_input, z_input).normalized();

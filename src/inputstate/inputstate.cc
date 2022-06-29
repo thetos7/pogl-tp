@@ -1,8 +1,8 @@
-#include "keystate.hh"
+#include "inputstate.hh"
 
 namespace pogl
 {
-    Keystate::Keystate()
+    InputState::InputState()
         : forward(false)
         , backward(false)
         , left(false)
@@ -11,15 +11,15 @@ namespace pogl
         , down(false)
     {}
 
-    Keystate &get_key_state()
+    InputState &get_input_state()
     {
-        static auto key_state = Keystate();
-        return key_state;
+        static auto input_state = InputState();
+        return input_state;
     }
 
-    std::ostream &operator<<(std::ostream &out, const Keystate &ks)
+    std::ostream &operator<<(std::ostream &out, const InputState &ks)
     {
-        out << std::boolalpha << "Keystate { forward: " << ks.forward
+        out << std::boolalpha << "InputState { forward: " << ks.forward
             << ", backward: " << ks.backward << ", left: " << ks.left
             << ", right: " << ks.right << ", up: " << ks.up
             << ", down: " << ks.down << " }" << std::noboolalpha;
