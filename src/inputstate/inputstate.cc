@@ -9,6 +9,9 @@ namespace pogl
         , right(false)
         , up(false)
         , down(false)
+        , capture_cursor(true)
+        , mouse_x_axis(0.0)
+        , mouse_y_axis(0.0)
     {}
 
     InputState &get_input_state()
@@ -22,7 +25,11 @@ namespace pogl
         out << std::boolalpha << "InputState { forward: " << ks.forward
             << ", backward: " << ks.backward << ", left: " << ks.left
             << ", right: " << ks.right << ", up: " << ks.up
-            << ", down: " << ks.down << " }" << std::noboolalpha;
+            << ", down: " << ks.down
+            << ", capture_cursor: " << ks.capture_cursor
+            << ", mouse_x_axis: " << ks.mouse_x_axis
+            << ", mouse_y_axis: " << ks.mouse_y_axis << " }"
+            << std::noboolalpha;
         return out;
     }
 } // namespace pogl

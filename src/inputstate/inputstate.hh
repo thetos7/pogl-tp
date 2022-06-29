@@ -13,6 +13,9 @@ namespace pogl
         bool right;
         bool up;
         bool down;
+        bool capture_cursor;
+        double mouse_x_axis;
+        double mouse_y_axis;
     };
 
     InputState &get_input_state();

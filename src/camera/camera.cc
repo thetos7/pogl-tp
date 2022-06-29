@@ -14,15 +14,21 @@ namespace pogl
         , yaw_(yaw)
     {}
 
+    Vector3 Camera::get_forward() const
+    {
+        return Vector3{
+            static_cast<Vector3::ComponentType>(std::cos(yaw_)
+                                                * std::cos(pitch_)),
+            static_cast<Vector3::ComponentType>(std::sin(yaw_)
+                                                * std::cos(pitch_)),
+            static_cast<Vector3::ComponentType>(std::sin(pitch_)),
+        }
+            .normalized();
+    }
+
     Matrix4 Camera::get_transform() const
     {
-        const auto forward =
-            Vector3{
-                static_cast<Vector3::ComponentType>(std::cos(yaw_)),
-                static_cast<Vector3::ComponentType>(std::sin(yaw_)),
-                static_cast<Vector3::ComponentType>(std::sin(pitch_)),
-            }
-                .normalized();
+        const auto forward = get_forward();
 
         const auto right = forward.cross(Self::UP).normalized();
         const auto view_up = right.cross(forward).normalized();
@@ -57,14 +63,35 @@ namespace pogl
     void Camera::update(double delta)
     {
         auto &input_state = get_input_state();
-        const auto x_input = (int)input_state.forward - (int)input_state.backward;
+
+        // update pitch
+        const auto pitch_movement =
+            -input_state.mouse_y_axis * LOOK_SENSITIVITY * M_PI * 2.;
+        pitch_ += pitch_movement;
+        if (pitch_ > M_PI_2) // upper pitch limit, looking "up"
+        {
+            pitch_ = M_PI_2;
+        }
+        else if (pitch_ < -M_PI_2) // looking "down"
+        {
+            pitch_ = -M_PI_2;
+        }
+
+        // update yaw
+        const auto yaw_movement =
+            -input_state.mouse_x_axis * LOOK_SENSITIVITY * M_PI * 2.;
+        yaw_ += yaw_movement;
+        yaw_ = std::fmod(yaw_, 2. * M_PI); // keep yaw in range [0; 2PI)
+
+        // update position
+        const auto x_input =
+            (int)input_state.forward - (int)input_state.backward;
         const auto y_input = (int)input_state.right - (int)input_state.left;
         const auto z_input = (int)input_state.up - (int)input_state.down;
 
         const auto movement_direction =
             Vector3(x_input, y_input, z_input).normalized();
         const auto movement = movement_direction * SPEED * delta;
-
         move_relative(movement);
     }
 

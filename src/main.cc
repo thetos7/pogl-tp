@@ -17,7 +17,6 @@
 
 using namespace pogl;
 
-
 std::unique_ptr<ShaderProgram> shader;
 std::shared_ptr<Camera> camera;
 GLuint main_vao_id;
@@ -194,6 +193,9 @@ void window_resize(GLFWwindow *window, int width, int height);
 void error_callback(int error, const char *description);
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods);
+void cursor_callback(GLFWwindow *window, double xpos, double ypos);
+
+void update_cursor_capture(GLFWwindow *window, const InputState &input);
 
 bool init_glfw()
 {
@@ -215,6 +217,10 @@ bool init_glfw()
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
     glfwSetWindowSizeCallback(window, window_resize);
+
+    update_cursor_capture(window, get_input_state());
+
+    glfwSetCursorPosCallback(window, cursor_callback);
 
     return true;
 }
@@ -324,14 +330,10 @@ bool init_object()
 
 bool init_POV()
 {
-    camera = std::make_shared<Camera>(Vector3(-1.5, 0, 0), 0.0, 0.0);
-    // const auto model_view_matrix = Matrix4::look_at( //
-    //     1.5, 1.5, 1.5, // eye
-    //     0., 0., 0., // center
-    //     0., 0., 1. // up
-    // );
+    camera = std::make_shared<Camera>(Vector3(2.5, 0, 0), 0.0, M_PI);
+    std::cerr << "camera_forward: " << camera->get_forward() << "\n";
     const auto projection_matrix =
-        Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 0.1, 100);
+        Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
 
     const auto prog = shader->get_program();
     const auto view_matrix_loc =
@@ -352,6 +354,14 @@ void window_resize(GLFWwindow *window, int width, int height)
     CHECK_GL_ERROR();
 }
 
+void update_cursor_capture(GLFWwindow *window, const InputState &input)
+{
+    std::cerr << "Cursor capture active? " << input.capture_cursor << "\n";
+    glfwSetInputMode(window, GLFW_CURSOR,
+                     input.capture_cursor ? GLFW_CURSOR_DISABLED
+                                          : GLFW_CURSOR_NORMAL);
+}
+
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods)
 {
@@ -363,6 +373,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
         if (action == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+        break;
+    case GLFW_KEY_C:
+        if (action == GLFW_PRESS)
+        {
+            input_state.capture_cursor = !input_state.capture_cursor;
+            update_cursor_capture(window, input_state);
         }
         break;
     case GLFW_KEY_W:
@@ -386,6 +403,21 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
     }
 }
 
+void cursor_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    static double last_x = 0;
+    static double last_y = 0;
+    auto &input_state = get_input_state();
+
+    const double diff_x = xpos - last_x;
+    const double diff_y = ypos - last_y;
+    last_x = xpos;
+    last_y = ypos;
+
+    input_state.mouse_x_axis = diff_x / 5.;
+    input_state.mouse_y_axis = diff_y / 5.;
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -397,7 +429,6 @@ void display()
     CHECK_GL_ERROR();
     glBindVertexArray(0);
     CHECK_GL_ERROR();
-
 }
 
 void update()
@@ -410,6 +441,9 @@ void update()
     // update objects
     camera->update(delta);
 
+    auto &input_state = get_input_state();
+    input_state.mouse_x_axis = 0;
+    input_state.mouse_y_axis = 0;
     // update rendering parameters
     const auto prog = shader->get_program();
 
@@ -435,13 +469,18 @@ int main(int argc, char *argv[])
     std::cout << "initialising POV...\n";
     init_POV();
     std::cout << "launching\n";
+    std::cout << "Camera controls:\n";
+    std::cout << "Z/S: Forward/Backwards\n";
+    std::cout << "Q/D: Left/Right\n";
+    std::cout << "Space/Left Shift: Up/Down\n";
+    std::cout << "C: Toggle cursor capture\n";
 
     while (!glfwWindowShouldClose(window))
     {
-        glfwPollEvents();
         update();
         display();
         glfwSwapBuffers(window);
+        glfwPollEvents();
     }
     std::cout << "exiting\n";
 
