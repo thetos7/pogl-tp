@@ -29,7 +29,8 @@ namespace pogl
         : renderers()
         , shaders()
         , camera_dependent_shaders()
-        , camera(nullptr)
+        , dynamic_objects()
+        , main_camera(nullptr)
         , window(nullptr)
     {}
 
@@ -55,6 +56,7 @@ namespace pogl
         glfwMakeContextCurrent(window);
         glfwSetKeyCallback(window, on_key_update);
         glfwSetWindowSizeCallback(window, on_window_resize);
+        glfwSetWindowFocusCallback(window, on_focus);
 
         update_cursor_capture(window, get_input_state());
 
@@ -171,7 +173,7 @@ namespace pogl
                                  .add_attribute("vColor", 3, 1)
 #endif
                                  .build();
-        
+
         this->add_renderer(mesh_renderer);
         return true;
     }
@@ -180,10 +182,15 @@ namespace pogl
     {
         const auto projection_matrix =
             Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
-        camera = std::make_shared<Camera>(Vector3(3.5, 0, 0), 0.0, M_PI,
-                                          projection_matrix);
-        const auto view_transform = camera->get_transform();
-        std::cerr << camera->get_forward() << "\n";
+        auto camera = std::make_shared<Camera>(Vector3(3.5, 0, 0), 0.0, M_PI,
+                                               projection_matrix);
+
+        this->add_dynamic(camera);
+
+        main_camera = camera;
+
+        const auto view_transform = main_camera->get_transform();
+        std::cerr << main_camera->get_forward() << "\n";
 
         for (auto s : camera_dependent_shaders)
         {
@@ -213,7 +220,7 @@ namespace pogl
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         CHECK_GL_ERROR();
-        const auto view_transform = camera->get_transform();
+        const auto view_transform = main_camera->get_transform();
         for (auto renderer : renderers)
         {
             renderer->update_camera(view_transform);
@@ -227,6 +234,12 @@ namespace pogl
         return *this;
     }
 
+    Engine &Engine::add_dynamic(std::shared_ptr<Updateable> object)
+    {
+        dynamic_objects.push_back(object);
+        return *this;
+    }
+
     void Engine::update()
     {
         static double last_tick = 0;
@@ -235,11 +248,13 @@ namespace pogl
         last_tick = now;
 
         // update objects
-        camera->update(delta);
+        for (auto object : dynamic_objects)
+        {
+            object->update(delta);
+        }
 
         auto &input_state = get_input_state();
         input_state.mouse_x_axis = 0;
         input_state.mouse_y_axis = 0;
-
     }
 } // namespace pogl

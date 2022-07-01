@@ -9,6 +9,7 @@
 
 #include "camera/camera.hh"
 #include "properties/renderable.hh"
+#include "properties/updateable.hh"
 #include "shader_program/shader_program.hh"
 
 namespace pogl
@@ -20,8 +21,9 @@ namespace pogl
         std::vector<std::shared_ptr<Renderable>> renderers;
         std::map<std::string, std::shared_ptr<ShaderProgram>> shaders;
         std::vector<std::shared_ptr<ShaderProgram>> camera_dependent_shaders;
+        std::vector<std::shared_ptr<Updateable>> dynamic_objects;
 
-        std::shared_ptr<Camera> camera;
+        std::shared_ptr<Camera> main_camera;
         GLFWwindow *window;
 
         void display();
@@ -29,6 +31,7 @@ namespace pogl
         void init();
 
         Engine &add_renderer(std::shared_ptr<Renderable> renderer);
+        Engine &add_dynamic(std::shared_ptr<Updateable> object);
 
     private:
         bool _init_glfw();
