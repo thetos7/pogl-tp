@@ -74,4 +74,9 @@ namespace pogl
         input_state.mouse_x_axis = diff_x / 5.;
         input_state.mouse_y_axis = diff_y / 5.;
     }
+
+    void on_focus(GLFWwindow *, int focused)
+    {
+        get_input_state().focused = focused != 0;
+    }
 } // namespace pogl

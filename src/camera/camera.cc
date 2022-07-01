@@ -73,6 +73,11 @@ namespace pogl
     {
         auto &input_state = get_input_state();
 
+        if (!input_state.focused)
+        {
+            return;
+        }
+
         // update pitch
         const auto pitch_movement =
             -input_state.mouse_y_axis * LOOK_SENSITIVITY * M_PI * 2.;
