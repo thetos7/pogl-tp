@@ -8,10 +8,14 @@ namespace pogl
 {
     using Self = Camera;
 
-    Camera::Camera(const Vector3 &initial_position, double pitch, double yaw)
+    // TODO simplify api by giving simpler projection settings like width,
+    // aspect ratio, fov, near clip and far clip
+    Camera::Camera(const Vector3 &initial_position, double pitch, double yaw,
+                   const Matrix4 &projection)
         : position_(initial_position)
         , pitch_(pitch)
         , yaw_(yaw)
+        , projection_(projection)
     {}
 
     Vector3 Camera::get_forward() const
@@ -46,6 +50,11 @@ namespace pogl
         // clang-format on
 
         return rotation * eyeTranslate;
+    }
+
+    Matrix4 Camera::get_projection() const
+    {
+        return projection_;
     }
 
     Self &Camera::move_relative(const Vector3 &movement)
