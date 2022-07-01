@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
+#include <vector>
 
 #include "utils/gl_check.hh"
 
@@ -19,6 +21,7 @@ namespace pogl
         , _fragment(0)
         , _program(0)
         , _compilation_log()
+        , _uniforms()
     {}
 
     ShaderProgram::ShaderProgram()
@@ -29,6 +32,66 @@ namespace pogl
     {
         glDeleteProgram(_program);
         CHECK_GL_ERROR();
+    }
+
+    Self::Uniform::Uniform()
+        : Uniform("", 0, 0, 0, nullptr)
+    {}
+
+    Self::Uniform::Uniform(const std::string &name, LocType location, TypeEnum type,
+                           SizeType size, ShaderProgram *program)
+        : _location(location)
+        , _size(size)
+        , _type(type)
+        , _name(name)
+        , _program(program)
+    {}
+
+    void Self::Uniform::set_mat4(const Matrix4 &mat)
+    {
+        if (_type != GL_FLOAT_MAT4)
+        {
+            std::ostringstream oss;
+            oss << "Error: Attempt to set uniform `" << _name
+                << "` with value of type mat4, but its type differs.\n";
+            throw std::logic_error(oss.str());
+        }
+        _program->use();
+        glUniformMatrix4fv(_location, 1, GL_TRUE, mat.data());
+        CHECK_GL_ERROR();
+    }
+
+    void Self::Uniform::set_float(GLfloat value)
+    {
+        if (_type != GL_FLOAT)
+        {
+            std::ostringstream oss;
+            oss << "Error: Attempt to set uniform `" << _name
+                << "` with value of type float, but its type differs.\n";
+            throw std::logic_error(oss.str());
+        }
+        _program->use();
+        glUniform1f(_location, value);
+        CHECK_GL_ERROR();
+    }
+
+    void Self::Uniform::set_vec4(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+    {
+        if (_type != GL_FLOAT_VEC4)
+        {
+            std::ostringstream oss;
+            oss << "Error: Attempt to set uniform `" << _name
+                << "` with value of type vec4, but its type differs.\n";
+            throw std::logic_error(oss.str());
+        }
+        _program->use();
+        glUniform4f(_location, x, y, z, w);
+        CHECK_GL_ERROR();
+    }
+
+    void Self::Uniform::set_vec4(const Vector4 &vect)
+    {
+        set_vec4(vect.x, vect.y, vect.z, vect.w);
     }
 
     std::string load_file(const fs::path &file_path)
@@ -168,8 +231,39 @@ namespace pogl
         return !errored;
     }
 
-    std::unique_ptr<Self> ShaderProgram::make_program(const std::string &vertex_src,
-                                     const std::string &fragment_src)
+    void ShaderProgram::build_uniform_map()
+    {
+        GLint max_name_length = 0;
+        glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
+                       &max_name_length);
+        CHECK_GL_ERROR();
+
+        GLint uniform_count = 0;
+        glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &uniform_count);
+        CHECK_GL_ERROR();
+
+        std::vector<GLchar> name(max_name_length, 0);
+
+        for (GLint i = 0; i < uniform_count; ++i)
+        {
+            GLenum type = 0;
+            GLint size = 0;
+
+            glGetActiveUniform(_program, i, max_name_length + 1, NULL, &size,
+                               &type, name.data());
+            CHECK_GL_ERROR();
+
+            GLint loc = glGetUniformLocation(_program, name.data());
+            CHECK_GL_ERROR();
+
+            _uniforms[name.data()] =
+                Uniform(name.data(), loc, type, size, this);
+        }
+    }
+
+    std::shared_ptr<Self>
+    ShaderProgram::make_program(const std::string &vertex_src,
+                                const std::string &fragment_src)
     {
         auto prog = std::make_unique<Self>(vertex_src, fragment_src, false);
         const auto vert_compiled = prog->compile_vertex();
@@ -197,6 +291,9 @@ namespace pogl
             std::cerr << msg << std::endl;
             throw std::runtime_error(msg);
         }
+
+        prog->build_uniform_map();
+
         return prog;
     }
 
@@ -224,6 +321,17 @@ namespace pogl
     ShaderProgram::ProgramIdType ShaderProgram::get_program()
     {
         return _program;
+    }
+
+    std::optional<ShaderProgram::Uniform>
+    ShaderProgram::uniform(const std::string &name)
+    {
+        auto it = _uniforms.find(name);
+        if (it == _uniforms.end())
+        {
+            return std::nullopt;
+        }
+        return it->second;
     }
 
 } // namespace pogl

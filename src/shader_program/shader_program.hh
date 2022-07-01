@@ -2,7 +2,12 @@
 
 #include <GL/glew.h>
 #include <filesystem>
+#include <map>
+#include <optional>
 #include <string>
+
+#include "matrix4/matrix4.hh"
+#include "vector4/vector4.hh"
 
 namespace pogl
 {
@@ -14,6 +19,35 @@ namespace pogl
         using Self = ShaderProgram;
         using ShaderIdType = GLuint;
         using ProgramIdType = GLuint;
+
+        class Uniform
+        {
+        public:
+            using LocType = GLuint;
+            using SizeType = GLint;
+            using TypeEnum = GLenum;
+            Uniform();
+            Uniform(const std::string &name, LocType location, TypeEnum type,
+                    SizeType size, ShaderProgram *program);
+
+            void set_mat4(const Matrix4 &mat);
+            void set_float(GLfloat value);
+            void set_vec4(const Vector4 &vect);
+            void set_vec4(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+            inline TypeEnum type() const
+            {
+                return _type;
+            };
+
+        private:
+            LocType _location;
+            SizeType _size;
+            TypeEnum _type;
+            std::string _name;
+            ShaderProgram *_program;
+        };
+
+        using UniformMapType = std::map<std::string, Uniform>;
 
         ShaderProgram(const std::string &vertex_src,
                       const std::string &fragment_src, bool ready);
@@ -28,7 +62,7 @@ namespace pogl
          * @param fragment_src Path to the fragment shader source file
          * @return Self
          */
-        static std::unique_ptr<Self>
+        static std::shared_ptr<Self>
         make_program(const std::string &vertex_src,
                      const std::string &fragment_src);
         /**
@@ -69,16 +103,25 @@ namespace pogl
 
         /**
          * @brief Get the wrapped program id
-         * 
-         * @return ProgramIdType 
+         *
+         * @return ProgramIdType
          */
         ProgramIdType get_program();
+
+        /**
+         * @brief Tries to get the location of a uniform
+         *
+         * @param name Uniform name
+         * @return std::optional<UniformIdType>
+         */
+        std::optional<Uniform> uniform(const std::string &name);
 
     private:
         bool compile_vertex();
         bool compile_fragment();
         bool link_program();
         bool post_compilation();
+        void build_uniform_map();
 
         fs::path _vertexSrc;
         fs::path _fragSrc;
@@ -88,6 +131,7 @@ namespace pogl
         ShaderIdType _fragment;
         ProgramIdType _program;
         std::string _compilation_log;
+        UniformMapType _uniforms;
     };
 
 } // namespace pogl
