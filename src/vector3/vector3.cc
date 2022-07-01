@@ -5,6 +5,7 @@
 #include <string>
 
 #include "utils/utils.hh"
+#include "vector4/vector4.hh"
 
 namespace pogl
 {
@@ -61,6 +62,11 @@ namespace pogl
     Vector3 Vector3::reflect(const Vector3 &normal) const
     {
         return *this - 2 * normal * dot(normal);
+    }
+
+    Vector4 Vector3::to_projective() const
+    {
+        return Vector4(x, y, z, 1);
     }
 
     Vector3 &Vector3::operator+=(const Vector3 &other)
