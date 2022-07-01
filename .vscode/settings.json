@@ -2,6 +2,7 @@
   "files.associations": {
     "*.h": "c",
     "*.rmd": "markdown",
+    "*.shd": "glsl",
     "*.tcc": "c",
     "random": "c",
     "cstring": "c",
@@ -65,7 +66,13 @@
     "iomanip": "cpp",
     "valarray": "cpp",
     "variant": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "cerrno": "cpp",
+    "climits": "cpp",
+    "filesystem": "cpp",
+    "ios": "cpp",
+    "locale": "cpp",
+    "queue": "cpp"
   },
   "cmake.configureEnvironment": {
     "CC": "/usr/bin/clang",
