@@ -16,6 +16,8 @@ else()
     message(FATAL_ERROR "GLFW3 not found")
 endif()
 
+find_package(assimp REQUIRED)
+
 find_package(GLEW REQUIRED)
 
 # specify the C++ standard
@@ -49,6 +51,7 @@ target_link_libraries(
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     glfw
+    assimp
 )
 
 

@@ -1,5 +1,8 @@
 #include "engine.hh"
 
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include <cmath>
 #include <optional>
 
@@ -120,6 +123,12 @@ namespace pogl
 
         shaders.emplace("plane_shader", plane_shader);
 
+        auto uv_debug_shader = ShaderProgram::make_program(
+            "../resources/shaders/uv_debug/vertex.glsl",
+            "../resources/shaders/uv_debug/fragment.glsl");
+
+        shaders.emplace("uv_debug", uv_debug_shader);
+
         // find shaders which require the camera transform, i.e. that have a
         // mat4 view_transform uniform & a mat4 projection_matrix uniform
         for (auto [name, s] : shaders)
@@ -213,6 +222,60 @@ namespace pogl
                                   .add_attribute("vUV", 2, 1)
                                   .build();
         this->add_renderer(plane_renderer);
+
+        Assimp::Importer importer;
+
+        auto scene =
+            importer.ReadFile("../resources/models/ground.obj",
+                              aiProcess_CalcTangentSpace | aiProcess_Triangulate
+                                  | aiProcess_FlipUVs);
+
+        if (scene == nullptr)
+        {
+            // error handling
+            std::cerr << "oh no.\n";
+        }
+        else
+        {
+            const auto idx = scene->mRootNode->mChildren[0]->mMeshes[0];
+            std::cerr << "mesh index: " << idx << "\n";
+            const auto mesh = scene->mMeshes[idx];
+
+            auto position_data = std::vector<GLfloat>(mesh->mNumFaces * 9);
+            auto uv_data = std::vector<GLfloat>(mesh->mNumFaces * 6);
+
+            for (size_t i = 0; i < mesh->mNumFaces; ++i)
+            {
+                auto face = mesh->mFaces[i];
+                for (size_t j = 0; j < face.mNumIndices; ++j)
+                {
+                    auto vert_idx = face.mIndices[j];
+                    auto vert = mesh->mVertices[vert_idx];
+                    auto uv = mesh->mTextureCoords[0][vert_idx];
+                    // auto uv = mesh->mTextureCoords[vert_idx];
+                    std::cerr << "vert (" << i << ", " << j
+                              << "): x = " << vert.x << ", y = " << vert.y
+                              << ", z = " << vert.z << ", u = " << uv.x
+                              << ", v = " << uv.y << "\n";
+                    position_data.push_back(vert.x);
+                    position_data.push_back(vert.y);
+                    position_data.push_back(vert.z);
+
+                    uv_data.push_back(uv.x);
+                    uv_data.push_back(uv.y);
+                }
+            }
+
+            auto ground = MeshRenderer::builder()
+                              .shader(shaders["uv_debug"])
+                              .add_buffer(position_data)
+                              .add_attribute("vPosition", 3, 0)
+                              .add_buffer(uv_data)
+                              .add_attribute("vUV", 2, 1)
+                              .build();
+            this->add_renderer(ground);
+        }
+
         return true;
     }
 
