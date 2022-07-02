@@ -50,6 +50,11 @@ namespace pogl
         return Vector3(x / w, y / w, z / w);
     }
 
+    std::vector<ComponentType> Vector4::as_vec()
+    {
+        return std::vector<ComponentType>{ x, y, z, w };
+    }
+
     Vector4 &Vector4::operator+=(const Vector4 &other)
     {
         x += other.x;

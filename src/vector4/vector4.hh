@@ -126,6 +126,14 @@ namespace pogl
         Vector3 to_spatial() const;
 
         /**
+         * @brief Converts the vector into a standard vector collection equivalent.
+         * the components are ordered as [x, y, z, w] in the result vector.
+         * 
+         * @return std::vector<ComponentType> 
+         */
+        std::vector<ComponentType> as_vec();
+
+        /**
          * @brief Component-wise addition assignment.
          *
          * @param other
