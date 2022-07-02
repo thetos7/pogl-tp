@@ -81,6 +81,10 @@ namespace pogl
         CHECK_GL_ERROR();
         glEnable(GL_CULL_FACE);
         CHECK_GL_ERROR();
+        glEnable(GL_BLEND);
+        CHECK_GL_ERROR();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        CHECK_GL_ERROR();
         glClearColor(0.5, 0.5, 0.5, 1.0);
         CHECK_GL_ERROR();
         glPixelStorei(GL_PACK_ALIGNMENT, PIXEL_BYTE_ALIGNEMENT_LEN);
