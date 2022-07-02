@@ -145,7 +145,7 @@ namespace pogl
         CHECK_GL_ERROR();
 
         return std::make_shared<MeshRenderer>(vao_id, _draw_mode, *_shader,
-                                              _buffers[0].size());
+                                              _buffers[0].size(), buffer_ids);
     }
 
 } // namespace pogl

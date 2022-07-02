@@ -49,9 +49,9 @@ namespace pogl
         };
 
         MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
-                           const ShaderType &shader,
-                           size_t vertex_array_index_count);
-        virtual ~MeshRenderer() = default;
+                     const ShaderType &shader, size_t vertex_array_index_count,
+                     std::vector<GLuint> _buffer_ids);
+        virtual ~MeshRenderer();
 
         static Builder builder();
 
@@ -63,6 +63,7 @@ namespace pogl
         VaoType _vao_id;
         DrawModeType _draw_mode;
         size_t _vertex_array_index_count;
+        std::vector<GLuint> _buffer_ids;
     };
 
 } // namespace pogl
