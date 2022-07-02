@@ -20,4 +20,9 @@ namespace pogl
     {
         glBindTexture(GL_TEXTURE_2D, _texture_id);
     }
+
+    Texture::Builder Texture::builder()
+    {
+        return Builder();
+    }
 } // namespace pogl

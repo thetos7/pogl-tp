@@ -116,6 +116,8 @@ namespace pogl
             GLenum _target;
         };
 
+        static Builder builder();
+
         Texture();
         Texture(GLuint texture_id, GLenum target);
         ~Texture();
