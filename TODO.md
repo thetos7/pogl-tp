@@ -14,8 +14,9 @@
 
 ## bonus
 - [x] FPS Camera
-- [ ] Adapt frustum depending on current window aspect ratio
+- [x] Adapt frustum depending on current window aspect ratio
 - [ ] Refactor to make wrappers around OpenGL concepts
   - [x] Objects (vertex array + program)
   - [x] Textures
+  - [ ] Buffers ?
 - [ ] Observable system for decoupled code when updating commonly used values (for example in shaders: view transform, perspective, etc)
