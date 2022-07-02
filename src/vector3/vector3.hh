@@ -143,6 +143,12 @@ namespace pogl
          */
         Vector3 lerp_to(const Vector3 &other, double factor) const;
 
+        /**
+         * @brief Adds a fourth component set to 1 to switch into projective
+         * space
+         *
+         * @return Vector4
+         */
         Vector4 to_projective() const;
 
         /**

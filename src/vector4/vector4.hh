@@ -4,8 +4,8 @@
 #include <iosfwd>
 #include <vector>
 
-#include "vector3/fwd.hh"
 #include "matrix4/matrix4.hh"
+#include "vector3/fwd.hh"
 
 namespace pogl
 {
@@ -93,7 +93,6 @@ namespace pogl
          */
         ComponentType dot(const Vector4 &other) const;
 
-
         /**
          * @brief Computes the euclidean norm of the vector.
          *
@@ -117,6 +116,13 @@ namespace pogl
          */
         Vector4 normalized() const;
 
+        /**
+         * @brief Converts the vector from projective space into orthogonal 3
+         * dimensional coordinates by dividing the first three components by the
+         * fourth
+         *
+         * @return Vector3
+         */
         Vector3 to_spatial() const;
 
         /**
