@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "app/input.hh"
+#include "engine/engine.hh"
 #include "inputstate/inputstate.hh"
 #include "utils/gl_check.hh"
 
@@ -60,21 +61,6 @@ namespace pogl
             input_state.down = (action != GLFW_RELEASE);
             break;
         }
-    }
-
-    void on_mouse_move(GLFWwindow *, double xpos, double ypos)
-    {
-        static double last_x = 0;
-        static double last_y = 0;
-        auto &input_state = get_input_state();
-
-        const double diff_x = xpos - last_x;
-        const double diff_y = ypos - last_y;
-        last_x = xpos;
-        last_y = ypos;
-
-        input_state.mouse_x_axis = diff_x / 5.;
-        input_state.mouse_y_axis = diff_y / 5.;
     }
 
     void on_focus(GLFWwindow *, int focused)

@@ -63,8 +63,6 @@ namespace pogl
 
         update_cursor_capture(window, get_input_state());
 
-        glfwSetCursorPosCallback(window, on_mouse_move);
-
         return true;
     }
 
@@ -302,6 +300,7 @@ namespace pogl
 
     void Engine::update()
     {
+        mouse_update();
         static double last_tick = 0;
         const double now = glfwGetTime();
         const double delta = now - last_tick;
