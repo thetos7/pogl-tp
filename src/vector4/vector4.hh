@@ -4,11 +4,12 @@
 #include <iosfwd>
 #include <vector>
 
-#include "vector4/fwd.hh"
+#include "matrix4/matrix4.hh"
+#include "vector3/fwd.hh"
 
 namespace pogl
 {
-    class Vector3
+    class Vector4
     {
     public:
         using ComponentType = GLfloat;
@@ -16,69 +17,72 @@ namespace pogl
         ComponentType x;
         ComponentType y;
         ComponentType z;
+        ComponentType w;
 
         /**
          * @brief Constructs a unit (1,1,1) vector.
          *
-         * @return constexpr Vector3
+         * @return constexpr Vector4
          */
-        static constexpr Vector3 unit()
+        static constexpr Vector4 unit()
         {
-            return Vector3{ 1, 1, 1 };
+            return Vector4{ 1, 1, 1, 1 };
         }
 
         /**
          * @brief Constructs a null vector.
          *
-         * @return constexpr Vector3
+         * @return constexpr Vector4
          */
-        static constexpr Vector3 zero()
+        static constexpr Vector4 zero()
         {
-            return Vector3{ 0, 0, 0 };
+            return Vector4{ 0, 0, 0, 0 };
         }
 
         /**
          * @brief Constructs an "up" vector (Z+).
          *
-         * @return constexpr Vector3
+         * @return constexpr Vector4
          */
-        static constexpr Vector3 up()
+        static constexpr Vector4 up()
         {
-            return Vector3{ 0, 0, 1 };
+            return Vector4{ 0, 0, 1, 1 };
         }
 
         /**
          * @brief Constructs a vector where all components are set to value.
          *
          * @param value
-         * @return constexpr Vector3
+         * @return constexpr Vector4
          */
-        static constexpr Vector3 all(ComponentType value)
+        static constexpr Vector4 all(ComponentType value)
         {
-            return Vector3{ value, value, value };
+            return Vector4{ value, value, value, value };
         }
 
         /**
          * @brief Constructs a vector from a vector collection of values.
          *
-         * @return Vector3
+         * @return Vector4
          */
-        static Vector3 from_vector(const std::vector<ComponentType> &);
+        static Vector4 from_vector(const std::vector<ComponentType> &);
 
         /**
          * @brief default constructor, constructs a null vector.
          */
-        constexpr Vector3()
-            : Vector3{ 0, 0, 0 }
+        constexpr Vector4()
+            : Vector4{ 0, 0, 0, 0 }
         {}
 
         /**
          * @brief Full constructor.
          */
-        constexpr Vector3(ComponentType x, ComponentType y, ComponentType z)
+        constexpr Vector4(ComponentType x, ComponentType y, ComponentType z,
+                          ComponentType w)
             : x{ x }
             , y{ y }
             , z{ z }
+            , w{ w }
         {}
 
         /**
@@ -87,28 +91,7 @@ namespace pogl
          * @param other
          * @return ComponentType
          */
-        ComponentType dot(const Vector3 &other) const;
-
-        /**
-         * @brief Computes the cross product between self and other.
-         *
-         * @param other
-         * @return Vector3
-         */
-        Vector3 cross(const Vector3 &other) const;
-
-        /**
-         * @brief Computes a "reflected" direction vector with the given normal.
-         *      normal
-         *      \  |  ^
-         * self  \ | / reflected
-         *        v|/
-         *     --------
-         *
-         * @param normal
-         * @return Vector3
-         */
-        Vector3 reflect(const Vector3 &normal) const;
+        ComponentType dot(const Vector4 &other) const;
 
         /**
          * @brief Computes the euclidean norm of the vector.
@@ -129,122 +112,122 @@ namespace pogl
          * @brief Computes a normalized vector out of self.
          * (equivalent to `self/self.norm()`)
          *
-         * @return Vector3
-         */
-        Vector3 normalized() const;
-        /**
-         * @brief Linearly interpolates between this vector and other by factor.
-         * If factor is 0, then the return value is equal to self, if factor is
-         * 1, then the return value is equal to other.
-         *
-         * @param other
-         * @param factor
-         * @return Vector3
-         */
-        Vector3 lerp_to(const Vector3 &other, double factor) const;
-
-        /**
-         * @brief Adds a fourth component set to 1 to switch into projective
-         * space
-         *
          * @return Vector4
          */
-        Vector4 to_projective() const;
+        Vector4 normalized() const;
+
+        /**
+         * @brief Converts the vector from projective space into orthogonal 3
+         * dimensional coordinates by dividing the first three components by the
+         * fourth
+         *
+         * @return Vector3
+         */
+        Vector3 to_spatial() const;
+
+        /**
+         * @brief Converts the vector into a standard vector collection equivalent.
+         * the components are ordered as [x, y, z, w] in the result vector.
+         * 
+         * @return std::vector<ComponentType> 
+         */
+        std::vector<ComponentType> as_vec();
 
         /**
          * @brief Component-wise addition assignment.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 &operator+=(const Vector3 &other);
+        Vector4 &operator+=(const Vector4 &other);
 
         /**
          * @brief Component-wise subtraction assignment.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 &operator-=(const Vector3 &other);
+        Vector4 &operator-=(const Vector4 &other);
 
         /**
          * @brief Multiplication of all components by a scalar.
          *
          * @param scalar
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 &operator*=(const ComponentType &scalar);
+        Vector4 &operator*=(const ComponentType &scalar);
 
         /**
          * @brief Division of all components by a scalar.
          *
          * @param scalar
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 &operator/=(const ComponentType &scalar);
+        Vector4 &operator/=(const ComponentType &scalar);
 
         /**
          * @brief Component-wise multiplication assignment.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 &operator*=(const Vector3 &other);
+        Vector4 &operator*=(const Vector4 &other);
 
         /**
          * @brief Component-wise division assignment.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 &operator/=(const Vector3 &other);
+        Vector4 &operator/=(const Vector4 &other);
 
         /**
          * @brief Component-wise addition.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 operator+(const Vector3 &other) const;
+        Vector4 operator+(const Vector4 &other) const;
         /**
          * @brief Component-wise subtraction.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 operator-(const Vector3 &other) const;
+        Vector4 operator-(const Vector4 &other) const;
         /**
          * @brief Multiplication of all components by a scalar.
          *
          * @param scalar
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 operator*(const ComponentType &scalar) const;
+        Vector4 operator*(const ComponentType &scalar) const;
         /**
          * @brief Division of all components by a scalar.
          *
          * @param scalar
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 operator/(const ComponentType &scalar) const;
+        Vector4 operator/(const ComponentType &scalar) const;
         /**
          * @brief Component-wise multiplication.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 operator*(const Vector3 &other) const;
+        Vector4 operator*(const Vector4 &other) const;
         /**
          * @brief Component-wise division.
          *
          * @param other
-         * @return Vector3&
+         * @return Vector4&
          */
-        Vector3 operator/(const Vector3 &other) const;
+        Vector4 operator/(const Vector4 &other) const;
     };
 
-    Vector3 operator*(const Vector3::ComponentType &scalar, const Vector3 vect);
-    Vector3 operator-(const Vector3 &vect);
+    Vector4 operator*(const Matrix4 &transform, const Vector4 vect);
+    Vector4 operator*(const Vector4::ComponentType &scalar, const Vector4 vect);
+    Vector4 operator-(const Vector4 &vect);
 
     /**
      * @brief Prints the vector on the output stream.
@@ -254,5 +237,5 @@ namespace pogl
      * @param vect
      * @return std::ostream&
      */
-    std::ostream &operator<<(std::ostream &out, const Vector3 &vect);
+    std::ostream &operator<<(std::ostream &out, const Vector4 &vect);
 } // namespace pogl

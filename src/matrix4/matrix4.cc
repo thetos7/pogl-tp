@@ -1,5 +1,6 @@
 #include "matrix4.hh"
 
+#include <cmath>
 #include <iomanip>
 #include <ostream>
 #include <sstream>
@@ -21,15 +22,15 @@ namespace pogl
     Matrix4::Matrix4()
         : Matrix4(ElementsBufferType())
     {
-        std::fill(elements_.begin(), elements_.end(), 0);
+        std::fill(_elements.begin(), _elements.end(), 0);
     }
 
     Matrix4::Matrix4(const Matrix4 &other)
-        : Matrix4(other.elements_)
+        : Matrix4(other._elements)
     {}
 
     Matrix4::Matrix4(ElementsBufferType elements)
-        : elements_(elements)
+        : _elements(elements)
     {}
 
     void Matrix4::operator*=(const Matrix4 &rhs)
@@ -48,7 +49,7 @@ namespace pogl
                 idx(results, x, y) = sum;
             }
         }
-        this->elements_ = results;
+        this->_elements = results;
     }
 
     Matrix4 Matrix4::operator*(const Matrix4 &rhs) const
@@ -56,6 +57,12 @@ namespace pogl
         Matrix4 copy = *this;
         copy *= rhs;
         return copy;
+    }
+
+    Matrix4 &Matrix4::operator=(const Matrix4 &value)
+    {
+        _elements = value._elements;
+        return *this;
     }
 
     Matrix4 Matrix4::identity()
@@ -94,6 +101,27 @@ namespace pogl
             E, 0, A, 0, // l1
             0, F, B, 0, // l2
             0, 0, C, D, // l3
+            0, 0, -1, 0 // l4
+        });
+    }
+
+    double cot(double x)
+    {
+        return std::cos(x) / std::sin(x);
+    }
+
+    Matrix4 Matrix4::perspective(float fovy, float aspect_ratio, float znear,
+                                 float zfar)
+    {
+        const GLfloat f = cot(fovy / 2);
+        const GLfloat A = f / aspect_ratio;
+        const GLfloat B = (zfar + znear) / (znear - zfar);
+        const GLfloat C = (2. * zfar * znear) / (znear - zfar);
+
+        return Matrix4(Matrix4::ElementsBufferType{
+            A, 0, 0, 0, // l1
+            0, f, 0, 0, // l2
+            0, 0, B, C, // l3
             0, 0, -1, 0 // l4
         });
     }

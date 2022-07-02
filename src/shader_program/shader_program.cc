@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
+#include <vector>
 
 #include "utils/gl_check.hh"
 
@@ -19,6 +21,8 @@ namespace pogl
         , _fragment(0)
         , _program(0)
         , _compilation_log()
+        , _uniforms()
+        , _attributes()
     {}
 
     ShaderProgram::ShaderProgram()
@@ -168,8 +172,75 @@ namespace pogl
         return !errored;
     }
 
-    std::unique_ptr<Self> ShaderProgram::make_program(const std::string &vertex_src,
-                                     const std::string &fragment_src)
+    void ShaderProgram::build_uniform_map()
+    {
+        GLint max_name_length = 0;
+        glGetProgramiv(_program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
+                       &max_name_length);
+        CHECK_GL_ERROR();
+
+        GLint uniform_count = 0;
+        glGetProgramiv(_program, GL_ACTIVE_UNIFORMS, &uniform_count);
+        CHECK_GL_ERROR();
+
+        std::vector<GLchar> name(max_name_length, 0);
+
+        for (GLint i = 0; i < uniform_count; ++i)
+        {
+            GLenum type = 0;
+            GLint size = 0;
+
+            glGetActiveUniform(_program, i, max_name_length + 1, NULL, &size,
+                               &type, name.data());
+            CHECK_GL_ERROR();
+
+            GLint loc = glGetUniformLocation(_program, name.data());
+            CHECK_GL_ERROR();
+
+            _uniforms[name.data()] =
+                Uniform(name.data(), loc, type, size, this);
+        }
+    }
+
+    void ShaderProgram::build_attribute_map()
+    {
+        GLint max_name_length = 0;
+        glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,
+                       &max_name_length);
+        CHECK_GL_ERROR();
+
+        GLint attribute_count = 0;
+        glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &attribute_count);
+        CHECK_GL_ERROR();
+
+        std::vector<GLchar> name(max_name_length, 0);
+
+        for (GLint i = 0; i < attribute_count; ++i)
+        {
+            GLenum type = 0;
+            GLint size = 0;
+
+            glGetActiveAttrib(_program, i, max_name_length + 1, NULL, &size,
+                              &type, name.data());
+            CHECK_GL_ERROR();
+
+            GLint loc = glGetAttribLocation(_program, name.data());
+            CHECK_GL_ERROR();
+
+            _attributes[name.data()] =
+                Attribute(name.data(), loc, type, size, this);
+        }
+    }
+
+    Self &ShaderProgram::texture(int unit, TextureType texture)
+    {
+        _textures[unit] = texture;
+        return *this;
+    }
+
+    std::shared_ptr<Self>
+    ShaderProgram::make_program(const std::string &vertex_src,
+                                const std::string &fragment_src)
     {
         auto prog = std::make_unique<Self>(vertex_src, fragment_src, false);
         const auto vert_compiled = prog->compile_vertex();
@@ -197,6 +268,10 @@ namespace pogl
             std::cerr << msg << std::endl;
             throw std::runtime_error(msg);
         }
+
+        prog->build_uniform_map();
+        prog->build_attribute_map();
+
         return prog;
     }
 
@@ -217,6 +292,10 @@ namespace pogl
 
     void ShaderProgram::activate()
     {
+        for(auto [unit, texture]: _textures) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            texture->use();
+        }
         glUseProgram(_program);
         CHECK_GL_ERROR();
     }
@@ -224,6 +303,17 @@ namespace pogl
     ShaderProgram::ProgramIdType ShaderProgram::get_program()
     {
         return _program;
+    }
+
+    std::optional<ShaderProgram::Uniform>
+    ShaderProgram::uniform(const std::string &name)
+    {
+        auto it = _uniforms.find(name);
+        if (it == _uniforms.end())
+        {
+            return std::nullopt;
+        }
+        return it->second;
     }
 
 } // namespace pogl

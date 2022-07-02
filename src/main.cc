@@ -1,40 +1,29 @@
 #include <iostream>
 
-#include "app/lifecycle.hh"
+#include "engine/engine.hh"
 
 using namespace pogl;
 
-int main(int argc, char *argv[])
+int main()
 {
-    std::cout << "initialising GLFW...\n";
-    init_glfw();
-    std::cout << "initialising GLEW...\n";
-    init_glew();
-    std::cout << "initialising GL...\n";
-    init_GL();
-    std::cout << "initialising shaders...\n";
-    init_shaders();
-    std::cout << "initialising objects...\n";
-    init_object();
-    std::cout << "initialising POV...\n";
-    init_POV();
+    auto &engine = Engine::instance();
+    engine.init();
     std::cout << "launching\n";
     std::cout << "Camera controls:\n";
     std::cout << "Z/S: Forward/Backwards\n";
     std::cout << "Q/D: Left/Right\n";
     std::cout << "Space/Left Shift: Up/Down\n";
     std::cout << "C: Toggle cursor capture\n";
-
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(engine.window))
     {
-        update();
-        display();
-        glfwSwapBuffers(window);
+        engine.update();
+        engine.display();
+        glfwSwapBuffers(engine.window);
         glfwPollEvents();
     }
     std::cout << "exiting\n";
 
-    glfwDestroyWindow(window);
+    glfwDestroyWindow(engine.window);
     glfwTerminate();
 
     return 0;

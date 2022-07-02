@@ -50,6 +50,14 @@ namespace pogl
         Matrix4 operator*(const Matrix4 &rhs) const;
 
         /**
+         * @brief Copy assignement operator;
+         * 
+         * @param value 
+         * @return Matrix4& 
+         */
+        Matrix4 &operator=(const Matrix4 &value);
+
+        /**
          * @brief Creates a 4x4 identity matrix
          *
          * @return Matrix4
@@ -94,7 +102,7 @@ namespace pogl
          */
         inline const ElementType &at(size_t col, size_t row) const
         {
-            return elements_[row * DIM + col];
+            return _elements[row * DIM + col];
         }
 
         static Matrix4 frustum(float left, float right, float bottom, float top,
@@ -103,6 +111,9 @@ namespace pogl
         static Matrix4 look_at(float eyeX, float eyeY, float eyeZ,
                                float centerX, float centerY, float centerZ,
                                float upX, float upY, float upZ);
+
+        static Matrix4 perspective(float fovy, float aspect_ratio, float znear,
+                                   float zfar);
 
         /**
          * @brief Gets a mutable reference to the element in col, row
@@ -113,7 +124,7 @@ namespace pogl
          */
         inline ElementType &at(size_t col, size_t row)
         {
-            return elements_[row * DIM + col];
+            return _elements[row * DIM + col];
         }
 
         /**
@@ -127,33 +138,34 @@ namespace pogl
 
         inline ElementsBufferType::iterator begin()
         {
-            return elements_.begin();
+            return _elements.begin();
         }
         inline ElementsBufferType::iterator end()
         {
-            return elements_.end();
+            return _elements.end();
         }
         inline ElementsBufferType::const_iterator begin() const
         {
-            return elements_.begin();
+            return _elements.begin();
         }
         inline ElementsBufferType::const_iterator end() const
         {
-            return elements_.end();
+            return _elements.end();
         }
 
         /**
          * @brief Returns a pointer to the internal array of values
-         * 
-         * @return const ElementType* pointer to the begining of the Matrix's element array
+         *
+         * @return const ElementType* pointer to the begining of the Matrix's
+         * element array
          */
         inline const ElementType *data() const
         {
-            return elements_.data();
+            return _elements.data();
         }
 
     private:
-        ElementsBufferType elements_;
+        ElementsBufferType _elements;
     };
 
     std::ostream &operator<<(std::ostream &out, const Matrix4 &mat);

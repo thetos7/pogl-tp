@@ -4,7 +4,7 @@
 #include <vector>
 
 #if COLOR
-const std::vector<GLfloat> vertex_color_data{
+const std::vector<GLfloat> cube_vertex_color_data{
     // face Up
     // tri1
     1, 0, 0, //
@@ -76,7 +76,7 @@ const std::vector<GLfloat> vertex_color_data{
     0.3, 0.3, 0.3, //
 };
 #endif // COLOR
-const std::vector<GLfloat> vertex_position_data{
+const std::vector<GLfloat> cube_vertex_position_data{
     // face Up
     // tri1
     1.0, 1.0, 1.0, // v8
@@ -136,9 +136,9 @@ const std::vector<GLfloat> vertex_position_data{
     -1.0, 1.0, -1.0, // v3
     -1.0, -1.0, -1.0, // v1
     -1.0, 1.0, 1.0, // v7
+};
 
-    //------------------------
-    // North Plane
+const std::vector<GLfloat> plane_vertex_position_data{
     // tri1
     0.0, -1.0, 2.0, // v1
     0.0, 1.0, 4.0, // v2
@@ -147,6 +147,18 @@ const std::vector<GLfloat> vertex_position_data{
     0.0, -1.0, 2.0, // v1
     0.0, 1.0, 2.0, // v4
     0.0, 1.0, 4.0, // v2
+};
+
+const std::vector<GLfloat> plane_uv_data{
+    // tri 1
+    0.0, 1.0, // v1
+    1.0, 0.0, // v2
+    0.0, 0.0, // v3
+
+    // tri 2
+    0.0, 1.0, // v1
+    1.0, 1.0, // v4
+    1.0, 0.0 // v2
 };
 
 /* to make a plane:

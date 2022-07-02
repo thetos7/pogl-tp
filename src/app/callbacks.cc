@@ -3,25 +3,27 @@
 #include <iostream>
 
 #include "app/input.hh"
+#include "engine/engine.hh"
 #include "inputstate/inputstate.hh"
 #include "utils/gl_check.hh"
 
 namespace pogl
 {
 
-    void on_error(int error, const char *description)
+    void on_error(int, const char *description)
     {
         std::cerr << "GLFW ERROR: " << description << "\n";
     }
 
-    void on_window_resize(GLFWwindow *window, int width, int height)
+    void on_framebuffer_resize(GLFWwindow *, int width, int height)
     {
         glViewport(0, 0, width, height);
         CHECK_GL_ERROR();
+        const auto aspect_ratio = width / (float)height;
+        Engine::instance().update_perspective(aspect_ratio);
     }
 
-    void on_key_update(GLFWwindow *window, int key, int scancode, int action,
-                      int mods)
+    void on_key_update(GLFWwindow *window, int key, int, int action, int)
     {
         auto &input_state = get_input_state();
 
@@ -61,18 +63,8 @@ namespace pogl
         }
     }
 
-    void on_mouse_move(GLFWwindow *window, double xpos, double ypos)
+    void on_focus(GLFWwindow *, int focused)
     {
-        static double last_x = 0;
-        static double last_y = 0;
-        auto &input_state = get_input_state();
-
-        const double diff_x = xpos - last_x;
-        const double diff_y = ypos - last_y;
-        last_x = xpos;
-        last_y = ypos;
-
-        input_state.mouse_x_axis = diff_x / 5.;
-        input_state.mouse_y_axis = diff_y / 5.;
+        get_input_state().focused = focused != 0;
     }
 } // namespace pogl

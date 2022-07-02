@@ -16,6 +16,7 @@ namespace pogl
         bool capture_cursor;
         double mouse_x_axis;
         double mouse_y_axis;
+        bool focused;
     };
 
     InputState &get_input_state();

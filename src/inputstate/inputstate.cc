@@ -12,6 +12,7 @@ namespace pogl
         , capture_cursor(true)
         , mouse_x_axis(0.0)
         , mouse_y_axis(0.0)
+        , focused(true)
     {}
 
     InputState &get_input_state()
@@ -28,8 +29,8 @@ namespace pogl
             << ", down: " << ks.down
             << ", capture_cursor: " << ks.capture_cursor
             << ", mouse_x_axis: " << ks.mouse_x_axis
-            << ", mouse_y_axis: " << ks.mouse_y_axis << " }"
-            << std::noboolalpha;
+            << ", mouse_y_axis: " << ks.mouse_y_axis
+            << ", focused: " << ks.focused << " }" << std::noboolalpha;
         return out;
     }
 } // namespace pogl
