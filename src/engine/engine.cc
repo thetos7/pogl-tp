@@ -221,7 +221,8 @@ namespace pogl
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         CHECK_GL_ERROR();
         const auto view_transform = main_camera->get_transform();
-        for (auto shader : camera_dependent_shaders) {
+        for (auto shader : camera_dependent_shaders)
+        {
             shader->uniform("view_transform_matrix")->set_mat4(view_transform);
         }
         for (auto renderer : renderers)
