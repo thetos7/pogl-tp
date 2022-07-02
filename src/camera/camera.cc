@@ -78,25 +78,27 @@ namespace pogl
             return;
         }
 
-        // update pitch
-        const auto pitch_movement =
-            -input_state.mouse_y_axis * LOOK_SENSITIVITY * M_PI * 2.;
-        _pitch += pitch_movement;
-        if (_pitch > M_PI_2) // upper pitch limit, looking "up"
+        if (input_state.capture_cursor)
         {
-            _pitch = M_PI_2;
-        }
-        else if (_pitch < -M_PI_2) // looking "down"
-        {
-            _pitch = -M_PI_2;
-        }
+            // update pitch
+            const auto pitch_movement =
+                -input_state.mouse_y_axis * LOOK_SENSITIVITY * M_PI * 2.;
+            _pitch += pitch_movement;
+            if (_pitch > M_PI_2) // upper pitch limit, looking "up"
+            {
+                _pitch = M_PI_2;
+            }
+            else if (_pitch < -M_PI_2) // looking "down"
+            {
+                _pitch = -M_PI_2;
+            }
 
-        // update yaw
-        const auto yaw_movement =
-            -input_state.mouse_x_axis * LOOK_SENSITIVITY * M_PI * 2.;
-        _yaw += yaw_movement;
-        _yaw = std::fmod(_yaw, 2. * M_PI); // keep yaw in range [0; 2PI)
-
+            // update yaw
+            const auto yaw_movement =
+                -input_state.mouse_x_axis * LOOK_SENSITIVITY * M_PI * 2.;
+            _yaw += yaw_movement;
+            _yaw = std::fmod(_yaw, 2. * M_PI); // keep yaw in range [0; 2PI)
+        }
         // update position
         const auto x_input =
             (int)input_state.forward - (int)input_state.backward;
