@@ -6,7 +6,10 @@
 #include <optional>
 #include <string>
 
+// forward declarations
 #include "fwd.hh"
+// definitions
+#include "attribute.hh"
 #include "matrix4/matrix4.hh"
 #include "uniform.hh"
 #include "vector4/vector4.hh"
@@ -24,6 +27,7 @@ namespace pogl
         using Uniform = pogl::Uniform;
 
         using UniformMapType = std::map<std::string, Uniform>;
+        using AttributeMapType = std::map<std::string, Attribute>;
 
         ShaderProgram(const std::string &vertex_src,
                       const std::string &fragment_src, bool ready);
@@ -98,6 +102,7 @@ namespace pogl
         bool link_program();
         bool post_compilation();
         void build_uniform_map();
+        void build_attribute_map();
 
         fs::path _vertexSrc;
         fs::path _fragSrc;
@@ -108,6 +113,7 @@ namespace pogl
         ProgramIdType _program;
         std::string _compilation_log;
         UniformMapType _uniforms;
+        AttributeMapType _attributes;
     };
 
 } // namespace pogl

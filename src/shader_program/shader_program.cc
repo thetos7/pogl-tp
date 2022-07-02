@@ -22,6 +22,7 @@ namespace pogl
         , _program(0)
         , _compilation_log()
         , _uniforms()
+        , _attributes()
     {}
 
     ShaderProgram::ShaderProgram()
@@ -201,6 +202,36 @@ namespace pogl
         }
     }
 
+    void ShaderProgram::build_attribute_map()
+    {
+        GLint max_name_length = 0;
+        glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,
+                       &max_name_length);
+        CHECK_GL_ERROR();
+
+        GLint attribute_count = 0;
+        glGetProgramiv(_program, GL_ACTIVE_ATTRIBUTES, &attribute_count);
+        CHECK_GL_ERROR();
+
+        std::vector<GLchar> name(max_name_length, 0);
+
+        for (GLint i = 0; i < attribute_count; ++i)
+        {
+            GLenum type = 0;
+            GLint size = 0;
+
+            glGetActiveAttrib(_program, i, max_name_length + 1, NULL, &size,
+                               &type, name.data());
+            CHECK_GL_ERROR();
+
+            GLint loc = glGetAttribLocation(_program, name.data());
+            CHECK_GL_ERROR();
+
+            _attributes[name.data()] =
+                Attribute(name.data(), loc, type, size, this);
+        }
+    }
+
     std::shared_ptr<Self>
     ShaderProgram::make_program(const std::string &vertex_src,
                                 const std::string &fragment_src)
@@ -233,6 +264,7 @@ namespace pogl
         }
 
         prog->build_uniform_map();
+        prog->build_attribute_map();
 
         return prog;
     }

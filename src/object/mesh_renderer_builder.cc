@@ -125,6 +125,11 @@ namespace pogl
             {
                 const auto location = glGetAttribLocation(prog, name.c_str());
                 CHECK_GL_ERROR();
+                if (location == -1)
+                {
+                    std::cerr << "ERROR: attribute `" << name
+                              << "` could not be found in shader program.\n";
+                }
                 glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE,
                                       stride * sizeof(GLfloat),
                                       BUFFER_OFFSET(offset));

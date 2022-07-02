@@ -115,6 +115,12 @@ namespace pogl
             color->set_vec4(1., 0., 0., 1.);
         }
 
+        auto uv_shader = ShaderProgram::make_program(
+            "../resources/shaders/uv_debug/vertex.glsl",
+            "../resources/shaders/uv_debug/fragment.glsl");
+
+        shaders.emplace("uv_debug", uv_shader);
+
         // find shaders which require the camera transform, i.e. that have a
         // mat4 view_transform_matrix uniform & a mat4 projection_matrix uniform
         for (auto [name, s] : shaders)
@@ -170,17 +176,25 @@ namespace pogl
 
     bool Engine::_init_objects()
     {
-        auto mesh_renderer = MeshRenderer::builder()
+        auto cube_renderer = MeshRenderer::builder()
                                  .shader(shaders["mesh_shader"])
-                                 .add_buffer(vertex_position_data)
+                                 .add_buffer(cube_vertex_position_data)
                                  .add_attribute("vPosition", 3, 0)
 #if COLOR
-                                 .add_buffer(vertex_color_data)
+                                 .add_buffer(cube_vertex_color_data)
                                  .add_attribute("vColor", 3, 1)
 #endif
                                  .build();
+        this->add_renderer(cube_renderer);
 
-        this->add_renderer(mesh_renderer);
+        auto plane_renderer = MeshRenderer::builder()
+                                  .shader(shaders["uv_debug"])
+                                  .add_buffer(plane_vertex_position_data)
+                                  .add_attribute("vPosition", 3, 0)
+                                  .add_buffer(plane_uv_data)
+                                  .add_attribute("vUV", 2, 1)
+                                  .build();
+        this->add_renderer(plane_renderer);
         return true;
     }
 
