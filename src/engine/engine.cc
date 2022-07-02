@@ -98,28 +98,28 @@ namespace pogl
     bool Engine::_init_shaders()
     {
 #if COLOR
-        auto shader = ShaderProgram::make_program(
+        auto cube_shader = ShaderProgram::make_program(
             "../resources/shaders/vert_color/vertex.glsl",
             "../resources/shaders/vert_color/fragment.glsl");
 #else
-        auto shader = ShaderProgram::make_program(
+        auto cube_shader = ShaderProgram::make_program(
             "../resources/shaders/uniform/vertex.glsl",
             "../resources/shaders/uniform/fragment.glsl");
 #endif // COLOR
 
-        shaders.emplace("mesh_shader", shader);
+        shaders.emplace("cube_shader", cube_shader);
 
-        auto color = shader->uniform("obj_color");
+        auto color = cube_shader->uniform("obj_color");
         if (color)
         {
             color->set_vec4(1., 0., 0., 1.);
         }
 
-        auto uv_shader = ShaderProgram::make_program(
-            "../resources/shaders/uv_debug/vertex.glsl",
-            "../resources/shaders/uv_debug/fragment.glsl");
+        auto plane_shader = ShaderProgram::make_program(
+            "../resources/shaders/textured/vertex.glsl",
+            "../resources/shaders/textured/fragment.glsl");
 
-        shaders.emplace("uv_debug", uv_shader);
+        shaders.emplace("plane_shader", plane_shader);
 
         // find shaders which require the camera transform, i.e. that have a
         // mat4 view_transform_matrix uniform & a mat4 projection_matrix uniform
@@ -174,10 +174,24 @@ namespace pogl
         return true;
     }
 
+    bool Engine::_init_textures()
+    {
+        auto smiley_tex = Texture::builder()
+                              .path("../resources/textures/smiley.png")
+                              .border(Vector4(0, 0, 0, 0))
+                              .wrap(GL_CLAMP_TO_BORDER)
+                              .src_format(GL_RGBA)
+                              .format(GL_RGBA)
+                              .build();
+        shaders["plane_shader"]->texture(0, smiley_tex);
+
+        return true;
+    }
+
     bool Engine::_init_objects()
     {
         auto cube_renderer = MeshRenderer::builder()
-                                 .shader(shaders["mesh_shader"])
+                                 .shader(shaders["cube_shader"])
                                  .add_buffer(cube_vertex_position_data)
                                  .add_attribute("vPosition", 3, 0)
 #if COLOR
@@ -188,7 +202,7 @@ namespace pogl
         this->add_renderer(cube_renderer);
 
         auto plane_renderer = MeshRenderer::builder()
-                                  .shader(shaders["uv_debug"])
+                                  .shader(shaders["plane_shader"])
                                   .add_buffer(plane_vertex_position_data)
                                   .add_attribute("vPosition", 3, 0)
                                   .add_buffer(plane_uv_data)
@@ -230,6 +244,8 @@ namespace pogl
         _init_GL();
         std::cout << "initialising shaders...\n";
         _init_shaders();
+        std::cout << "initialising textures...\n";
+        _init_textures();
         std::cout << "initialising objects...\n";
         _init_objects();
         std::cout << "initialising POV...\n";
