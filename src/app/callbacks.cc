@@ -14,7 +14,7 @@ namespace pogl
         std::cerr << "GLFW ERROR: " << description << "\n";
     }
 
-    void on_window_resize(GLFWwindow *, int width, int height)
+    void on_framebuffer_resize(GLFWwindow *, int width, int height)
     {
         glViewport(0, 0, width, height);
         CHECK_GL_ERROR();

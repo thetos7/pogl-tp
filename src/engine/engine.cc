@@ -45,6 +45,8 @@ namespace pogl
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_CENTER_CURSOR, GLFW_TRUE);
+        glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
         auto &window = Engine::instance().window;
         window = glfwCreateWindow(700, 700, "Test OpenGl - POGL (GLFW)",
                                   nullptr, nullptr);
@@ -55,7 +57,7 @@ namespace pogl
         }
         glfwMakeContextCurrent(window);
         glfwSetKeyCallback(window, on_key_update);
-        glfwSetWindowSizeCallback(window, on_window_resize);
+        glfwSetFramebufferSizeCallback(window, on_framebuffer_resize);
         glfwSetWindowFocusCallback(window, on_focus);
 
         update_cursor_capture(window, get_input_state());
