@@ -42,10 +42,10 @@ namespace pogl
         private:
             void assert_integrity();
 
-            BufferCollectionType buffers_;
-            std::optional<ShaderType> shader_;
-            DrawModeType draw_mode_;
-            AttributeConfigCollection attribute_config_;
+            BufferCollectionType _buffers;
+            std::optional<ShaderType> _shader;
+            DrawModeType _draw_mode;
+            AttributeConfigCollection _attribute_config;
         };
 
         MeshObjectRenderer(VaoType vao_id, DrawModeType draw_mode,
@@ -59,10 +59,10 @@ namespace pogl
         virtual void update_camera(const Matrix4 &camera_transform) override;
 
     private:
-        ShaderType shader_;
-        VaoType vao_id_;
-        DrawModeType draw_mode_;
-        size_t vertex_array_index_count_;
+        ShaderType _shader;
+        VaoType _vao_id;
+        DrawModeType _draw_mode;
+        size_t _vertex_array_index_count;
     };
 
 } // namespace pogl

@@ -94,7 +94,7 @@ namespace pogl
          */
         inline const ElementType &at(size_t col, size_t row) const
         {
-            return elements_[row * DIM + col];
+            return _elements[row * DIM + col];
         }
 
         static Matrix4 frustum(float left, float right, float bottom, float top,
@@ -113,7 +113,7 @@ namespace pogl
          */
         inline ElementType &at(size_t col, size_t row)
         {
-            return elements_[row * DIM + col];
+            return _elements[row * DIM + col];
         }
 
         /**
@@ -127,19 +127,19 @@ namespace pogl
 
         inline ElementsBufferType::iterator begin()
         {
-            return elements_.begin();
+            return _elements.begin();
         }
         inline ElementsBufferType::iterator end()
         {
-            return elements_.end();
+            return _elements.end();
         }
         inline ElementsBufferType::const_iterator begin() const
         {
-            return elements_.begin();
+            return _elements.begin();
         }
         inline ElementsBufferType::const_iterator end() const
         {
-            return elements_.end();
+            return _elements.end();
         }
 
         /**
@@ -149,11 +149,11 @@ namespace pogl
          */
         inline const ElementType *data() const
         {
-            return elements_.data();
+            return _elements.data();
         }
 
     private:
-        ElementsBufferType elements_;
+        ElementsBufferType _elements;
     };
 
     std::ostream &operator<<(std::ostream &out, const Matrix4 &mat);

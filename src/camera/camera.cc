@@ -12,20 +12,20 @@ namespace pogl
     // aspect ratio, fov, near clip and far clip
     Camera::Camera(const Vector3 &initial_position, double pitch, double yaw,
                    const Matrix4 &projection)
-        : position_(initial_position)
-        , pitch_(pitch)
-        , yaw_(yaw)
-        , projection_(projection)
+        : _position(initial_position)
+        , _pitch(pitch)
+        , _yaw(yaw)
+        , _projection(projection)
     {}
 
     Vector3 Camera::get_forward() const
     {
         return Vector3{
-            static_cast<Vector3::ComponentType>(std::cos(yaw_)
-                                                * std::cos(pitch_)),
-            static_cast<Vector3::ComponentType>(std::sin(yaw_)
-                                                * std::cos(pitch_)),
-            static_cast<Vector3::ComponentType>(std::sin(pitch_)),
+            static_cast<Vector3::ComponentType>(std::cos(_yaw)
+                                                * std::cos(_pitch)),
+            static_cast<Vector3::ComponentType>(std::sin(_yaw)
+                                                * std::cos(_pitch)),
+            static_cast<Vector3::ComponentType>(std::sin(_pitch)),
         }
             .normalized();
     }
@@ -38,7 +38,7 @@ namespace pogl
         const auto view_up = right.cross(forward).normalized();
 
         const auto eyeTranslate =
-            Matrix4::translation(-position_.x, -position_.y, -position_.z);
+            Matrix4::translation(-_position.x, -_position.y, -_position.z);
 
         // clang-format off
         const auto rotation = Matrix4(Matrix4::ElementsBufferType{
@@ -54,18 +54,18 @@ namespace pogl
 
     Matrix4 Camera::get_projection() const
     {
-        return projection_;
+        return _projection;
     }
 
     Self &Camera::move_relative(const Vector3 &movement)
     {
-        const auto forward = Vector3(std::cos(yaw_), std::sin(yaw_), 0);
+        const auto forward = Vector3(std::cos(_yaw), std::sin(_yaw), 0);
         const auto right =
-            Vector3(std::cos(yaw_ - M_PI_2), std::sin(yaw_ - M_PI_2), 0);
+            Vector3(std::cos(_yaw - M_PI_2), std::sin(_yaw - M_PI_2), 0);
         const auto global_space_movement =
             movement.x * forward + movement.y * right + movement.z * Self::UP;
 
-        position_ += global_space_movement;
+        _position += global_space_movement;
         return *this;
     }
 
@@ -81,21 +81,21 @@ namespace pogl
         // update pitch
         const auto pitch_movement =
             -input_state.mouse_y_axis * LOOK_SENSITIVITY * M_PI * 2.;
-        pitch_ += pitch_movement;
-        if (pitch_ > M_PI_2) // upper pitch limit, looking "up"
+        _pitch += pitch_movement;
+        if (_pitch > M_PI_2) // upper pitch limit, looking "up"
         {
-            pitch_ = M_PI_2;
+            _pitch = M_PI_2;
         }
-        else if (pitch_ < -M_PI_2) // looking "down"
+        else if (_pitch < -M_PI_2) // looking "down"
         {
-            pitch_ = -M_PI_2;
+            _pitch = -M_PI_2;
         }
 
         // update yaw
         const auto yaw_movement =
             -input_state.mouse_x_axis * LOOK_SENSITIVITY * M_PI * 2.;
-        yaw_ += yaw_movement;
-        yaw_ = std::fmod(yaw_, 2. * M_PI); // keep yaw in range [0; 2PI)
+        _yaw += yaw_movement;
+        _yaw = std::fmod(_yaw, 2. * M_PI); // keep yaw in range [0; 2PI)
 
         // update position
         const auto x_input =

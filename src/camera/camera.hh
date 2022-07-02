@@ -27,10 +27,10 @@ namespace pogl
         virtual void update(double delta) override;
 
     private:
-        Vector3 position_;
-        double pitch_;
-        double yaw_;
-        Matrix4 projection_;
+        Vector3 _position;
+        double _pitch;
+        double _yaw;
+        Matrix4 _projection;
     };
 
 } // namespace pogl

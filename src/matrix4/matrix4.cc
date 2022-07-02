@@ -21,15 +21,15 @@ namespace pogl
     Matrix4::Matrix4()
         : Matrix4(ElementsBufferType())
     {
-        std::fill(elements_.begin(), elements_.end(), 0);
+        std::fill(_elements.begin(), _elements.end(), 0);
     }
 
     Matrix4::Matrix4(const Matrix4 &other)
-        : Matrix4(other.elements_)
+        : Matrix4(other._elements)
     {}
 
     Matrix4::Matrix4(ElementsBufferType elements)
-        : elements_(elements)
+        : _elements(elements)
     {}
 
     void Matrix4::operator*=(const Matrix4 &rhs)
@@ -48,7 +48,7 @@ namespace pogl
                 idx(results, x, y) = sum;
             }
         }
-        this->elements_ = results;
+        this->_elements = results;
     }
 
     Matrix4 Matrix4::operator*(const Matrix4 &rhs) const
