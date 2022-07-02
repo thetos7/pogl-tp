@@ -7,6 +7,7 @@
 #include "app/input.hh"
 #include "inputstate/inputstate.hh"
 #include "object/mesh_renderer.hh"
+#include "utils/definitions.hh"
 #include "utils/gl_check.hh"
 
 // enables color
@@ -122,12 +123,13 @@ namespace pogl
         shaders.emplace("plane_shader", plane_shader);
 
         // find shaders which require the camera transform, i.e. that have a
-        // mat4 view_transform_matrix uniform & a mat4 projection_matrix uniform
+        // mat4 view_transform uniform & a mat4 projection_matrix uniform
         for (auto [name, s] : shaders)
         {
             const auto view_transform_uniform =
-                s->uniform("view_transform_matrix");
-            const auto projection_uniform = s->uniform("projection_matrix");
+                s->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME);
+            const auto projection_uniform =
+                s->uniform(definitions::PROJECTION_UNIFORM_NAME);
 
             bool has_view_transform_uniform =
                 view_transform_uniform.has_value();
@@ -142,25 +144,29 @@ namespace pogl
 
             if (has_view_transform_uniform != has_projection_uniform)
             {
-                std::cerr
-                    << "WARNING: shader program `" << name
-                    << "` has one of view_tranform_matrix or projection_matrix "
-                       "uniforms, but not both.\n";
+                std::cerr << "WARNING: shader program `" << name
+                          << "` has one of "
+                          << definitions::VIEW_TRANSFORM_UNIFORM_NAME << " or "
+                          << definitions::PROJECTION_UNIFORM_NAME
+                          << " "
+                             "uniforms, but not both.\n";
                 error = true;
             }
 
             if (has_projection_uniform && !projection_uniform_type_ok)
             {
-                std::cerr << "WARNING: shader program `" << name
-                          << "` has a `projection_matrix` uniform which's type "
+                std::cerr << "WARNING: shader program `" << name << "` has a `"
+                          << definitions::PROJECTION_UNIFORM_NAME
+                          << "` uniform which's type "
                              "is not mat4.\n";
                 error = true;
             }
 
             if (has_view_transform_uniform && !view_transform_uniform_type_ok)
             {
-                std::cerr << "WARNING: shader program `" << name
-                          << "` has a `view_transform_matrix` uniform which's "
+                std::cerr << "WARNING: shader program `" << name << "` has a `"
+                          << definitions::VIEW_TRANSFORM_UNIFORM_NAME
+                          << "` uniform which's "
                              "type is not mat4.\n";
                 error = true;
             }
@@ -228,8 +234,10 @@ namespace pogl
 
         for (auto s : camera_dependent_shaders)
         {
-            s->uniform("view_transform_matrix")->set_mat4(view_transform);
-            s->uniform("projection_matrix")->set_mat4(projection_matrix);
+            s->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
+                ->set_mat4(view_transform);
+            s->uniform(definitions::PROJECTION_UNIFORM_NAME)
+                ->set_mat4(projection_matrix);
         }
         return true;
     }
@@ -259,7 +267,8 @@ namespace pogl
         const auto view_transform = main_camera->get_transform();
         for (auto shader : camera_dependent_shaders)
         {
-            shader->uniform("view_transform_matrix")->set_mat4(view_transform);
+            shader->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
+                ->set_mat4(view_transform);
         }
         for (auto renderer : renderers)
         {

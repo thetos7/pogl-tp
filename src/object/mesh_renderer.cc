@@ -1,6 +1,7 @@
 #include "mesh_renderer.hh"
 
 #include "utils/gl_check.hh"
+#include "utils/definitions.hh"
 
 #define BUFFER_OFFSET(i) ((void *)(i))
 
@@ -19,7 +20,7 @@ namespace pogl
     {
         // assume all objects coordinates are already in worldspace
         // or that the object's anchor is at 0,0,0
-        auto transform = _shader->uniform("model_transform_matrix");
+        auto transform = _shader->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME);
         if (transform)
         {
             transform->set_mat4(Matrix4::identity());
@@ -49,6 +50,6 @@ namespace pogl
 
     void MeshRenderer::update_camera(const Matrix4 &camera_transform)
     {
-        _shader->uniform("view_transform_matrix")->set_mat4(camera_transform);
+        _shader->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)->set_mat4(camera_transform);
     }
 } // namespace pogl
