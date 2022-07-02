@@ -221,7 +221,7 @@ namespace pogl
             GLint size = 0;
 
             glGetActiveAttrib(_program, i, max_name_length + 1, NULL, &size,
-                               &type, name.data());
+                              &type, name.data());
             CHECK_GL_ERROR();
 
             GLint loc = glGetAttribLocation(_program, name.data());
@@ -230,6 +230,12 @@ namespace pogl
             _attributes[name.data()] =
                 Attribute(name.data(), loc, type, size, this);
         }
+    }
+
+    Self &ShaderProgram::texture(int unit, TextureType texture)
+    {
+        _textures[unit] = texture;
+        return *this;
     }
 
     std::shared_ptr<Self>
@@ -286,6 +292,10 @@ namespace pogl
 
     void ShaderProgram::activate()
     {
+        for(auto [unit, texture]: _textures) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            texture->use();
+        }
         glUseProgram(_program);
         CHECK_GL_ERROR();
     }

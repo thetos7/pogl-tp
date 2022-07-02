@@ -49,6 +49,21 @@ namespace pogl
         CHECK_GL_ERROR();
     }
 
+    void Uniform::set_int(GLint value)
+    {
+        if (_type != GL_INT && _type != GL_SAMPLER_2D)
+        {
+            std::ostringstream oss;
+            oss << "Error: Attempt to set uniform `" << _name
+                << "` with value of type int, but its type isn't int or a "
+                   "sampler.\n";
+            throw std::logic_error(oss.str());
+        }
+        _program->use();
+        glUniform1i(_location, value);
+        CHECK_GL_ERROR();
+    }
+
     void Uniform::set_vec4(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
     {
         if (_type != GL_FLOAT_VEC4)

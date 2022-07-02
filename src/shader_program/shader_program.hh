@@ -11,6 +11,7 @@
 // definitions
 #include "attribute.hh"
 #include "matrix4/matrix4.hh"
+#include "texture/texture.hh"
 #include "uniform.hh"
 #include "vector4/vector4.hh"
 
@@ -28,6 +29,9 @@ namespace pogl
 
         using UniformMapType = std::map<std::string, Uniform>;
         using AttributeMapType = std::map<std::string, Attribute>;
+
+        using TextureType = std::shared_ptr<Texture>;
+        using TextureCollectionType = std::map<int, TextureType>;
 
         ShaderProgram(const std::string &vertex_src,
                       const std::string &fragment_src, bool ready);
@@ -96,6 +100,17 @@ namespace pogl
          */
         std::optional<Uniform> uniform(const std::string &name);
 
+        /**
+         * @brief Sets the texture at unit.
+         * Note: The number of guaranteed texture units is 16, any higher amount
+         * depends on the vendor/architecture.
+         *
+         * @param unit
+         * @param texture
+         * @return Self&
+         */
+        Self &texture(int unit, TextureType texture);
+
     private:
         bool compile_vertex();
         bool compile_fragment();
@@ -114,6 +129,7 @@ namespace pogl
         std::string _compilation_log;
         UniformMapType _uniforms;
         AttributeMapType _attributes;
+        TextureCollectionType _textures;
     };
 
 } // namespace pogl

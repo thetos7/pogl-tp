@@ -22,6 +22,8 @@ namespace pogl
         void set_float(GLfloat value);
         void set_vec4(const Vector4 &vect);
         void set_vec4(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void set_int(GLint i);
+
         inline TypeEnum type() const
         {
             return _type;
