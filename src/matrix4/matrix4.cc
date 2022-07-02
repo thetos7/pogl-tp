@@ -1,5 +1,6 @@
 #include "matrix4.hh"
 
+#include <cmath>
 #include <iomanip>
 #include <ostream>
 #include <sstream>
@@ -58,6 +59,12 @@ namespace pogl
         return copy;
     }
 
+    Matrix4 &Matrix4::operator=(const Matrix4 &value)
+    {
+        _elements = value._elements;
+        return *this;
+    }
+
     Matrix4 Matrix4::identity()
     {
         ElementsBufferType elements{};
@@ -94,6 +101,27 @@ namespace pogl
             E, 0, A, 0, // l1
             0, F, B, 0, // l2
             0, 0, C, D, // l3
+            0, 0, -1, 0 // l4
+        });
+    }
+
+    double cot(double x)
+    {
+        return std::cos(x) / std::sin(x);
+    }
+
+    Matrix4 Matrix4::perspective(float fovy, float aspect_ratio, float znear,
+                                 float zfar)
+    {
+        const GLfloat f = cot(fovy / 2);
+        const GLfloat A = f / aspect_ratio;
+        const GLfloat B = (zfar + znear) / (znear - zfar);
+        const GLfloat C = (2. * zfar * znear) / (znear - zfar);
+
+        return Matrix4(Matrix4::ElementsBufferType{
+            A, 0, 0, 0, // l1
+            0, f, 0, 0, // l2
+            0, 0, B, C, // l3
             0, 0, -1, 0 // l4
         });
     }

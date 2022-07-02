@@ -24,6 +24,8 @@ namespace pogl
         Vector3 get_forward() const;
         Self &move_relative(const Vector3 &movement);
 
+        void set_projection(const Matrix4 &projection);
+
         virtual void update(double delta) override;
 
     private:

@@ -18,6 +18,8 @@ namespace pogl
     {
         glViewport(0, 0, width, height);
         CHECK_GL_ERROR();
+        const auto aspect_ratio = width / (float)height;
+        Engine::instance().update_perspective(aspect_ratio);
     }
 
     void on_key_update(GLFWwindow *window, int key, int, int action, int)

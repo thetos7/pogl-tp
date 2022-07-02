@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 // others
 #include <GLFW/glfw3.h>
+#include <cmath>
 #include <map>
 #include <memory>
 #include <vector>
@@ -17,6 +18,11 @@ namespace pogl
     class Engine
     {
     public:
+        static constexpr float DEFAULT_FOV = M_PI_2;
+        static constexpr float DEFAULT_ZNEAR = 0.5;
+        static constexpr float DEFAULT_ZFAR = 100.;
+        static constexpr float DEFAULT_ASPECT_RATIO = 1.;
+
         static Engine &instance();
         std::vector<std::shared_ptr<Renderable>> renderers;
         std::map<std::string, std::shared_ptr<ShaderProgram>> shaders;
@@ -32,6 +38,8 @@ namespace pogl
 
         Engine &add_renderer(std::shared_ptr<Renderable> renderer);
         Engine &add_dynamic(std::shared_ptr<Updateable> object);
+
+        void update_perspective(float aspect_ratio);
 
     private:
         bool _init_glfw();

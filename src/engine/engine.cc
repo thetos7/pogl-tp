@@ -220,8 +220,8 @@ namespace pogl
 
     bool Engine::_init_POV()
     {
-        const auto projection_matrix =
-            Matrix4::frustum(-0.5, 0.5, -0.5, 0.5, 1, 100);
+        const auto projection_matrix = Matrix4::perspective(
+            DEFAULT_FOV, DEFAULT_ASPECT_RATIO, DEFAULT_ZNEAR, DEFAULT_ZFAR);
         auto camera = std::make_shared<Camera>(Vector3(3.5, 0, 0), 0.0, M_PI,
                                                projection_matrix);
 
@@ -286,6 +286,18 @@ namespace pogl
     {
         dynamic_objects.push_back(object);
         return *this;
+    }
+
+    void Engine::update_perspective(float aspect_ratio)
+    {
+        const auto projection = Matrix4::perspective(
+            DEFAULT_FOV, aspect_ratio, DEFAULT_ZNEAR, DEFAULT_ZFAR);
+        main_camera->set_projection(projection);
+        for (auto s : camera_dependent_shaders)
+        {
+            s->uniform(definitions::PROJECTION_UNIFORM_NAME)
+                ->set_mat4(projection);
+        }
     }
 
     void Engine::update()

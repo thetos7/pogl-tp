@@ -50,6 +50,14 @@ namespace pogl
         Matrix4 operator*(const Matrix4 &rhs) const;
 
         /**
+         * @brief Copy assignement operator;
+         * 
+         * @param value 
+         * @return Matrix4& 
+         */
+        Matrix4 &operator=(const Matrix4 &value);
+
+        /**
          * @brief Creates a 4x4 identity matrix
          *
          * @return Matrix4
@@ -104,6 +112,9 @@ namespace pogl
                                float centerX, float centerY, float centerZ,
                                float upX, float upY, float upZ);
 
+        static Matrix4 perspective(float fovy, float aspect_ratio, float znear,
+                                   float zfar);
+
         /**
          * @brief Gets a mutable reference to the element in col, row
          *
@@ -144,8 +155,9 @@ namespace pogl
 
         /**
          * @brief Returns a pointer to the internal array of values
-         * 
-         * @return const ElementType* pointer to the begining of the Matrix's element array
+         *
+         * @return const ElementType* pointer to the begining of the Matrix's
+         * element array
          */
         inline const ElementType *data() const
         {

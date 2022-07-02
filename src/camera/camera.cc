@@ -69,6 +69,11 @@ namespace pogl
         return *this;
     }
 
+    void Camera::set_projection(const Matrix4 &projection)
+    {
+        _projection = projection;
+    }
+
     void Camera::update(double delta)
     {
         auto &input_state = get_input_state();
