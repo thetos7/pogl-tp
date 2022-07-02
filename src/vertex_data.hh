@@ -151,14 +151,14 @@ const std::vector<GLfloat> plane_vertex_position_data{
 
 const std::vector<GLfloat> plane_uv_data{
     // tri 1
-    0.0, 0.0, // v1
-    1.0, 1.0, // v2
-    0.0, 1.0, // v3
+    0.0, 1.0, // v1
+    1.0, 0.0, // v2
+    0.0, 0.0, // v3
 
     // tri 2
-    0.0, 0.0, // v1
-    1.0, 0.0, // v4
-    1.0, 1.0 // v2
+    0.0, 1.0, // v1
+    1.0, 1.0, // v4
+    1.0, 0.0 // v2
 };
 
 /* to make a plane:
