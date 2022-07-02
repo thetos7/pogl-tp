@@ -12,14 +12,14 @@
 
 namespace pogl
 {
-    class MeshObjectRenderer : public Renderable
+    class MeshRenderer : public Renderable
     {
     public:
         using ShaderType = std::shared_ptr<ShaderProgram>;
         using VaoType = GLuint;
         using BufferType = std::vector<GLfloat>;
         using DrawModeType = GLenum;
-        using Self = MeshObjectRenderer;
+        using Self = MeshRenderer;
 
         class Builder
         {
@@ -37,7 +37,7 @@ namespace pogl
             Builder &add_attribute(std::string name, int size,
                                    size_t buffer_id = 0);
 
-            std::shared_ptr<MeshObjectRenderer> build();
+            std::shared_ptr<MeshRenderer> build();
 
         private:
             void assert_integrity();
@@ -48,10 +48,10 @@ namespace pogl
             AttributeConfigCollection _attribute_config;
         };
 
-        MeshObjectRenderer(VaoType vao_id, DrawModeType draw_mode,
+        MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
                            const ShaderType &shader,
                            size_t vertex_array_index_count);
-        virtual ~MeshObjectRenderer() = default;
+        virtual ~MeshRenderer() = default;
 
         static Builder builder();
 

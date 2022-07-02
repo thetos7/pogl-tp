@@ -6,7 +6,7 @@
 #include "app/callbacks.hh"
 #include "app/input.hh"
 #include "inputstate/inputstate.hh"
-#include "object/mesh_object_renderer.hh"
+#include "object/mesh_renderer.hh"
 #include "utils/gl_check.hh"
 
 // enables color
@@ -164,7 +164,7 @@ namespace pogl
 
     bool Engine::_init_objects()
     {
-        auto mesh_renderer = MeshObjectRenderer::builder()
+        auto mesh_renderer = MeshRenderer::builder()
                                  .shader(shaders["mesh_shader"])
                                  .add_buffer(vertex_position_data)
                                  .add_attribute("vPosition", 3, 0)

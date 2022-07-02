@@ -1,4 +1,4 @@
-#include "mesh_object_renderer.hh"
+#include "mesh_renderer.hh"
 
 #include <iostream>
 
@@ -8,8 +8,8 @@
 
 namespace pogl
 {
-    using Self = MeshObjectRenderer;
-    MeshObjectRenderer::MeshObjectRenderer(VaoType vao_id,
+    using Self = MeshRenderer;
+    MeshRenderer::MeshRenderer(VaoType vao_id,
                                            DrawModeType draw_mode,
                                            const ShaderType &shader,
                                            size_t vertex_array_index_count)
@@ -27,12 +27,12 @@ namespace pogl
         }
     }
 
-    Self::Builder MeshObjectRenderer::builder()
+    Self::Builder MeshRenderer::builder()
     {
         return Builder();
     }
 
-    void MeshObjectRenderer::draw()
+    void MeshRenderer::draw()
     {
         _shader->use();
         glBindVertexArray(_vao_id);
@@ -43,7 +43,7 @@ namespace pogl
         CHECK_GL_ERROR();
     }
 
-    void MeshObjectRenderer::update_camera(const Matrix4 &camera_transform)
+    void MeshRenderer::update_camera(const Matrix4 &camera_transform)
     {
         _shader->uniform("view_transform_matrix")->set_mat4(camera_transform);
     }
@@ -130,7 +130,7 @@ namespace pogl
         }
     }
 
-    std::shared_ptr<MeshObjectRenderer> Self::Builder::build()
+    std::shared_ptr<MeshRenderer> Self::Builder::build()
     {
         assert_integrity();
 
@@ -180,7 +180,7 @@ namespace pogl
         glBindVertexArray(0);
         CHECK_GL_ERROR();
 
-        return std::make_shared<MeshObjectRenderer>(
+        return std::make_shared<MeshRenderer>(
             vao_id, _draw_mode, *_shader, _buffers[0].size());
     }
 
