@@ -292,7 +292,8 @@ namespace pogl
 
     void ShaderProgram::activate()
     {
-        for(auto [unit, texture]: _textures) {
+        for (auto [unit, texture] : _textures)
+        {
             glActiveTexture(GL_TEXTURE0 + unit);
             texture->use();
         }
@@ -310,6 +311,16 @@ namespace pogl
     {
         auto it = _uniforms.find(name);
         if (it == _uniforms.end())
+        {
+            return std::nullopt;
+        }
+        return it->second;
+    }
+
+    std::optional<Attribute> ShaderProgram::attribute(const std::string &name)
+    {
+        auto it = _attributes.find(name);
+        if (it == _attributes.end())
         {
             return std::nullopt;
         }

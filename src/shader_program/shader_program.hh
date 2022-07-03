@@ -99,6 +99,14 @@ namespace pogl
          * @return std::optional<UniformIdType>
          */
         std::optional<Uniform> uniform(const std::string &name);
+        
+        /**
+         * @brief Tries to get the location of an attribute
+         *
+         * @param name Uniform name
+         * @return std::optional<UniformIdType>
+         */
+        std::optional<Attribute> attribute(const std::string &name);
 
         /**
          * @brief Sets the texture at unit.
