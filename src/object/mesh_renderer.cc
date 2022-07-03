@@ -1,7 +1,7 @@
 #include "mesh_renderer.hh"
 
-#include "utils/gl_check.hh"
 #include "utils/definitions.hh"
+#include "utils/gl_check.hh"
 
 #define BUFFER_OFFSET(i) ((void *)(i))
 
@@ -11,21 +11,16 @@ namespace pogl
     MeshRenderer::MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
                                const ShaderType &shader,
                                size_t vertex_array_index_count,
-                               std::vector<GLuint> buffer_ids)
+                               std::vector<GLuint> buffer_ids,
+                               const Matrix4 &transform)
         : _shader(shader)
         , _vao_id(vao_id)
         , _draw_mode(draw_mode)
         , _vertex_array_index_count(vertex_array_index_count)
         , _buffer_ids(buffer_ids)
-    {
-        // assume all objects coordinates are already in worldspace
-        // or that the object's anchor is at 0,0,0
-        auto transform = _shader->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME);
-        if (transform)
-        {
-            transform->set_mat4(Matrix4::identity());
-        }
-    }
+        , _transform(transform)
+    {}
+
     MeshRenderer::~MeshRenderer()
     {
         glDeleteBuffers(_buffer_ids.size(), _buffer_ids.data());
@@ -40,6 +35,12 @@ namespace pogl
     void MeshRenderer::draw()
     {
         _shader->use();
+        auto transform_uniform =
+            _shader->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME);
+        if (transform_uniform)
+        {
+            transform_uniform->set_mat4(_transform);
+        }
         glBindVertexArray(_vao_id);
         CHECK_GL_ERROR();
         glDrawArrays(_draw_mode, 0, _vertex_array_index_count);
@@ -50,6 +51,12 @@ namespace pogl
 
     void MeshRenderer::update_camera(const Matrix4 &camera_transform)
     {
-        _shader->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)->set_mat4(camera_transform);
+        _shader->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
+            ->set_mat4(camera_transform);
+    }
+
+    void MeshRenderer::set_transform(const Matrix4 &transform)
+    {
+        _transform = transform;
     }
 } // namespace pogl

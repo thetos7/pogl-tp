@@ -13,6 +13,9 @@ namespace pogl
         , _shader(std::nullopt)
         , _draw_mode(GL_TRIANGLES)
         , _attribute_config()
+        // assume all objects coordinates are already in worldspace
+        // or that the object's anchor is at 0,0,0
+        , _transform(Matrix4::identity())
     {}
 
     Self &Self::add_buffer(const BufferType &buffer)
@@ -41,6 +44,12 @@ namespace pogl
                                       std::vector<AttributeConfigType>());
         }
         _attribute_config.at(buffer_id).emplace_back(name, size);
+        return *this;
+    }
+
+    Self &Self::transform(Matrix4 transform)
+    {
+        _transform = transform;
         return *this;
     }
 
@@ -145,7 +154,8 @@ namespace pogl
         CHECK_GL_ERROR();
 
         return std::make_shared<MeshRenderer>(vao_id, _draw_mode, *_shader,
-                                              _buffers[0].size(), buffer_ids);
+                                              _buffers[0].size(), buffer_ids,
+                                              _transform);
     }
 
 } // namespace pogl

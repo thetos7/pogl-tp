@@ -239,6 +239,7 @@ namespace pogl
                               .add_attribute("vPosition", 3, 0)
                               .add_buffer(ground_buffers->at("uv"))
                               .add_attribute("vUV", 2, 1)
+                              .transform(Matrix4::translation(0, 0, -1))
                               .build();
             this->add_renderer(ground);
         }
