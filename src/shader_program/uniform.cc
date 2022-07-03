@@ -5,6 +5,8 @@
 
 #include "shader_program/shader_program.hh"
 #include "utils/gl_check.hh"
+#include "vector3/vector3.hh"
+#include "vector4/vector4.hh"
 
 namespace pogl
 {
@@ -46,6 +48,24 @@ namespace pogl
         }
         _program->use();
         glUniform1f(_location, value);
+        CHECK_GL_ERROR();
+    }
+
+    void Uniform::set_vec3(const Vector3 &vect)
+    {
+        set_vec3(vect.x, vect.y, vect.z);
+    }
+    void Uniform::set_vec3(GLfloat x, GLfloat y, GLfloat z)
+    {
+        if (_type != GL_FLOAT_VEC3)
+        {
+            std::ostringstream oss;
+            oss << "Error: Attempt to set uniform `" << _name
+                << "` with value of type vec3, but its type differs.\n";
+            throw std::logic_error(oss.str());
+        }
+        _program->use();
+        glUniform3f(_location, x, y, z);
         CHECK_GL_ERROR();
     }
 
