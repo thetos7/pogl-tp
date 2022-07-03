@@ -23,6 +23,8 @@ namespace pogl
         , _compilation_log()
         , _uniforms()
         , _attributes()
+        , _textures()
+        , _unit_names()
     {}
 
     ShaderProgram::ShaderProgram()
@@ -232,10 +234,42 @@ namespace pogl
         }
     }
 
-    Self &ShaderProgram::texture(int unit, TextureType texture)
+    Self &ShaderProgram::set_texture(int unit, TextureType texture)
     {
         _textures[unit] = texture;
         return *this;
+    }
+
+    Self &ShaderProgram::set_texture(std::string unit_name, TextureType texture)
+    {
+        auto it = _unit_names.find(unit_name);
+        if (it == _unit_names.end())
+        {
+            return *this;
+        }
+        return set_texture(it->second, texture);
+    }
+
+    Self &ShaderProgram::set_unit_name(std::string name, int unit)
+    {
+        _unit_names[name] = unit;
+        return *this;
+    }
+
+    std::optional<ShaderProgram::TextureType>
+    ShaderProgram::get_texture_by_name(const std::string &name)
+    {
+        auto unit_it = _unit_names.find(name);
+        if (unit_it == _unit_names.end())
+        {
+            return std::nullopt;
+        }
+        auto tex_it = _textures.find(unit_it->second);
+        if (tex_it == _textures.end())
+        {
+            return std::nullopt;
+        }
+        return tex_it->second;
     }
 
     std::shared_ptr<Self>

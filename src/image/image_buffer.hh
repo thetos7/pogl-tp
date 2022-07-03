@@ -1,32 +1,41 @@
 #pragma once
 
+#include <GL/glew.h>
 #include <filesystem>
-#include <stddef.h>
 #include <optional>
+#include <stddef.h>
+#include <vector>
 
 namespace pogl
 {
     namespace fs = std::filesystem;
 
+    template <typename PixelValueType = unsigned char>
     class ImageBuffer
     {
     public:
-        using BufferElemType = unsigned char;
-        using BufferType = unsigned char *;
-        using ConstBufferType = const unsigned char *;
+        using Self = ImageBuffer;
+        using BufferElemType = PixelValueType;
+        using BufferType = std::vector<BufferElemType>;
+        using PixelType = BufferElemType *;
+        using ConstPixelType = const BufferElemType *;
         using DimensionType = int;
 
         ImageBuffer(BufferType bytes, DimensionType width, DimensionType height,
                     DimensionType channels);
-        ~ImageBuffer();
+        ImageBuffer();
 
-        static std::optional<ImageBuffer> load(const fs::path &path, int channel_hint = 0);
+        static ImageBuffer sized(DimensionType width, DimensionType height,
+                                 DimensionType channels);
 
-        ConstBufferType data() const;
-        BufferType data();
+        static std::optional<ImageBuffer> load(const fs::path &path,
+                                               int channel_hint = 0);
 
-        BufferType at(DimensionType row, DimensionType col);
-        ConstBufferType at(DimensionType row, DimensionType col) const;
+        const BufferElemType *data() const;
+        BufferElemType *data();
+
+        PixelType at(DimensionType row, DimensionType col);
+        ConstPixelType at(DimensionType row, DimensionType col) const;
 
         BufferElemType &at(DimensionType row, DimensionType col,
                            DimensionType ch);
@@ -38,6 +47,11 @@ namespace pogl
         const DimensionType &channels() const;
 
     private:
+        Self &width(DimensionType value);
+        Self &height(DimensionType value);
+        Self &channels(DimensionType value);
+        void update_dims();
+
         BufferType _bytes;
         DimensionType _width;
         DimensionType _height;
@@ -46,4 +60,9 @@ namespace pogl
         DimensionType _size;
     };
 
+    using RGBImageBuffer = ImageBuffer<unsigned char>;
+    using FloatImageBuffer = ImageBuffer<GLfloat>;
+
 } // namespace pogl
+
+#include "image_buffer.hxx"

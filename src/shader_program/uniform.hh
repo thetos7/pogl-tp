@@ -4,7 +4,8 @@
 
 #include "fwd.hh"
 #include "matrix4/matrix4.hh"
-#include "vector4/vector4.hh"
+#include "vector4/fwd.hh"
+#include "vector3/fwd.hh"
 
 namespace pogl
 {
@@ -22,6 +23,8 @@ namespace pogl
         void set_float(GLfloat value);
         void set_vec4(const Vector4 &vect);
         void set_vec4(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void set_vec3(const Vector3 &vect);
+        void set_vec3(GLfloat x, GLfloat y, GLfloat z);
         void set_int(GLint value);
 
         inline TypeEnum type() const

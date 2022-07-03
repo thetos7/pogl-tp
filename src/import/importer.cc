@@ -26,6 +26,16 @@ namespace pogl
         buffer.push_back(uv.y);
     }
 
+    void Importer::extract_normals(BufferType &buffer, unsigned int vert_idx,
+                                   aiMesh *mesh)
+    {
+        auto normal = mesh->mNormals[vert_idx].Normalize();
+
+        buffer.push_back(normal.x);
+        buffer.push_back(normal.y);
+        buffer.push_back(normal.z);
+    }
+
     Importer::Importer(const fs::path &path)
         : _path(path)
         , _flags(aiProcess_CalcTangentSpace | aiProcess_Triangulate
@@ -72,29 +82,31 @@ namespace pogl
             return std::nullopt;
         }
 
-        const auto idx = scene->mRootNode->mChildren[0]->mMeshes[0];
-        const auto mesh = scene->mMeshes[idx];
-
         auto output = ResultType();
-
         for (auto [name, _] : _extractors)
         {
             output.emplace(name, BufferType());
         }
 
-        for (size_t i = 0; i < mesh->mNumFaces; ++i)
+        const auto child_count = scene->mRootNode->mNumChildren;
+        for (size_t c = 0; c < child_count; ++c)
         {
-            auto face = mesh->mFaces[i];
-            for (size_t j = 0; j < face.mNumIndices; ++j)
+            const auto idx = scene->mRootNode->mChildren[c]->mMeshes[0];
+            const auto mesh = scene->mMeshes[idx];
+
+            for (size_t i = 0; i < mesh->mNumFaces; ++i)
             {
-                auto vert_idx = face.mIndices[j];
-                for (auto [name, extract] : _extractors)
+                auto face = mesh->mFaces[i];
+                for (size_t j = 0; j < face.mNumIndices; ++j)
                 {
-                    extract(output.at(name), vert_idx, mesh);
+                    auto vert_idx = face.mIndices[j];
+                    for (auto [name, extract] : _extractors)
+                    {
+                        extract(output.at(name), vert_idx, mesh);
+                    }
                 }
             }
         }
-
         return output;
     }
 } // namespace pogl

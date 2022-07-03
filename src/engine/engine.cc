@@ -7,13 +7,18 @@
 #include "app/input.hh"
 #include "import/importer.hh"
 #include "inputstate/inputstate.hh"
+#include "object/ground_object.hh"
 #include "object/mesh_renderer.hh"
 #include "utils/definitions.hh"
 #include "utils/gl_check.hh"
 
+#define DEFAULT_SCENE 0
+
+#if DEFAULT_SCENE
 // enables color
-#define COLOR 1
-#include "vertex_data.hh"
+#    define COLOR 1
+#    include "vertex_data.hh"
+#endif // DEFAULT_SCENE
 
 namespace pogl
 {
@@ -85,7 +90,7 @@ namespace pogl
         CHECK_GL_ERROR();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         CHECK_GL_ERROR();
-        glClearColor(0.5, 0.5, 0.5, 1.0);
+        glClearColor(0.800, 0.839, 0.902, 1.0); // "sky" color
         CHECK_GL_ERROR();
         glPixelStorei(GL_PACK_ALIGNMENT, PIXEL_BYTE_ALIGNEMENT_LEN);
         CHECK_GL_ERROR();
@@ -97,15 +102,16 @@ namespace pogl
 
     bool Engine::_init_shaders()
     {
-#if COLOR
+#if DEFAULT_SCENE
+#    if COLOR
         auto cube_shader = ShaderProgram::make_program(
             "../resources/shaders/vert_color/vertex.glsl",
             "../resources/shaders/vert_color/fragment.glsl");
-#else
+#    else
         auto cube_shader = ShaderProgram::make_program(
             "../resources/shaders/uniform/vertex.glsl",
             "../resources/shaders/uniform/fragment.glsl");
-#endif // COLOR
+#    endif // COLOR
 
         shaders.emplace("cube_shader", cube_shader);
 
@@ -118,14 +124,64 @@ namespace pogl
         auto plane_shader = ShaderProgram::make_program(
             "../resources/shaders/textured/vertex.glsl",
             "../resources/shaders/textured/fragment.glsl");
+        plane_shader->set_unit_name("texture", 0);
 
         shaders.emplace("plane_shader", plane_shader);
-
+#endif // DEFAULT_SCENE
         auto uv_debug_shader = ShaderProgram::make_program(
             "../resources/shaders/uv_debug/vertex.glsl",
             "../resources/shaders/uv_debug/fragment.glsl");
 
         shaders.emplace("uv_debug", uv_debug_shader);
+
+        // <ground shader>
+        auto ground_shader = ShaderProgram::make_program(
+            "../resources/ground/shader/vertex.glsl",
+            "../resources/ground/shader/fragment.glsl");
+        {
+            // texture unit names
+            ground_shader->set_unit_name("snow_height", 0);
+            ground_shader->set_unit_name("under_texture", 1);
+            ground_shader->set_unit_name("snow_texture", 2);
+            // set up uniforms
+            auto up_u = ground_shader->uniform("up");
+            if (up_u)
+                up_u->set_vec3(Vector3::up());
+            // sun lighting
+            auto sun_direction_u = ground_shader->uniform("sun_direction");
+            if (sun_direction_u)
+                sun_direction_u->set_vec3(-Vector3::up());
+            auto sun_intensity_u = ground_shader->uniform("sun_intensity");
+            if (sun_intensity_u)
+                sun_intensity_u->set_float(1.0);
+            auto sun_color_u = ground_shader->uniform("sun_color");
+            if (sun_color_u)
+                sun_color_u->set_vec3(Vector3::all(1.0));
+            // ambient lighting
+            auto ambient_color_u = ground_shader->uniform("ambient_color");
+            if (ambient_color_u)
+                ambient_color_u->set_vec3(Vector3::all(1.0));
+            auto ambient_intensity_u =
+                ground_shader->uniform("ambient_intensity");
+            if (ambient_intensity_u)
+                ambient_intensity_u->set_float(0.2);
+            // set texture sampler unit
+            auto snow_height_u = ground_shader->uniform("snow_height");
+            if (snow_height_u)
+                snow_height_u->set_int(0);
+            auto under_texture_u = ground_shader->uniform("under_texture");
+            if (under_texture_u)
+                under_texture_u->set_int(1);
+            auto snow_texture_u = ground_shader->uniform("snow_texture");
+            if (snow_texture_u)
+                snow_texture_u->set_int(2);
+            auto scale_u = ground_shader->uniform("scale");
+            // displacement scale
+            if (scale_u)
+                scale_u->set_float(0.5);
+        }
+        shaders.emplace("ground", ground_shader);
+        // </ground shader>
 
         // find shaders which require the camera transform, i.e. that have a
         // mat4 view_transform uniform & a mat4 projection_matrix uniform
@@ -187,54 +243,93 @@ namespace pogl
 
     bool Engine::_init_textures()
     {
-        auto smiley_tex = Texture::builder()
-                              .path("../resources/textures/smiley.png")
-                              .border(Vector4(0, 0, 0, 0))
-                              .wrap(GL_CLAMP_TO_BORDER)
-                              .src_format(GL_RGBA)
-                              .format(GL_RGBA)
-                              .build();
-        shaders["plane_shader"]->texture(0, smiley_tex);
+#if DEFAULT_SCENE
+        auto smiley_tex =
+            Texture::builder()
+                .buffer(RGBImageBuffer::load("../resources/textures/smiley.png")
+                            .value())
+                .border(Vector4(0, 0, 0, 0))
+                .wrap(GL_CLAMP_TO_BORDER)
+                .src_format(GL_RGBA)
+                .format(GL_RGBA)
+                .build();
+        shaders["plane_shader"]->set_texture("texture", smiley_tex);
+        this->add_texture("smiley", smiley_tex);
+#endif // DEFAULT_SCENE
 
+        auto ground_shader = shaders["ground"];
+        auto rock_tex =
+            Texture::builder()
+                .buffer(RGBImageBuffer::load(
+                            "../resources/ground/textures/rock_texture.png", 3)
+                            .value())
+                .wrap(GL_REPEAT)
+                .src_format(GL_RGB)
+                .format(GL_RGB)
+                .build();
+        ground_shader->set_texture("under_texture", rock_tex);
+        this->add_texture("rock_texture", rock_tex);
+
+        auto snow_tex =
+            Texture::builder()
+                .buffer(RGBImageBuffer::load(
+                            "../resources/ground/textures/snow_texture.png", 3)
+                            .value())
+                .wrap(GL_REPEAT)
+                .src_format(GL_RGB)
+                .format(GL_RGB)
+                .build();
+        ground_shader->set_texture("snow_texture", snow_tex);
+        this->add_texture("snow_texture", snow_tex);
+
+        auto snow_height_tex =
+            Texture::builder()
+                .buffer(FloatImageBuffer::sized(1024, 1024, 4))
+                .wrap(GL_CLAMP_TO_BORDER)
+                .border(Vector4(0, 0, 0, 1))
+                .src_format(GL_RED)
+                .format(GL_R32F)
+                .min_filter(GL_LINEAR)
+                .build();
+        ground_shader->set_texture("snow_height", snow_height_tex);
+        this->add_texture("snow_height", snow_height_tex);
         return true;
     }
 
     bool Engine::_init_objects()
     {
+#if DEFAULT_SCENE
         auto cube_renderer = MeshRenderer::builder()
                                  .shader(shaders["cube_shader"])
                                  .add_buffer(cube_vertex_position_data)
                                  .add_attribute("vPosition", 3, 0)
-#if COLOR
+#    if COLOR
                                  .add_buffer(cube_vertex_color_data)
                                  .add_attribute("vColor", 3, 1)
-#endif
+#    endif
                                  .build();
         this->add_renderer(cube_renderer);
+#endif // DEFAULT_SCENE
 
-        auto ground_buffers =
-            Importer::read_file("../resources/models/ground.obj")
-                .configure_buffer("position", Importer::extract_position)
-                .configure_buffer("uv", Importer::extract_texcoords)
-                .import();
-
-        if (!ground_buffers)
+        auto ground_option =
+            GroundObject::builder()
+                .shader(shaders["ground"])
+                .mask("../resources/ground/textures/snow_mask.png")
+                .model("../resources/ground/model/ground.obj")
+                .accumulation_rate(0.01)
+                .transform(Matrix4::translation(0, 0, -1))
+                .build();
+        if (!ground_option)
         {
-            std::cerr << "ERROR: Import of ground object failed\n";
+            std::cerr << "ERROR: ground could not be built.\n";
         }
         else
         {
-            auto ground = MeshRenderer::builder()
-                              .shader(shaders["uv_debug"])
-                              .add_buffer(ground_buffers->at("position"))
-                              .add_attribute("vPosition", 3, 0)
-                              .add_buffer(ground_buffers->at("uv"))
-                              .add_attribute("vUV", 2, 1)
-                              .transform(Matrix4::translation(0, 0, -1))
-                              .build();
+            auto ground = *ground_option;
             this->add_renderer(ground);
+            this->add_dynamic(ground);
         }
-
+#if DEFAULT_SCENE
         auto plane_renderer = MeshRenderer::builder()
                                   .shader(shaders["plane_shader"])
                                   .add_buffer(plane_vertex_position_data)
@@ -243,7 +338,7 @@ namespace pogl
                                   .add_attribute("vUV", 2, 1)
                                   .build();
         this->add_renderer(plane_renderer);
-
+#endif // DEFAULT_SCENE
         return true;
     }
 
@@ -314,6 +409,13 @@ namespace pogl
     Engine &Engine::add_dynamic(std::shared_ptr<Updateable> object)
     {
         dynamic_objects.push_back(object);
+        return *this;
+    }
+
+    Engine &Engine::add_texture(std::string name,
+                                std::shared_ptr<Texture> texture)
+    {
+        textures.emplace(name, texture);
         return *this;
     }
 

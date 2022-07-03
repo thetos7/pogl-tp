@@ -4,9 +4,10 @@
 #include <filesystem>
 #include <memory>
 #include <optional>
+#include <variant>
 
-#include "vector4/vector4.hh"
 #include "image/image_buffer.hh"
+#include "vector4/vector4.hh"
 
 namespace pogl
 {
@@ -23,12 +24,19 @@ namespace pogl
             std::shared_ptr<Texture> build();
 
             /**
-             * @brief sets the path to the texture image
+             * @brief sets the buffer of the texture
              *
-             * @param path
+             * @param buffer
              * @return Self&
              */
-            Self &path(const fs::path &path);
+            Self &buffer(const RGBImageBuffer &buffer);
+            /**
+             * @brief sets the buffer of the texture
+             *
+             * @param buffer
+             * @return Self&
+             */
+            Self &buffer(const FloatImageBuffer &buffer);
 
             /**
              * @brief sets the color of the border
@@ -106,7 +114,7 @@ namespace pogl
         private:
             void assert_integrity();
 
-            std::optional<fs::path> _texture_path;
+            std::optional<std::variant<RGBImageBuffer, FloatImageBuffer>> _texture_buffer;
             std::optional<Vector4> _border_color;
             GLenum _s_wrap_mode; // "x" axis
             GLenum _t_wrap_mode; // "y" axis
@@ -123,7 +131,10 @@ namespace pogl
         Texture(GLuint texture_id, GLenum target, GLenum format);
         ~Texture();
 
-        void image(const ImageBuffer &buffer, GLenum src_format);
+        void set_image(const RGBImageBuffer &buffer, GLenum src_format,
+                   bool generate_mipmap = true);
+        void set_image(const FloatImageBuffer &buffer, GLenum src_format,
+                   bool generate_mipmap = true);
 
         void use();
 

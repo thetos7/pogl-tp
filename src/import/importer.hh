@@ -27,6 +27,8 @@ namespace pogl
                                      aiMesh *mesh);
         static void extract_texcoords(BufferType &buffer, unsigned int idx,
                                       aiMesh *mesh);
+        static void extract_normals(BufferType &buffer, unsigned int idx,
+                                      aiMesh *mesh);
 
         Importer(const fs::path &path);
 

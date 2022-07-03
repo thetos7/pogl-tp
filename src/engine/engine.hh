@@ -12,6 +12,7 @@
 #include "properties/renderable.hh"
 #include "properties/updateable.hh"
 #include "shader_program/shader_program.hh"
+#include "texture/texture.hh"
 
 namespace pogl
 {
@@ -28,6 +29,7 @@ namespace pogl
         std::map<std::string, std::shared_ptr<ShaderProgram>> shaders;
         std::vector<std::shared_ptr<ShaderProgram>> camera_dependent_shaders;
         std::vector<std::shared_ptr<Updateable>> dynamic_objects;
+        std::map<std::string, std::shared_ptr<Texture>> textures;
 
         std::shared_ptr<Camera> main_camera;
         GLFWwindow *window;
@@ -38,6 +40,7 @@ namespace pogl
 
         Engine &add_renderer(std::shared_ptr<Renderable> renderer);
         Engine &add_dynamic(std::shared_ptr<Updateable> object);
+        Engine &add_texture(std::string name, std::shared_ptr<Texture> texture);
 
         void update_perspective(float aspect_ratio);
 

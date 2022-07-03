@@ -26,7 +26,8 @@ namespace pogl
         CHECK_GL_ERROR();
     }
 
-    void Texture::image(const ImageBuffer &buffer, GLenum src_format)
+    void Texture::set_image(const RGBImageBuffer &buffer, GLenum src_format,
+                            bool generate_mipmap)
     {
         glActiveTexture(GL_TEXTURE0);
         CHECK_GL_ERROR();
@@ -35,8 +36,28 @@ namespace pogl
         glTexImage2D(_target, 0, _format, buffer.width(), buffer.height(), 0,
                      src_format, GL_UNSIGNED_BYTE, buffer.data());
         CHECK_GL_ERROR();
-        glGenerateMipmap(_target);
+        if (generate_mipmap)
+        {
+            glGenerateMipmap(_target);
+            CHECK_GL_ERROR();
+        }
+    }
+
+    void Texture::set_image(const FloatImageBuffer &buffer, GLenum src_format,
+                            bool generate_mipmap)
+    {
+        glActiveTexture(GL_TEXTURE0);
         CHECK_GL_ERROR();
+        use();
+
+        glTexImage2D(_target, 0, _format, buffer.width(), buffer.height(), 0,
+                     src_format, GL_FLOAT, buffer.data());
+        CHECK_GL_ERROR();
+        if (generate_mipmap)
+        {
+            glGenerateMipmap(_target);
+            CHECK_GL_ERROR();
+        }
     }
 
     Texture::Builder Texture::builder()

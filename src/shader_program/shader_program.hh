@@ -32,6 +32,7 @@ namespace pogl
 
         using TextureType = std::shared_ptr<Texture>;
         using TextureCollectionType = std::map<int, TextureType>;
+        using UnitNameCollectionType = std::map<std::string, int>;
 
         ShaderProgram(const std::string &vertex_src,
                       const std::string &fragment_src, bool ready);
@@ -99,7 +100,7 @@ namespace pogl
          * @return std::optional<UniformIdType>
          */
         std::optional<Uniform> uniform(const std::string &name);
-        
+
         /**
          * @brief Tries to get the location of an attribute
          *
@@ -117,7 +118,33 @@ namespace pogl
          * @param texture
          * @return Self&
          */
-        Self &texture(int unit, TextureType texture);
+        Self &set_texture(int unit, TextureType texture);
+
+        /**
+         * @brief Sets unit with unit_name to use texture.
+         *
+         * @param unit_name
+         * @param texture
+         * @return Self&
+         */
+        Self &set_texture(std::string unit_name, TextureType texture);
+
+        /**
+         * @brief Set the name of a unit
+         *
+         * @param name
+         * @param unit
+         * @return Self&
+         */
+        Self &set_unit_name(std::string name, int unit);
+
+        /**
+         * @brief Gets the reference to a texture by its unit name
+         *
+         * @param name
+         * @return std::optional<TextureType>
+         */
+        std::optional<TextureType> get_texture_by_name(const std::string &name);
 
     private:
         bool compile_vertex();
@@ -138,6 +165,7 @@ namespace pogl
         UniformMapType _uniforms;
         AttributeMapType _attributes;
         TextureCollectionType _textures;
+        UnitNameCollectionType _unit_names;
     };
 
 } // namespace pogl
