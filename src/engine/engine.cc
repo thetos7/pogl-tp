@@ -11,9 +11,13 @@
 #include "utils/definitions.hh"
 #include "utils/gl_check.hh"
 
+#define DEFAULT_SCENE 0
+
+#if DEFAULT_SCENE
 // enables color
-#define COLOR 1
-#include "vertex_data.hh"
+#    define COLOR 1
+#    include "vertex_data.hh"
+#endif // DEFAULT_SCENE
 
 namespace pogl
 {
@@ -97,15 +101,16 @@ namespace pogl
 
     bool Engine::_init_shaders()
     {
-#if COLOR
+#if DEFAULT_SCENE
+#    if COLOR
         auto cube_shader = ShaderProgram::make_program(
             "../resources/shaders/vert_color/vertex.glsl",
             "../resources/shaders/vert_color/fragment.glsl");
-#else
+#    else
         auto cube_shader = ShaderProgram::make_program(
             "../resources/shaders/uniform/vertex.glsl",
             "../resources/shaders/uniform/fragment.glsl");
-#endif // COLOR
+#    endif // COLOR
 
         shaders.emplace("cube_shader", cube_shader);
 
@@ -120,7 +125,7 @@ namespace pogl
             "../resources/shaders/textured/fragment.glsl");
 
         shaders.emplace("plane_shader", plane_shader);
-
+#endif // DEFAULT_SCENE
         auto uv_debug_shader = ShaderProgram::make_program(
             "../resources/shaders/uv_debug/vertex.glsl",
             "../resources/shaders/uv_debug/fragment.glsl");
@@ -187,30 +192,37 @@ namespace pogl
 
     bool Engine::_init_textures()
     {
-        auto smiley_tex = Texture::builder()
-                              .path("../resources/textures/smiley.png")
-                              .border(Vector4(0, 0, 0, 0))
-                              .wrap(GL_CLAMP_TO_BORDER)
-                              .src_format(GL_RGBA)
-                              .format(GL_RGBA)
-                              .build();
-        shaders["plane_shader"]->texture(0, smiley_tex);
+#if DEFAULT_SCENE
+        auto smiley_tex =
+            Texture::builder()
+                .buffer(RGBImageBuffer::load("../resources/textures/smiley.png")
+                            .value())
+                .border(Vector4(0, 0, 0, 0))
+                .wrap(GL_CLAMP_TO_BORDER)
+                .src_format(GL_RGBA)
+                .format(GL_RGBA)
+                .build();
+        shaders["plane_shader"]->set_texture("texture", smiley_tex);
+        this->add_texture("smiley", smiley_tex);
+#endif // DEFAULT_SCENE
 
         return true;
     }
 
     bool Engine::_init_objects()
     {
+#if DEFAULT_SCENE
         auto cube_renderer = MeshRenderer::builder()
                                  .shader(shaders["cube_shader"])
                                  .add_buffer(cube_vertex_position_data)
                                  .add_attribute("vPosition", 3, 0)
-#if COLOR
+#    if COLOR
                                  .add_buffer(cube_vertex_color_data)
                                  .add_attribute("vColor", 3, 1)
-#endif
+#    endif
                                  .build();
         this->add_renderer(cube_renderer);
+#endif // DEFAULT_SCENE
 
         auto ground_buffers =
             Importer::read_file("../resources/models/ground.obj")
@@ -234,7 +246,7 @@ namespace pogl
                               .build();
             this->add_renderer(ground);
         }
-
+#if DEFAULT_SCENE
         auto plane_renderer = MeshRenderer::builder()
                                   .shader(shaders["plane_shader"])
                                   .add_buffer(plane_vertex_position_data)
@@ -243,7 +255,7 @@ namespace pogl
                                   .add_attribute("vUV", 2, 1)
                                   .build();
         this->add_renderer(plane_renderer);
-
+#endif // DEFAULT_SCENE
         return true;
     }
 
