@@ -18,7 +18,7 @@ namespace pogl
 
     void Texture::use()
     {
-        glBindTexture(GL_TEXTURE_2D, _texture_id);
+        glBindTexture(_target, _texture_id);
     }
 
     Texture::Builder Texture::builder()
