@@ -123,6 +123,7 @@ namespace pogl
         auto plane_shader = ShaderProgram::make_program(
             "../resources/shaders/textured/vertex.glsl",
             "../resources/shaders/textured/fragment.glsl");
+        plane_shader->set_unit_name("texture", 0);
 
         shaders.emplace("plane_shader", plane_shader);
 #endif // DEFAULT_SCENE
