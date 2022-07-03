@@ -7,7 +7,7 @@
   - [ ] Generation of multiple meshes
 - [ ] Ground object
   - [ ] Snow displacement shader
-- [ ] Multiple object rendering w/ different shaders/programs
+- [x] Multiple object rendering w/ different shaders/programs
 - [ ] Snow halo lighting effect
 - [x] Textures
 
@@ -20,3 +20,4 @@
   - [x] Textures
   - [ ] Buffers ?
 - [ ] Observable system for decoupled code when updating commonly used values (for example in shaders: view transform, perspective, etc)
+- [x] Object import
