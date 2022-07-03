@@ -212,15 +212,6 @@ namespace pogl
                                  .build();
         this->add_renderer(cube_renderer);
 
-        auto plane_renderer = MeshRenderer::builder()
-                                  .shader(shaders["plane_shader"])
-                                  .add_buffer(plane_vertex_position_data)
-                                  .add_attribute("vPosition", 3, 0)
-                                  .add_buffer(plane_uv_data)
-                                  .add_attribute("vUV", 2, 1)
-                                  .build();
-        this->add_renderer(plane_renderer);
-
         auto ground_buffers =
             Importer::read_file("../resources/models/ground.obj")
                 .configure_buffer("position", Importer::extract_position)
@@ -243,6 +234,15 @@ namespace pogl
                               .build();
             this->add_renderer(ground);
         }
+
+        auto plane_renderer = MeshRenderer::builder()
+                                  .shader(shaders["plane_shader"])
+                                  .add_buffer(plane_vertex_position_data)
+                                  .add_attribute("vPosition", 3, 0)
+                                  .add_buffer(plane_uv_data)
+                                  .add_attribute("vUV", 2, 1)
+                                  .build();
+        this->add_renderer(plane_renderer);
 
         return true;
     }
