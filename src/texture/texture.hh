@@ -6,6 +6,7 @@
 #include <optional>
 
 #include "vector4/vector4.hh"
+#include "image/image_buffer.hh"
 
 namespace pogl
 {
@@ -119,14 +120,17 @@ namespace pogl
         static Builder builder();
 
         Texture();
-        Texture(GLuint texture_id, GLenum target);
+        Texture(GLuint texture_id, GLenum target, GLenum format);
         ~Texture();
+
+        void image(const ImageBuffer &buffer, GLenum src_format);
 
         void use();
 
     private:
         GLuint _texture_id;
         GLenum _target;
+        GLenum _format;
     };
 
 } // namespace pogl

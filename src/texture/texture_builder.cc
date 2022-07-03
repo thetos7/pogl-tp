@@ -132,9 +132,11 @@ namespace pogl
 
         glTexImage2D(_target, 0, _format, width, height, 0, _src_format,
                      GL_UNSIGNED_BYTE, data);
+        CHECK_GL_ERROR();
         glGenerateMipmap(_target);
+        CHECK_GL_ERROR();
 
         stbi_image_free(data);
-        return std::make_shared<Texture>(texture_id, _target);
+        return std::make_shared<Texture>(texture_id, _target, _format);
     }
 } // namespace pogl
