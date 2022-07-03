@@ -7,7 +7,7 @@ namespace pogl
     using Self = Texture::Builder;
 
     Self::Builder()
-        : _texture_path(std::nullopt)
+        : _texture_buffer(std::nullopt)
         , _border_color(std::nullopt)
         , _s_wrap_mode(GL_REPEAT)
         , _t_wrap_mode(GL_REPEAT)
@@ -18,9 +18,15 @@ namespace pogl
         , _target(GL_TEXTURE_2D)
     {}
 
-    Self &Self::path(const fs::path &path)
+    Self &Self::buffer(const RGBImageBuffer &buffer)
     {
-        _texture_path = path;
+        _texture_buffer = buffer;
+        return *this;
+    }
+
+    Self &Self::buffer(const FloatImageBuffer &buffer)
+    {
+        _texture_buffer = buffer;
         return *this;
     }
 
@@ -80,9 +86,9 @@ namespace pogl
     void Self::assert_integrity()
     {
         bool error = false;
-        if (!_texture_path)
+        if (!_texture_buffer)
         {
-            std::cerr << "ERROR: Texture builder misses an image path.\n";
+            std::cerr << "ERROR: Texture builder misses a texture buffer.\n ";
             error = true;
         }
         if (error)
@@ -118,25 +124,22 @@ namespace pogl
             _border_color.value_or(DEFAULT_BORDER_COLOR).as_vec().data());
         CHECK_GL_ERROR();
 
-        int width = 0;
-        int height = 0;
-        int channel_count = 0;
-        auto data = stbi_load(_texture_path->c_str(), &width, &height,
-                              &channel_count, 0);
-        if (data == nullptr)
+        if (std::holds_alternative<RGBImageBuffer>(*_texture_buffer))
         {
-            std::cerr << "ERROR: Could not load image at `" << *_texture_path
-                      << "`.\n";
-            throw std::logic_error("texture image load failed.");
+            auto &buffer = std::get<RGBImageBuffer>(*_texture_buffer);
+            glTexImage2D(_target, 0, _format, buffer.width(), buffer.height(),
+                         0, _src_format, GL_UNSIGNED_BYTE, buffer.data());
         }
-
-        glTexImage2D(_target, 0, _format, width, height, 0, _src_format,
-                     GL_UNSIGNED_BYTE, data);
+        else
+        {
+            auto &buffer = std::get<FloatImageBuffer>(*_texture_buffer);
+            glTexImage2D(_target, 0, _format, buffer.width(), buffer.height(),
+                         0, _src_format, GL_FLOAT, buffer.data());
+        }
         CHECK_GL_ERROR();
         glGenerateMipmap(_target);
         CHECK_GL_ERROR();
 
-        stbi_image_free(data);
         return std::make_shared<Texture>(texture_id, _target, _format);
     }
 } // namespace pogl
