@@ -26,6 +26,16 @@ namespace pogl
         buffer.push_back(uv.y);
     }
 
+    void Importer::extract_normals(BufferType &buffer, unsigned int vert_idx,
+                                   aiMesh *mesh)
+    {
+        auto normal = mesh->mNormals[vert_idx].Normalize();
+
+        buffer.push_back(normal.x);
+        buffer.push_back(normal.y);
+        buffer.push_back(normal.z);
+    }
+
     Importer::Importer(const fs::path &path)
         : _path(path)
         , _flags(aiProcess_CalcTangentSpace | aiProcess_Triangulate
