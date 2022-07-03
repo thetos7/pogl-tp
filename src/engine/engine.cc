@@ -1,13 +1,11 @@
 #include "engine.hh"
 
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
 #include <cmath>
 #include <optional>
 
 #include "app/callbacks.hh"
 #include "app/input.hh"
+#include "import/importer.hh"
 #include "inputstate/inputstate.hh"
 #include "object/mesh_renderer.hh"
 #include "utils/definitions.hh"
@@ -223,54 +221,23 @@ namespace pogl
                                   .build();
         this->add_renderer(plane_renderer);
 
-        Assimp::Importer importer;
+        auto ground_buffers =
+            Importer::read_file("../resources/models/ground.obj")
+                .configure_buffer("position", Importer::extract_position)
+                .configure_buffer("uv", Importer::extract_texcoords)
+                .import();
 
-        auto scene =
-            importer.ReadFile("../resources/models/ground.obj",
-                              aiProcess_CalcTangentSpace | aiProcess_Triangulate
-                                  | aiProcess_FlipUVs);
-
-        if (scene == nullptr)
+        if (!ground_buffers)
         {
-            // error handling
-            std::cerr << "oh no.\n";
+            std::cerr << "ERROR: Import of ground object failed\n";
         }
         else
         {
-            const auto idx = scene->mRootNode->mChildren[0]->mMeshes[0];
-            std::cerr << "mesh index: " << idx << "\n";
-            const auto mesh = scene->mMeshes[idx];
-
-            auto position_data = std::vector<GLfloat>(mesh->mNumFaces * 9);
-            auto uv_data = std::vector<GLfloat>(mesh->mNumFaces * 6);
-
-            for (size_t i = 0; i < mesh->mNumFaces; ++i)
-            {
-                auto face = mesh->mFaces[i];
-                for (size_t j = 0; j < face.mNumIndices; ++j)
-                {
-                    auto vert_idx = face.mIndices[j];
-                    auto vert = mesh->mVertices[vert_idx];
-                    auto uv = mesh->mTextureCoords[0][vert_idx];
-                    // auto uv = mesh->mTextureCoords[vert_idx];
-                    std::cerr << "vert (" << i << ", " << j
-                              << "): x = " << vert.x << ", y = " << vert.y
-                              << ", z = " << vert.z << ", u = " << uv.x
-                              << ", v = " << uv.y << "\n";
-                    position_data.push_back(vert.x);
-                    position_data.push_back(vert.y);
-                    position_data.push_back(vert.z);
-
-                    uv_data.push_back(uv.x);
-                    uv_data.push_back(uv.y);
-                }
-            }
-
             auto ground = MeshRenderer::builder()
                               .shader(shaders["uv_debug"])
-                              .add_buffer(position_data)
+                              .add_buffer(ground_buffers->at("position"))
                               .add_attribute("vPosition", 3, 0)
-                              .add_buffer(uv_data)
+                              .add_buffer(ground_buffers->at("uv"))
                               .add_attribute("vUV", 2, 1)
                               .build();
             this->add_renderer(ground);
