@@ -33,5 +33,4 @@ void main() {
     vec4 tex_color = mix(under_color, snow_color, tex_mix_fact);
 
     color = tex_color * illumination;
-    // color = vec4(vec3(sun_illumination),1);
 }
