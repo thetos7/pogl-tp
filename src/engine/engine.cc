@@ -329,6 +329,13 @@ namespace pogl
         return *this;
     }
 
+    Engine &Engine::add_texture(std::string name,
+                                std::shared_ptr<Texture> texture)
+    {
+        textures.emplace(name, texture);
+        return *this;
+    }
+
     void Engine::update_perspective(float aspect_ratio)
     {
         const auto projection = Matrix4::perspective(
