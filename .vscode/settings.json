@@ -72,7 +72,9 @@
     "filesystem": "cpp",
     "ios": "cpp",
     "locale": "cpp",
-    "queue": "cpp"
+    "queue": "cpp",
+    "cassert": "cpp",
+    "cstdbool": "cpp"
   },
   "cmake.configureEnvironment": {
     "CC": "/usr/bin/clang",
