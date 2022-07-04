@@ -1,7 +1,6 @@
 #include "uniform.hh"
 
 #include <sstream>
-#include <string>
 
 #include "shader_program/shader_program.hh"
 #include "utils/gl_check.hh"

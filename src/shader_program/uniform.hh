@@ -1,11 +1,12 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <string>
 
 #include "fwd.hh"
 #include "matrix4/matrix4.hh"
-#include "vector4/fwd.hh"
 #include "vector3/fwd.hh"
+#include "vector4/fwd.hh"
 
 namespace pogl
 {
