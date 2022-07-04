@@ -9,7 +9,7 @@ namespace pogl::log
 {
     namespace fs = std::filesystem;
 
-    LogHeader::LogHeader(std::string style_str, std::string log_level,
+    LogMessageDecorator::LogMessageDecorator(std::string style_str, std::string log_level,
                          std::string file, int line)
         : style_str(style_str)
         , log_level(log_level)
@@ -17,26 +17,26 @@ namespace pogl::log
         , line(line)
     {}
 
-    std::ostream &operator<<(std::ostream &out, const LogHeader &header)
+    std::ostream &operator<<(std::ostream &out, const LogMessageDecorator &header)
     {
         out << header.style_str << "[" << header.log_level << "]" GRAY_CODE "("
             << header.file << ":" << header.line << ")" RESET_CODE ": ";
         return out;
     }
 
-    LogHeader info(const char *file, int line)
+    LogMessageDecorator info(const char *file, int line)
     {
         fs::path file_path(file);
-        return LogHeader("\e[94m", "INFO", file_path.filename(), line);
+        return LogMessageDecorator("\e[94m", "INFO", file_path.filename(), line);
     }
-    LogHeader warning(const char *file, int line)
+    LogMessageDecorator warning(const char *file, int line)
     {
         fs::path file_path(file);
-        return LogHeader("\e[33m", "WARN", file_path.filename(), line);
+        return LogMessageDecorator("\e[33m", "WARN", file_path.filename(), line);
     }
-    LogHeader error(const char *file, int line)
+    LogMessageDecorator error(const char *file, int line)
     {
         fs::path file_path(file);
-        return LogHeader("\e[31m", "!ERR", file_path.filename(), line);
+        return LogMessageDecorator("\e[31m", "!ERR", file_path.filename(), line);
     }
 } // namespace pogl::log
