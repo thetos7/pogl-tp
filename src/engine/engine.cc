@@ -405,6 +405,25 @@ namespace pogl
         }
     }
 
+    void Engine::update()
+    {
+        mouse_update();
+        static double last_tick = 0;
+        const double now = glfwGetTime();
+        const double delta = now - last_tick;
+        last_tick = now;
+
+        // update objects
+        for (auto object : dynamic_objects)
+        {
+            object->update(delta);
+        }
+
+        auto &input_state = get_input_state();
+        input_state.mouse_x_axis = 0;
+        input_state.mouse_y_axis = 0;
+    }
+
     Engine &Engine::add_renderer(std::shared_ptr<Renderable> renderer)
     {
         renderers.push_back(renderer);
@@ -433,24 +452,5 @@ namespace pogl
         {
             projection_uniform.set_mat4(projection);
         }
-    }
-
-    void Engine::update()
-    {
-        mouse_update();
-        static double last_tick = 0;
-        const double now = glfwGetTime();
-        const double delta = now - last_tick;
-        last_tick = now;
-
-        // update objects
-        for (auto object : dynamic_objects)
-        {
-            object->update(delta);
-        }
-
-        auto &input_state = get_input_state();
-        input_state.mouse_x_axis = 0;
-        input_state.mouse_y_axis = 0;
     }
 } // namespace pogl
