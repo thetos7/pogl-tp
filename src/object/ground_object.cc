@@ -15,8 +15,8 @@ namespace pogl
                                float accumulation_rate)
         : _renderer(renderer)
         , _snow_mask(snow_mask)
-        , _snow_height(FloatImageBuffer::sized(snow_mask.width(), snow_mask.height(),
-                                          snow_mask.channels()))
+        , _snow_height(FloatImageBuffer::sized(
+              snow_mask.width(), snow_mask.height(), snow_mask.channels()))
         , _snow_height_texture(snow_height_texture)
         , _accumulation_rate(accumulation_rate)
     {}
@@ -24,10 +24,6 @@ namespace pogl
     void GroundObject::draw()
     {
         _renderer->draw();
-    }
-    void GroundObject::update_camera(const Matrix4 &camera_transform)
-    {
-        _renderer->update_camera(camera_transform);
     }
 
     void GroundObject::update(double delta)

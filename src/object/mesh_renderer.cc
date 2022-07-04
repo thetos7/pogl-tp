@@ -12,7 +12,8 @@ namespace pogl
                                const ShaderType &shader,
                                size_t vertex_array_index_count,
                                std::vector<GLuint> buffer_ids,
-                               const Matrix4 &transform, UniformType transform_uniform)
+                               const Matrix4 &transform,
+                               UniformType transform_uniform)
         : _shader(shader)
         , _vao_id(vao_id)
         , _draw_mode(draw_mode)
@@ -46,12 +47,6 @@ namespace pogl
         CHECK_GL_ERROR();
         glBindVertexArray(0);
         CHECK_GL_ERROR();
-    }
-
-    void MeshRenderer::update_camera(const Matrix4 &camera_transform)
-    {
-        _shader->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
-            ->set_mat4(camera_transform);
     }
 
     void MeshRenderer::set_transform(const Matrix4 &transform)

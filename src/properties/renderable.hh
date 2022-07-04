@@ -8,7 +8,6 @@ namespace pogl
     {
     public:
         virtual void draw() = 0;
-        virtual void update_camera(const Matrix4 &camera_transform) = 0;
 
     private:
     };

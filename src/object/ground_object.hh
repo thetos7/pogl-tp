@@ -52,7 +52,6 @@ namespace pogl
         virtual ~GroundObject() = default;
 
         virtual void draw() override;
-        virtual void update_camera(const Matrix4 &camera_transform) override;
         virtual void update(double delta) override;
 
     private:

@@ -53,13 +53,13 @@ namespace pogl
 
         MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
                      const ShaderType &shader, size_t vertex_array_index_count,
-                     std::vector<GLuint> _buffer_ids, const Matrix4 &transform, UniformType transform_uniform);
+                     std::vector<GLuint> _buffer_ids, const Matrix4 &transform,
+                     UniformType transform_uniform);
         virtual ~MeshRenderer();
 
         static Builder builder();
 
         virtual void draw() override;
-        virtual void update_camera(const Matrix4 &camera_transform) override;
 
         void set_transform(const Matrix4 &transform);
 
