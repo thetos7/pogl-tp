@@ -354,7 +354,6 @@ namespace pogl
         main_camera = camera;
 
         const auto view_transform = main_camera->get_transform();
-        std::cerr << main_camera->get_forward() << "\n";
 
         for (auto s : camera_dependent_shaders)
         {
