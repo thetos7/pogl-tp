@@ -2,8 +2,8 @@
 
 #include <GL/gl.h>
 #include <array>
-#include <iosfwd>
 #include <initializer_list>
+#include <iosfwd>
 
 namespace pogl
 {
@@ -52,9 +52,9 @@ namespace pogl
 
         /**
          * @brief Copy assignement operator;
-         * 
-         * @param value 
-         * @return Matrix4& 
+         *
+         * @param value
+         * @return Matrix4&
          */
         Matrix4 &operator=(const Matrix4 &value);
 
@@ -74,6 +74,20 @@ namespace pogl
         {
             return identity();
         }
+
+        /**
+         * @brief Creates a new matrix containing the transposed version of the
+         * current matrix.
+         *
+         * @return Matrix4
+         */
+        Matrix4 transpose() const;
+        /**
+         * @brief Transposes the current matrix in place
+         *
+         * @return Matrix4 &the current matrix
+         */
+        Matrix4 &transpose_inplace();
 
         /**
          * @brief Creates a translation transform matrix.

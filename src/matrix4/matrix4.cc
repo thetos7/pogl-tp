@@ -76,6 +76,31 @@ namespace pogl
         return Matrix4(elements);
     }
 
+    Matrix4 Matrix4::transpose() const
+    {
+        return Matrix4(ElementsBufferType{
+            at(0, 0), at(0, 1), at(0, 2), at(0, 3), // l1
+            at(1, 0), at(1, 1), at(1, 2), at(1, 3), // l2
+            at(2, 0), at(2, 1), at(2, 2), at(2, 3), // l3
+            at(3, 0), at(3, 1), at(3, 2), at(3, 3) // l4
+        });
+    }
+
+    Matrix4 &Matrix4::transpose_inplace()
+    {
+        ElementType tmp = 0;
+        for (size_t i = 0; i < DIM - 1; ++i)
+        {
+            for (size_t j = i + 1; j < DIM; ++j)
+            {
+                tmp = at(i, j);
+                at(i, j) = at(j, i);
+                at(j, i) = tmp;
+            }
+        }
+        return *this;
+    }
+
     Matrix4 Matrix4::translation(ElementType x, ElementType y, ElementType z)
     {
         return Matrix4(Matrix4::ElementsBufferType{
