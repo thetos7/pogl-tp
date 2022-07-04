@@ -52,6 +52,7 @@ namespace pogl
         bool _init_objects();
         bool _init_POV();
         bool _init_textures();
+        void _init_camera_dependent_shader_map();
 
         Engine();
     };

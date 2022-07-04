@@ -183,6 +183,12 @@ namespace pogl
         shaders.emplace("ground", ground_shader);
         // </ground shader>
 
+        _init_camera_dependent_shader_map();
+        return true;
+    }
+
+    void Engine::_init_camera_dependent_shader_map()
+    {
         // find shaders which require the camera transform, i.e. that have a
         // mat4 view_transform uniform & a mat4 projection_matrix uniform
         for (auto [name, s] : shaders)
@@ -232,13 +238,11 @@ namespace pogl
                 error = true;
             }
 
-            if (has_view_transform_uniform && view_transform_uniform_type_ok
-                && has_projection_uniform && projection_uniform_type_ok)
+            if (!error)
             {
                 camera_dependent_shaders.push_back(s);
             }
         }
-        return true;
     }
 
     bool Engine::_init_textures()
