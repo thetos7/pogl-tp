@@ -5,6 +5,7 @@
 
 #include "image_buffer.hh"
 #include "stb_image.h"
+#include "utils/log.hh"
 
 namespace pogl
 {
@@ -51,7 +52,8 @@ namespace pogl
     {
         if (row >= _height || col >= _width)
         {
-            std::cerr << "ERROR: Out of bounds access, tried to access pixel "
+            std::cerr << LOG_ERROR
+                      << "Out of bounds access, tried to access pixel "
                          "{col:"
                       << col << ", row: " << row
                       << " }, dimensions are {width: " << _width
@@ -69,12 +71,12 @@ namespace pogl
     {
         if (row >= _height || col >= _width)
         {
-            std::cerr
-                << "ERROR: Out of bounds access, tried to access pixel {col:"
-                << col << ", row: " << row
-                << " }, dimensions are {width: " << _width
-                << ", height: " << _height << ", channels: " << _channels
-                << " }\n";
+            std::cerr << LOG_ERROR
+                      << "Out of bounds access, tried to access pixel {col:"
+                      << col << ", row: " << row
+                      << " }, dimensions are {width: " << _width
+                      << ", height: " << _height << ", channels: " << _channels
+                      << " }\n";
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels;
@@ -87,12 +89,12 @@ namespace pogl
     {
         if (row >= _height || col >= _width || ch >= _channels)
         {
-            std::cerr
-                << "ERROR: Out of bounds access, tried to access pixel {col:"
-                << col << ", row: " << row << ", ch: " << ch
-                << " }, dimensions are {width: " << _width
-                << ", height: " << _height << ", channels: " << _channels
-                << " }\n";
+            std::cerr << LOG_ERROR
+                      << "Out of bounds access, tried to access pixel {col:"
+                      << col << ", row: " << row << ", ch: " << ch
+                      << " }, dimensions are {width: " << _width
+                      << ", height: " << _height << ", channels: " << _channels
+                      << " }\n";
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels + ch;
@@ -106,12 +108,12 @@ namespace pogl
     {
         if (row >= _height || col >= _width || ch >= _channels)
         {
-            std::cerr
-                << "ERROR: Out of bounds access, tried to access pixel {col:"
-                << col << ", row: " << row << ", ch: " << ch
-                << " }, dimensions are {width: " << _width
-                << ", height: " << _height << ", channels: " << _channels
-                << " }\n";
+            std::cerr << LOG_ERROR
+                      << "Out of bounds access, tried to access pixel {col:"
+                      << col << ", row: " << row << ", ch: " << ch
+                      << " }, dimensions are {width: " << _width
+                      << ", height: " << _height << ", channels: " << _channels
+                      << " }\n";
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels + ch;

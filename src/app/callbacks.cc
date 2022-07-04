@@ -12,7 +12,7 @@ namespace pogl
 
     void on_error(int, const char *description)
     {
-        std::cerr << "GLFW ERROR: " << description << "\n";
+        std::cerr << LOG_ERROR << "GLFW ERROR: " << description << "\n";
     }
 
     void on_framebuffer_resize(GLFWwindow *, int width, int height)

@@ -1,7 +1,7 @@
 #include "image/stb_image.h"
 #include "texture.hh"
 #include "utils/gl_check.hh"
-
+#include "utils/log.hh"
 namespace pogl
 {
     using Self = Texture::Builder;
@@ -88,7 +88,7 @@ namespace pogl
         bool error = false;
         if (!_texture_buffer)
         {
-            std::cerr << "ERROR: Texture builder misses a texture buffer.\n ";
+            std::cerr << LOG_ERROR<<"Texture builder misses a texture buffer.\n ";
             error = true;
         }
         if (error)

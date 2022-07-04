@@ -4,6 +4,7 @@
 #include "utils/buffer_offset_macro.hh"
 #include "utils/definitions.hh"
 #include "utils/gl_check.hh"
+#include "utils/log.hh"
 
 namespace pogl
 {
@@ -59,13 +60,15 @@ namespace pogl
         bool error = false;
         if (_buffers.empty())
         {
-            std::cerr << "Error: mesh object renderer builder has no vertex "
+            std::cerr << LOG_ERROR
+                      << "mesh object renderer builder has no vertex "
                          "buffer, which is mandatory.\n";
             error = true;
         }
         if (!_shader)
         {
-            std::cerr << "Error: mesh object renderer builder has no "
+            std::cerr << LOG_ERROR
+                      << "mesh object renderer builder has no "
                          "associated shader program, which is mandatory.\n";
             error = true;
         }
@@ -75,13 +78,15 @@ namespace pogl
                 (*_shader)->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME);
             if (!transform_u)
             {
-                std::cerr << "WARNING: Mesh renderer shader does not have a "
+                std::cerr << LOG_WARNING
+                          << "Mesh renderer shader does not have a "
                              "valid active model transform uniform.\n";
             }
         }
         if (_attribute_config.empty())
         {
-            std::cerr << "Error: no attribute has been specified in mesh "
+            std::cerr << LOG_ERROR
+                      << "no attribute has been specified in mesh "
                          "renderer builder.\n";
             error = true;
         }
@@ -97,7 +102,8 @@ namespace pogl
         if (missing_attribute_configs)
         {
             std::cerr
-                << "Error: Some buffers are declares in mesh object renderer "
+                << LOG_ERROR
+                << "Some buffers are declares in mesh object renderer "
                    "builder, but no attribute has been defined for them.\n";
             error = true;
         }
@@ -147,7 +153,7 @@ namespace pogl
                 CHECK_GL_ERROR();
                 if (location == -1)
                 {
-                    std::cerr << "ERROR: attribute `" << name
+                    std::cerr << LOG_ERROR << "attribute `" << name
                               << "` could not be found in shader program.\n";
                 }
                 glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE,

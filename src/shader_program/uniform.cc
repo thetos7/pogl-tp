@@ -27,7 +27,7 @@ namespace pogl
         if (_type != GL_FLOAT_MAT4)
         {
             std::ostringstream oss;
-            oss << "Error: Attempt to set uniform `" << _name
+            oss << LOG_ERROR << "Attempt to set uniform `" << _name
                 << "` with value of type mat4, but its type differs.\n";
             throw std::logic_error(oss.str());
         }
@@ -41,7 +41,7 @@ namespace pogl
         if (_type != GL_FLOAT)
         {
             std::ostringstream oss;
-            oss << "Error: Attempt to set uniform `" << _name
+            oss << LOG_ERROR << "Attempt to set uniform `" << _name
                 << "` with value of type float, but its type differs.\n";
             throw std::logic_error(oss.str());
         }
@@ -59,7 +59,7 @@ namespace pogl
         if (_type != GL_FLOAT_VEC3)
         {
             std::ostringstream oss;
-            oss << "Error: Attempt to set uniform `" << _name
+            oss << LOG_ERROR << "Attempt to set uniform `" << _name
                 << "` with value of type vec3, but its type differs.\n";
             throw std::logic_error(oss.str());
         }
@@ -73,7 +73,7 @@ namespace pogl
         if (_type != GL_INT && _type != GL_SAMPLER_2D)
         {
             std::ostringstream oss;
-            oss << "Error: Attempt to set uniform `" << _name
+            oss << LOG_ERROR << "Attempt to set uniform `" << _name
                 << "` with value of type int, but its type isn't int or a "
                    "sampler.\n";
             throw std::logic_error(oss.str());
@@ -88,7 +88,7 @@ namespace pogl
         if (_type != GL_FLOAT_VEC4)
         {
             std::ostringstream oss;
-            oss << "Error: Attempt to set uniform `" << _name
+            oss << LOG_ERROR << "Attempt to set uniform `" << _name
                 << "` with value of type vec4, but its type differs.\n";
             throw std::logic_error(oss.str());
         }

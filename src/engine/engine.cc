@@ -11,6 +11,7 @@
 #include "object/mesh_renderer.hh"
 #include "utils/definitions.hh"
 #include "utils/gl_check.hh"
+#include "utils/log.hh"
 
 #define DEFAULT_SCENE 0
 
@@ -46,7 +47,7 @@ namespace pogl
     {
         if (!glfwInit())
         {
-            std::cerr << "ERROR: GLFW initialisation failed.\n";
+            std::cerr << LOG_ERROR << "GLFW initialisation failed.\n";
             return false;
         }
         glfwSetErrorCallback(on_error);
@@ -60,7 +61,7 @@ namespace pogl
                                   nullptr, nullptr);
         if (!window)
         {
-            std::cerr << "ERROR: GLFW Window creation failed.\n";
+            std::cerr << LOG_ERROR << "GLFW Window creation failed.\n";
             return false;
         }
         glfwMakeContextCurrent(window);
@@ -212,7 +213,7 @@ namespace pogl
 
             if (has_view_transform_uniform != has_projection_uniform)
             {
-                std::cerr << "WARNING: shader program `" << name
+                std::cerr << LOG_WARNING << "shader program `" << name
                           << "` has one of "
                           << definitions::VIEW_TRANSFORM_UNIFORM_NAME << " or "
                           << definitions::PROJECTION_UNIFORM_NAME
@@ -223,8 +224,8 @@ namespace pogl
 
             if (has_projection_uniform && !projection_uniform_type_ok)
             {
-                std::cerr << "WARNING: shader program `" << name << "` has a `"
-                          << definitions::PROJECTION_UNIFORM_NAME
+                std::cerr << LOG_WARNING << "shader program `" << name
+                          << "` has a `" << definitions::PROJECTION_UNIFORM_NAME
                           << "` uniform which's type "
                              "is not mat4.\n";
                 error = true;
@@ -232,7 +233,8 @@ namespace pogl
 
             if (has_view_transform_uniform && !view_transform_uniform_type_ok)
             {
-                std::cerr << "WARNING: shader program `" << name << "` has a `"
+                std::cerr << LOG_WARNING << "shader program `" << name
+                          << "` has a `"
                           << definitions::VIEW_TRANSFORM_UNIFORM_NAME
                           << "` uniform which's "
                              "type is not mat4.\n";
@@ -330,7 +332,7 @@ namespace pogl
                 .build();
         if (!ground_option)
         {
-            std::cerr << "ERROR: ground could not be built.\n";
+            std::cerr << LOG_ERROR << "ground could not be built.\n";
         }
         else
         {
@@ -374,19 +376,19 @@ namespace pogl
 
     void Engine::init()
     {
-        std::cout << "initialising GLFW...\n";
+        std::cout << LOG_INFO << "initialising GLFW...\n";
         _init_glfw();
-        std::cout << "initialising GLEW...\n";
+        std::cout << LOG_INFO << "initialising GLEW...\n";
         _init_glew();
-        std::cout << "initialising GL...\n";
+        std::cout << LOG_INFO << "initialising GL...\n";
         _init_GL();
-        std::cout << "initialising shaders...\n";
+        std::cout << LOG_INFO << "initialising shaders...\n";
         _init_shaders();
-        std::cout << "initialising textures...\n";
+        std::cout << LOG_INFO << "initialising textures...\n";
         _init_textures();
-        std::cout << "initialising objects...\n";
+        std::cout << LOG_INFO << "initialising objects...\n";
         _init_objects();
-        std::cout << "initialising POV...\n";
+        std::cout << LOG_INFO << "initialising POV...\n";
         _init_POV();
     }
 

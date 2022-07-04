@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "engine/engine.hh"
+#include "utils/log.hh"
 
 using namespace pogl;
 
@@ -8,7 +9,7 @@ int main()
 {
     auto &engine = Engine::instance();
     engine.init();
-    std::cout << "launching\n";
+    std::cout << LOG_INFO << "launching\n";
     std::cout << "Camera controls:\n";
     std::cout << "Z/S: Forward/Backwards\n";
     std::cout << "Q/D: Left/Right\n";

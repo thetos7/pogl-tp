@@ -2,6 +2,7 @@
 
 #include "ground_object.hh"
 #include "import/importer.hh"
+#include "utils/log.hh"
 
 namespace pogl
 {
@@ -45,7 +46,8 @@ namespace pogl
         bool error = false;
         if (!_shader)
         {
-            std::cerr << "ERROR: Cannot build ground, shader is missing.\n";
+            std::cerr << LOG_ERROR
+                      << "Cannot build ground, shader is missing.\n";
             error = true;
         }
         if (error)
@@ -65,7 +67,8 @@ namespace pogl
                 .import();
         if (!ground_buffers_result)
         {
-            std::cerr << "ERROR: could not import ground model, file is "
+            std::cerr << LOG_ERROR
+                      << "could not import ground model, file is "
                          "missing ? (path: `"
                       << _model_path.c_str() << "`)\n";
             return std::nullopt;
@@ -73,7 +76,8 @@ namespace pogl
         auto snow_mask = FloatImageBuffer::load(_snow_mask_path);
         if (!snow_mask)
         {
-            std::cerr << "ERROR: could not load ground snow mask, file is "
+            std::cerr << LOG_ERROR
+                      << "could not load ground snow mask, file is "
                          "missing ? (path: `"
                       << _snow_mask_path.c_str() << "`)\n";
             return std::nullopt;
