@@ -19,6 +19,7 @@ namespace pogl
         using VaoType = GLuint;
         using BufferType = std::vector<GLfloat>;
         using DrawModeType = GLenum;
+        using UniformType = std::optional<Uniform>;
         using Self = MeshRenderer;
 
         class Builder
@@ -52,7 +53,7 @@ namespace pogl
 
         MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
                      const ShaderType &shader, size_t vertex_array_index_count,
-                     std::vector<GLuint> _buffer_ids, const Matrix4 &transform);
+                     std::vector<GLuint> _buffer_ids, const Matrix4 &transform, UniformType transform_uniform);
         virtual ~MeshRenderer();
 
         static Builder builder();
@@ -71,6 +72,7 @@ namespace pogl
         size_t _vertex_array_index_count;
         std::vector<GLuint> _buffer_ids;
         Matrix4 _transform;
+        UniformType _transform_uniform;
     };
 
 } // namespace pogl

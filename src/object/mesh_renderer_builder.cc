@@ -2,6 +2,7 @@
 
 #include "mesh_renderer.hh"
 #include "utils/buffer_offset_macro.hh"
+#include "utils/definitions.hh"
 #include "utils/gl_check.hh"
 
 namespace pogl
@@ -67,6 +68,16 @@ namespace pogl
             std::cerr << "Error: mesh object renderer builder has no "
                          "associated shader program, which is mandatory.\n";
             error = true;
+        }
+        else
+        {
+            auto transform_u =
+                (*_shader)->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME);
+            if (!transform_u)
+            {
+                std::cerr << "WARNING: Mesh renderer shader does not have a "
+                             "valid active model transform uniform.\n";
+            }
         }
         if (_attribute_config.empty())
         {
@@ -153,9 +164,10 @@ namespace pogl
         glBindVertexArray(0);
         CHECK_GL_ERROR();
 
-        return std::make_shared<MeshRenderer>(vao_id, _draw_mode, *_shader,
-                                              _buffers[0].size(), buffer_ids,
-                                              _transform);
+        return std::make_shared<MeshRenderer>(
+            vao_id, _draw_mode, *_shader, _buffers[0].size(), buffer_ids,
+            _transform,
+            (*_shader)->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME));
     }
 
 } // namespace pogl

@@ -12,13 +12,14 @@ namespace pogl
                                const ShaderType &shader,
                                size_t vertex_array_index_count,
                                std::vector<GLuint> buffer_ids,
-                               const Matrix4 &transform)
+                               const Matrix4 &transform, UniformType transform_uniform)
         : _shader(shader)
         , _vao_id(vao_id)
         , _draw_mode(draw_mode)
         , _vertex_array_index_count(vertex_array_index_count)
         , _buffer_ids(buffer_ids)
         , _transform(transform)
+        , _transform_uniform(transform_uniform)
     {}
 
     MeshRenderer::~MeshRenderer()
@@ -35,11 +36,9 @@ namespace pogl
     void MeshRenderer::draw()
     {
         _shader->use();
-        auto transform_uniform =
-            _shader->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME);
-        if (transform_uniform)
+        if (_transform_uniform)
         {
-            transform_uniform->set_mat4(_transform);
+            _transform_uniform->set_mat4(_transform);
         }
         glBindVertexArray(_vao_id);
         CHECK_GL_ERROR();
