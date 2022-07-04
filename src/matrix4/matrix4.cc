@@ -86,6 +86,16 @@ namespace pogl
         });
     }
 
+    static Matrix4 scale(ElementType factor)
+    {
+        return Matrix4(Matrix4::ElementsBufferType{
+            factor, 0, 0, 0, // l1
+            0, factor, 0, 0, // l2
+            0, 0, factor, 0, // l3
+            0, 0, 0, 1 //  l4
+        });
+    }
+
     Matrix4 Matrix4::frustum(float left, float right, float bottom, float top,
                              float znear, float zfar)
     {

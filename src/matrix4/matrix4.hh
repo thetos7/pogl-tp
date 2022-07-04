@@ -3,6 +3,7 @@
 #include <GL/gl.h>
 #include <array>
 #include <iosfwd>
+#include <initializer_list>
 
 namespace pogl
 {
@@ -92,6 +93,23 @@ namespace pogl
          * @return Matrix4 The translation transform matrix
          */
         static Matrix4 translation(ElementType x, ElementType y, ElementType z);
+
+        /**
+         * @brief Creates a scaling transform matrix.
+         *
+         * The created matrix has the form: (given f = factor)
+         *
+         * ```
+         * | f 0 0 0 |
+         * | 0 f 0 0 |
+         * | 0 0 f 0 |
+         * | 0 0 0 1 |
+         * ```
+         *
+         * @param factor The scaling factor
+         * @return Matrix4 The scaling transform matrix
+         */
+        static Matrix4 scale(ElementType factor);
 
         /**
          * @brief Gets a constant reference to the element in col, row
