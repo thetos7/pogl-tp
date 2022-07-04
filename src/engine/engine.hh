@@ -27,7 +27,8 @@ namespace pogl
         static Engine &instance();
         std::vector<std::shared_ptr<Renderable>> renderers;
         std::map<std::string, std::shared_ptr<ShaderProgram>> shaders;
-        std::vector<std::shared_ptr<ShaderProgram>> camera_dependent_shaders;
+        std::vector<Uniform> view_transform_uniforms;
+        std::vector<Uniform> projection_uniforms;
         std::vector<std::shared_ptr<Updateable>> dynamic_objects;
         std::map<std::string, std::shared_ptr<Texture>> textures;
 

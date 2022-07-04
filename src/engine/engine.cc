@@ -35,7 +35,8 @@ namespace pogl
     Engine::Engine()
         : renderers()
         , shaders()
-        , camera_dependent_shaders()
+        , view_transform_uniforms()
+        , projection_uniforms()
         , dynamic_objects()
         , main_camera(nullptr)
         , window(nullptr)
@@ -240,7 +241,11 @@ namespace pogl
 
             if (!error)
             {
-                camera_dependent_shaders.push_back(s);
+                view_transform_uniforms.push_back(
+                    s->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
+                        .value());
+                projection_uniforms.push_back(
+                    s->uniform(definitions::PROJECTION_UNIFORM_NAME).value());
             }
         }
     }
@@ -359,12 +364,10 @@ namespace pogl
 
         const auto view_transform = main_camera->get_transform();
 
-        for (auto s : camera_dependent_shaders)
+        for (size_t i = 0; i < projection_uniforms.size(); ++i)
         {
-            s->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
-                ->set_mat4(view_transform);
-            s->uniform(definitions::PROJECTION_UNIFORM_NAME)
-                ->set_mat4(projection_matrix);
+            view_transform_uniforms[i].set_mat4(view_transform);
+            projection_uniforms[i].set_mat4(projection_matrix);
         }
         return true;
     }
@@ -392,10 +395,9 @@ namespace pogl
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         CHECK_GL_ERROR();
         const auto view_transform = main_camera->get_transform();
-        for (auto shader : camera_dependent_shaders)
+        for (auto view_transform_uniform : view_transform_uniforms)
         {
-            shader->uniform(definitions::VIEW_TRANSFORM_UNIFORM_NAME)
-                ->set_mat4(view_transform);
+            view_transform_uniform.set_mat4(view_transform);
         }
         for (auto renderer : renderers)
         {
@@ -427,10 +429,9 @@ namespace pogl
         const auto projection = Matrix4::perspective(
             DEFAULT_FOV, aspect_ratio, DEFAULT_ZNEAR, DEFAULT_ZFAR);
         main_camera->set_projection(projection);
-        for (auto s : camera_dependent_shaders)
+        for (auto projection_uniform : projection_uniforms)
         {
-            s->uniform(definitions::PROJECTION_UNIFORM_NAME)
-                ->set_mat4(projection);
+            projection_uniform.set_mat4(projection);
         }
     }
 
