@@ -62,6 +62,8 @@ namespace pogl
 
         void set_transform(const Matrix4 &transform);
 
+        ShaderType shader();
+
     private:
         ShaderType _shader;
         VaoType _vao_id;

@@ -59,4 +59,9 @@ namespace pogl
     {
         _transform = transform;
     }
+
+    Self::ShaderType MeshRenderer::shader()
+    {
+        return _shader;
+    }
 } // namespace pogl
