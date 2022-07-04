@@ -88,7 +88,8 @@ namespace pogl
         bool error = false;
         if (!_texture_buffer)
         {
-            std::cerr << LOG_ERROR<<"Texture builder misses a texture buffer.\n ";
+            std::cerr << LOG_ERROR
+                      << "Texture builder misses a texture buffer.\n ";
             error = true;
         }
         if (error)
