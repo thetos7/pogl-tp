@@ -7,12 +7,12 @@
 #include <tuple>
 #include <vector>
 
-#include "properties/renderable.hh"
+#include "properties/drawable.hh"
 #include "shader_program/shader_program.hh"
 
 namespace pogl
 {
-    class MeshRenderer : public Renderable
+    class MeshRenderer : public Drawable
     {
     public:
         using ShaderType = std::shared_ptr<ShaderProgram>;

@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "camera/camera.hh"
-#include "properties/renderable.hh"
+#include "properties/drawable.hh"
 #include "properties/updateable.hh"
 #include "shader_program/shader_program.hh"
 #include "texture/texture.hh"
@@ -25,7 +25,7 @@ namespace pogl
         static constexpr float DEFAULT_ASPECT_RATIO = 1.;
 
         static Engine &instance();
-        std::vector<std::shared_ptr<Renderable>> renderers;
+        std::vector<std::shared_ptr<Drawable>> renderers;
         std::map<std::string, std::shared_ptr<ShaderProgram>> shaders;
         std::vector<Uniform> view_transform_uniforms;
         std::vector<Uniform> projection_uniforms;
@@ -39,7 +39,7 @@ namespace pogl
         void update();
         void init();
 
-        Engine &add_renderer(std::shared_ptr<Renderable> renderer);
+        Engine &add_renderer(std::shared_ptr<Drawable> renderer);
         Engine &add_dynamic(std::shared_ptr<Updateable> object);
         Engine &add_texture(std::string name, std::shared_ptr<Texture> texture);
 

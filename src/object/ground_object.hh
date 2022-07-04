@@ -5,7 +5,7 @@
 
 #include "image/image_buffer.hh"
 #include "mesh_renderer.hh"
-#include "properties/renderable.hh"
+#include "properties/drawable.hh"
 #include "properties/updateable.hh"
 
 namespace pogl
@@ -14,7 +14,7 @@ namespace pogl
 
     class GroundObject
         : public Updateable
-        , public Renderable
+        , public Drawable
     {
     public:
         using RendererType = std::shared_ptr<MeshRenderer>;

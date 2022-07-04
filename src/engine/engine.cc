@@ -426,7 +426,7 @@ namespace pogl
         input_state.mouse_y_axis = 0;
     }
 
-    Engine &Engine::add_renderer(std::shared_ptr<Renderable> renderer)
+    Engine &Engine::add_renderer(std::shared_ptr<Drawable> renderer)
     {
         renderers.push_back(renderer);
         return *this;
