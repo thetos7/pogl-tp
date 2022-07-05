@@ -1,5 +1,7 @@
 #include "particle_system.hh"
 
+#include "utils/random.hh"
+
 namespace pogl {
     constexpr Vector3 center = Vector3(0,0,10);
 
@@ -8,7 +10,7 @@ namespace pogl {
         std::vector<Particle> particles;
         this->shader = shader;
         this->particles = particles;
-        generate_particles(Vector3(0,0,6), 2, 1, -1, 2);
+        generate_particles(Vector3(0,0,6), 100, 1, -1, 2);
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
     }
@@ -37,22 +39,26 @@ namespace pogl {
         
     void ParticleSystem::generate_particles(Vector3 center, float number, float speed, float gravity, float life) {
         for(float i = 0; i < number; i++) {
-            center.x += (std::rand()%15) - 14;
-            center.y += (std::rand()%15) - 14;
-            float x = center.x + std::rand() % 10;
-            float z = center.z + std::rand() % 10;
-            Vector3* velocity = new Vector3(0, 0, -2); // leaks
+            const auto px = center.x + float_rand_range(-3, 3);
+            const auto py = center.y + float_rand_range(-3, 3);
+            const auto position = Vector3(px, py, center.z);
+            Vector3 velocity(float_rand_range(-0.5, 0.5), float_rand_range(-0.5, 0.5), float_rand_range(-1, -2));
+
+
             // velocity->normalized();
             // *velocity *= speed;
-            Particle newParticle = Particle(center, *velocity, gravity, life, 0, 1);
+            const auto timeAlive = float_rand_range(0, life);
+            Particle newParticle = Particle(position, velocity, gravity, life, timeAlive, 0, 1);
             addParticle(newParticle);
         }
     }
 
     void ParticleSystem::particleReset(Particle& particle, Vector3 center) {
-        center.x += (std::rand()%15) - 10;
-        center.y += (std::rand()%15) - 10;
-        particle.reset(center, particle.getVelocity(), particle.getGravity(), particle.getLifeExpectancy(), particle.getRotation(), particle.getScale());
+        const auto px = center.x + float_rand_range(-3,3);
+        const auto py = center.x + float_rand_range(-3,3);
+        const auto position = Vector3(px, py, center.z);
+        Vector3 velocity(float_rand_range(-0.5, 0.5), float_rand_range(-0.5, 0.5), float_rand_range(-1, -2));
+        particle.reset(position, velocity, particle.getGravity(), particle.getLifeExpectancy(), particle.getRotation(), particle.getScale());
     }
 
     void ParticleSystem::draw() {

@@ -8,7 +8,7 @@ namespace pogl {
         public:
             static constexpr float GRAVITY = -1;
 
-            Particle(Vector3 position, Vector3 velocity, float gravity, float life_e, float rotation, float scale);
+            Particle(Vector3 position, Vector3 velocity, float gravity, float life_e, float time_alive, float rotation, float scale);
 
             Vector3 getPosition();
             Vector3 getVelocity();

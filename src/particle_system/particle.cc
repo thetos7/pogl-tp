@@ -1,10 +1,11 @@
 #include "particle.hh"
 
 namespace pogl {
-    Particle::Particle(Vector3 position, Vector3 velocity, float gravity, float life_e, float rotation, float scale) {
+    Particle::Particle(Vector3 position, Vector3 velocity, float gravity,float life_e, float time_alive, float rotation, float scale) {
         this->position = position;
         this->velocity= velocity;
         this->gravity = gravity;
+        this->timeAlive = time_alive;
         this->life_expectancy = life_e;
         this->rotation = rotation;
         this->scale = scale;
