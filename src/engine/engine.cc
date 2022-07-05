@@ -189,6 +189,9 @@ namespace pogl
         auto particles_shader = ShaderProgram::make_program(
             "../resources/shaders/particle_system/vertex.glsl",
             "../resources/shaders/particle_system/fragment.glsl");
+        particles_shader->uniform("model_transform")
+            ->set_mat4(Matrix4::identity());
+        particles_shader->uniform("obj_color")->set_vec4(1.0, 1.0, 0.0, 1.0);
         shaders.emplace("particle_system", particles_shader);
 
         _init_camera_dependent_shader_map();
@@ -347,7 +350,8 @@ namespace pogl
             this->add_dynamic(ground);
         }
 
-        std::shared_ptr<ParticleSystem> particle_sys = std::make_shared<ParticleSystem>(shaders["particle_system"]);
+        std::shared_ptr<ParticleSystem> particle_sys =
+            std::make_shared<ParticleSystem>(shaders["particle_system"]);
         this->add_renderer(particle_sys);
         this->add_dynamic(particle_sys);
 
@@ -401,7 +405,6 @@ namespace pogl
         _init_POV();
         std::cout << LOG_INFO << "initialising objects...\n";
         _init_objects();
-
     }
 
     void Engine::display()
