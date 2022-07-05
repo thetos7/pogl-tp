@@ -121,6 +121,17 @@ namespace pogl
         });
     }
 
+    Matrix4 Matrix4::basis_change(const Vector3 &x_axis, const Vector3 &y_axis,
+                                  const Vector3 &z_axis)
+    {
+        return Matrix4(Matrix4::ElementsBufferType{
+            x_axis.x, y_axis.x, z_axis.x, 0, // l1
+            x_axis.y, y_axis.y, z_axis.y, 0, // l2
+            x_axis.z, y_axis.z, z_axis.z, 0, // l3
+            0, 0, 0, 1 // l4
+        });
+    }
+
     Matrix4 Matrix4::frustum(float left, float right, float bottom, float top,
                              float znear, float zfar)
     {

@@ -5,6 +5,8 @@
 #include <initializer_list>
 #include <iosfwd>
 
+#include "vector3/vector3.hh"
+
 namespace pogl
 {
     class Matrix4
@@ -82,6 +84,7 @@ namespace pogl
          * @return Matrix4
          */
         Matrix4 transpose() const;
+
         /**
          * @brief Transposes the current matrix in place
          *
@@ -109,6 +112,19 @@ namespace pogl
         static Matrix4 translation(ElementType x, ElementType y, ElementType z);
 
         /**
+         * @brief Equivalent of
+         * `Matrix4::translation(translation.x, translation.y, translation.z)`
+         *
+         * @param translation vector of translation values
+         * @return Matrix4
+         */
+        static inline Matrix4 translation(const Vector3 &translation)
+        {
+            return Matrix4::translation(translation.x, translation.y,
+                                        translation.z);
+        }
+
+        /**
          * @brief Creates a scaling transform matrix.
          *
          * The created matrix has the form: (given f = factor)
@@ -124,6 +140,46 @@ namespace pogl
          * @return Matrix4 The scaling transform matrix
          */
         static Matrix4 scale(ElementType factor);
+
+        /**
+         * @brief Creates a basis change matrix from a source space to a
+         * destination space
+         *
+         * @param x_axis source x basis vector expressed in destination
+         * coordinates
+         * @param y_axis source y basis vector expressed in destination
+         * coordinates
+         * @param z_axis source x basis vector expressed in destination
+         * coordinates
+         * @return Matrix4
+         */
+        static Matrix4 basis_change(const Vector3 &x_axis,
+                                    const Vector3 &y_axis,
+                                    const Vector3 &z_axis);
+        /**
+         * @brief Creates a basis change matrix from a source space to a
+         * destination space with origin translation.
+         * Equivalent of:
+         * `Matrix4::translation(origin) * Matrix4::basis_change(x_axis, y_axis,
+         * z_axis)`
+         *
+         * @param x_axis source x basis vector expressed in destination
+         * coordinates
+         * @param y_axis source y basis vector expressed in destination
+         * coordinates
+         * @param z_axis source x basis vector expressed in destination
+         * coordinates
+         * @param origin source origin position in destination space
+         * @return Matrix4
+         */
+        static inline Matrix4 basis_change(const Vector3 &x_axis,
+                                           const Vector3 &y_axis,
+                                           const Vector3 &z_axis,
+                                           const Vector3 &origin)
+        {
+            return Matrix4::translation(origin)
+                * Matrix4::basis_change(x_axis, y_axis, z_axis);
+        }
 
         /**
          * @brief Gets a constant reference to the element in col, row
