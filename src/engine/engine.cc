@@ -325,8 +325,8 @@ namespace pogl
                     "../resources/textures/flocon.png", 0)
                     .value())
                 .wrap(GL_REPEAT)
-                .src_format(GL_RGB)
-                .format(GL_RGB)
+                .src_format(GL_RGBA)
+                .format(GL_RGBA)
                 .build();
         particle_shader->set_texture("flocon_texture", particle_text);
         this->add_texture("flocon_texture", particle_text);
