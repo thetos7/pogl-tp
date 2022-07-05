@@ -8,7 +8,7 @@ namespace pogl {
         std::vector<Particle> particles;
         this->shader = shader;
         this->particles = particles;
-        generate_particles(Vector3(0,0,6), 2, 1, -1, 2);
+        generate_particles(Vector3(0,0,6), 2, 1, 2);
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
     }
@@ -35,16 +35,15 @@ namespace pogl {
         particles.push_back(particle);
     }
         
-    void ParticleSystem::generate_particles(Vector3 center, float number, float speed, float gravity, float life) {
+    void ParticleSystem::generate_particles(Vector3 center, float number, float speed, float life) {
         for(float i = 0; i < number; i++) {
             center.x += (std::rand()%15) - 14;
             center.y += (std::rand()%15) - 14;
-            float x = center.x + std::rand() % 10;
-            float z = center.z + std::rand() % 10;
             Vector3* velocity = new Vector3(0, 0, -2); // leaks
+
             // velocity->normalized();
             // *velocity *= speed;
-            Particle newParticle = Particle(center, *velocity, gravity, life, 0, 1);
+            Particle newParticle = Particle(center, *velocity, life, 0, 1);
             addParticle(newParticle);
         }
     }
@@ -52,7 +51,7 @@ namespace pogl {
     void ParticleSystem::particleReset(Particle& particle, Vector3 center) {
         center.x += (std::rand()%15) - 10;
         center.y += (std::rand()%15) - 10;
-        particle.reset(center, particle.getVelocity(), particle.getGravity(), particle.getLifeExpectancy(), particle.getRotation(), particle.getScale());
+        particle.reset(center, particle.getVelocity(), particle.getLifeExpectancy(), particle.getRotation(), particle.getScale());
     }
 
     void ParticleSystem::draw() {

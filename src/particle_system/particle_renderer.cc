@@ -47,7 +47,7 @@ namespace pogl {
         const auto x_axis = Vector3::up().cross(y_axis).normalized();
         const auto z_axis = y_axis.cross(x_axis).normalized();
         const auto rotation_transform = Matrix4::basis_change(x_axis, y_axis, z_axis)
-            * Matrix4::scale(0.2);
+            * Matrix4::scale(1);
 
         for(size_t i = 0; i < particles->size(); i++) {
             auto center = particles->at(i).getPosition();
@@ -65,7 +65,15 @@ namespace pogl {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         CHECK_GL_ERROR();
     }
+/*
+    void ParticleRenderer::sort_particles() {
+        for (auto particle : *particles) {
 
+        this->distanceFromCamera = (cameraPositon - position).norm();
+        }
+        const Vector3 cameraPositon = -Engine::instance().main_camera->get_position();
+    }
+*/
     void ParticleRenderer::draw() {
         shader->use();
         glBindVertexArray(quad.getVAO());

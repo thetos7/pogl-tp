@@ -135,6 +135,7 @@ namespace pogl
             "../resources/shaders/uv_debug/vertex.glsl",
             "../resources/shaders/uv_debug/fragment.glsl");
 
+        uv_debug_shader->uniform("model_transform")->set_mat4(Matrix4::identity());
         shaders.emplace("uv_debug", uv_debug_shader);
 
         // <ground shader>
@@ -189,9 +190,13 @@ namespace pogl
         auto particles_shader = ShaderProgram::make_program(
             "../resources/shaders/particle_system/vertex.glsl",
             "../resources/shaders/particle_system/fragment.glsl");
+        {
+            
+            particles_shader->set_unit_name("flocon_texture", 0);
+        }
         particles_shader->uniform("model_transform")
             ->set_mat4(Matrix4::identity());
-        particles_shader->uniform("obj_color")->set_vec4(1.0, 1.0, 0.0, 1.0);
+        //particles_shader->uniform("obj_color")->set_vec4(1.0, 1.0, 0.0, 1.0);
         shaders.emplace("particle_system", particles_shader);
 
         _init_camera_dependent_shader_map();
@@ -313,6 +318,19 @@ namespace pogl
                 .build();
         ground_shader->set_texture("snow_height", snow_height_tex);
         this->add_texture("snow_height", snow_height_tex);
+
+        auto particle_shader = shaders["particle_system"];
+        auto particle_text = Texture::builder()
+                .buffer(RGBImageBuffer::load(
+                    "../resources/textures/flocon.png", 0)
+                    .value())
+                .wrap(GL_REPEAT)
+                .src_format(GL_RGB)
+                .format(GL_RGB)
+                .build();
+        particle_shader->set_texture("flocon_texture", particle_text);
+        this->add_texture("flocon_texture", particle_text);
+
         return true;
     }
 
@@ -353,7 +371,7 @@ namespace pogl
         std::shared_ptr<ParticleSystem> particle_sys =
             std::make_shared<ParticleSystem>(shaders["particle_system"]);
         this->add_renderer(particle_sys);
-        this->add_dynamic(particle_sys);
+        //this->add_dynamic(particle_sys);
 
 #if DEFAULT_SCENE
         auto plane_renderer = MeshRenderer::builder()

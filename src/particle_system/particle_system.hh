@@ -18,7 +18,7 @@ namespace pogl {
             void clean();
             void addParticle(Particle particle);
 
-            void generate_particles(Vector3 center, float number, float speed, float gravity, float life);
+            void generate_particles(Vector3 center, float number, float speed, float life);
 
             void particleReset(Particle& particle, Vector3 center);
 

@@ -15,9 +15,11 @@ namespace pogl {
 
             GLuint createVAO();
 
-            void Attribute();
+            void createUV(std::vector<GLuint> &VBO_ids);
 
-            void storeData(int VBO_id, std::vector<float> positions, std::vector<GLuint> &VBO_ids);
+            void Attribute(const GLchar* s, int elt_num);
+
+            void storeData(int VBO_id, std::vector<float> positions);
 
             void createVBO(std::vector<GLuint> &VBO_ids);
 

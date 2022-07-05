@@ -34,6 +34,8 @@ namespace pogl {
 
             void clean();
 
+            void sort_particles();
+
         private:
             RawModel quad;
             std::vector<Particle> *particles;

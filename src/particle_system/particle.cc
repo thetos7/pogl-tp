@@ -1,13 +1,15 @@
 #include "particle.hh"
+#include "engine/engine.hh"
+#include "vector3/vector3.hh"
 
 namespace pogl {
-    Particle::Particle(Vector3 position, Vector3 velocity, float gravity, float life_e, float rotation, float scale) {
+    Particle::Particle(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale) {
         this->position = position;
         this->velocity= velocity;
-        this->gravity = gravity;
         this->life_expectancy = life_e;
         this->rotation = rotation;
         this->scale = scale;
+        this->timeAlive = 0;
     }
 
     Vector3 Particle::getPosition() {
@@ -26,26 +28,26 @@ namespace pogl {
         return life_expectancy;
     }
 
-    float Particle::getGravity() {
-        return gravity;
-    }
-
     Vector3 Particle::getVelocity() {
         return velocity;
+    }
+
+    float Particle::getDistanceFromCamera() {
+        return distanceFromCamera;
     }
 
     bool Particle::isAlive() {
         return timeAlive > life_expectancy;
     }
 
-    void Particle::reset(Vector3 position, Vector3 velocity, float gravity, float life_e, float rotation, float scale) {
+    void Particle::reset(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale) {
         this->position = position;
         this->velocity= velocity;
-        this->gravity = gravity;
         this->life_expectancy = life_e;
         this->rotation = rotation;
         this->scale = scale;
         this->timeAlive = 0;
+        this->distanceFromCamera = 0;
     }
 
     bool Particle::Update(double delta) {

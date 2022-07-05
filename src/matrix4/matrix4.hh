@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <array>
 #include <initializer_list>
 #include <iosfwd>
