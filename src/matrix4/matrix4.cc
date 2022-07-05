@@ -111,7 +111,7 @@ namespace pogl
         });
     }
 
-    static Matrix4 scale(ElementType factor)
+    Matrix4 Matrix4::scale(ElementType factor)
     {
         return Matrix4(Matrix4::ElementsBufferType{
             factor, 0, 0, 0, // l1
