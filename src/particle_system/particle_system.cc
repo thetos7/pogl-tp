@@ -13,7 +13,7 @@ namespace pogl {
         this->respawnHeight = -1.1; // hardcode for now, parametrize later
         this->particles = particles;
         this->textureCount = (float)textureCount;
-        generate_particles(Vector3(0,0,6), 300, 1, 2);
+        generate_particles(Vector3(0,0,6), 300);
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
     }
@@ -31,12 +31,7 @@ namespace pogl {
                 particle.Update(delta);
         }
     }
-            
-    void ParticleSystem::renderAllParticles(Camera camera) {
-        renderer.render(particles, camera);
-    }
 
-    
     void ParticleSystem::clean() {
         renderer.clean();
     }
@@ -45,7 +40,7 @@ namespace pogl {
         particles.push_back(particle);
     }
         
-    void ParticleSystem::generate_particles(Vector3 center, float number, float speed, float life) {
+    void ParticleSystem::generate_particles(Vector3 center, float number) {
         for(float i = 0; i < number; i++) {
             const auto px = center.x + float_rand_range(-3, 3);
             const auto py = center.y + float_rand_range(-3, 3);
@@ -53,14 +48,10 @@ namespace pogl {
             const auto position = Vector3(px, py, pz);
             Vector3 velocity(float_rand_range(-0.5, 0.5), float_rand_range(-0.5, 0.5), float_rand_range(-1, -2));
 
-
-            // velocity->normalized();
-            // *velocity *= speed;
-            const auto timeAlive = float_rand_range(0, life);
             const auto texId = float_rand_range(0, textureCount);
             const auto angle = float_rand_range(0,360);
             const auto angular_velocity = float_rand_range(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
-            Particle newParticle = Particle(position, velocity, life, timeAlive, angle, angular_velocity, 1, texId);
+            Particle newParticle = Particle(position, velocity, angle, angular_velocity, 1, texId);
             addParticle(newParticle);
         }
     }
@@ -73,7 +64,7 @@ namespace pogl {
         const auto texId = float_rand_range(0, textureCount);
         const auto angle = float_rand_range(0,360);
         const auto angular_velocity = float_rand_range(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
-        particle.reset(position, velocity, particle.getLifeExpectancy(), angle, angular_velocity, particle.getScale(), texId);
+        particle.reset(position, velocity, angle, angular_velocity, particle.getScale(), texId);
     }
 
     void ParticleSystem::draw() {

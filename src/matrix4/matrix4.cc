@@ -123,31 +123,34 @@ namespace pogl
         });
     }
 
-    Matrix4 Matrix4::rotate(float angle, char* axe)
+    Matrix4 Matrix4::rotate(float angle, const std::string &axe)
     {
-        auto param = angle * PI/180.0;
-        if (axe == "x") {
+        auto param = angle * PI / 180.0;
+        if (axe == "x")
+        {
             return Matrix4(Matrix4::ElementsBufferType{
-                1, 0, 0, 0,                                    // l1
-                0, (float) cos(param), (float) -sin(param), 0, // l2
-                0, (float) sin(param), (float) cos(param), 0,  // l3
-                0, 0, 0, 1                                     // l4
+                1, 0, 0, 0, // l1
+                0, (float)cos(param), (float)-sin(param), 0, // l2
+                0, (float)sin(param), (float)cos(param), 0, // l3
+                0, 0, 0, 1 // l4
             });
         }
-        else if (axe == "y") {
+        else if (axe == "y")
+        {
             return Matrix4(Matrix4::ElementsBufferType{
-                (float) cos(param), 0, (float) sin(param), 0,   // l1
-                0, 1, 0, 0,                                     // l2
-                (float) -sin(param), 0, (float) cos(param), 0,  // l3
-                0, 0, 0, 1                                      // l4
+                (float)cos(param), 0, (float)sin(param), 0, // l1
+                0, 1, 0, 0, // l2
+                (float)-sin(param), 0, (float)cos(param), 0, // l3
+                0, 0, 0, 1 // l4
             });
         }
-        else {
+        else
+        {
             return Matrix4(Matrix4::ElementsBufferType{
-                (float) cos(param), (float) -sin(param), 0, 0,  // l1
-                (float) sin(param), (float) cos(param), 0, 0,   // l2
-                0, 0, 1, 0,                                     // l3
-                0, 0, 0, 1                                      // l4
+                (float)cos(param), (float)-sin(param), 0, 0, // l1
+                (float)sin(param), (float)cos(param), 0, 0, // l2
+                0, 0, 1, 0, // l3
+                0, 0, 0, 1 // l4
             });
         }
     }

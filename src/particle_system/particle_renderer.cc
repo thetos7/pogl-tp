@@ -15,26 +15,10 @@ namespace pogl {
         this->vertexTexIdData = std::vector<GLfloat>(4*particles->size());
         instanceIndices = std::vector<GLint>(particles->size());
         instanceDataCounts = std::vector<GLsizei>(particles->size());
-        for(int i = 0; i < instanceIndices.size(); i++) {
+        for(size_t i = 0; i < instanceIndices.size(); i++) {
             instanceIndices[i] = i*4;
             instanceDataCounts[i] = 4;
         }
-    }
-
-    void ParticleRenderer::render(std::vector<Particle> particles, Camera camera) {
-        Matrix4 viewMatrix = camera.get_projection();
-        glBindVertexArray(quad.getVAO());
-        glEnable(GL_BLEND);
-        glDepthMask(false);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-        for (auto &particle : particles) {
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
-        }
-
-        glDepthMask(true);
-        glDisable(GL_BLEND);
-        glBindVertexArray(0);
     }
 
     void ParticleRenderer::clean() {

@@ -31,7 +31,12 @@ namespace pogl
         inline TypeEnum type() const
         {
             return _type;
-        };
+        }
+
+        inline SizeType size() const
+        {
+            return _size;
+        }
 
     private:
         LocType _location;

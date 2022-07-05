@@ -145,7 +145,7 @@ namespace pogl
          * @brief Creates a rotating transform matrix.
          *
          * @param angle factor theta
-         * 
+         *
          * @param axe axe of rotation
          *
          * if axe = x
@@ -160,7 +160,7 @@ namespace pogl
          * |  0   1  0  0 |
          * | -sin 0 cos 0 |
          * |  0   0  0  1 |
-         * 
+         *
          * if axe = z
          * | cos -sin 0 0 |
          * | sin cos  0 0 |
@@ -169,7 +169,7 @@ namespace pogl
          *
          * @return Matrix4 The rotating transform matrix
          */
-        static Matrix4 rotate(float angle, char* axe);
+        static Matrix4 rotate(float angle, const std::string &axe);
 
         /**
          * @brief Creates a basis change matrix from a source space to a

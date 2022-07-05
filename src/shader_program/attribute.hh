@@ -17,12 +17,29 @@ namespace pogl
         Attribute(const std::string &name, LocType location, TypeEnum type,
                   SizeType size, ShaderProgram *program);
 
+        inline LocType location() const
+        {
+            return _location;
+        }
+
+        inline SizeType size() const
+        {
+            return _size;
+        }
+
+        inline TypeEnum type() const
+        {
+            return _type;
+        }
+
     private:
         LocType _location;
         SizeType _size;
         TypeEnum _type;
         std::string _name;
-        ShaderProgram *_program;
+        __attribute__((unused))
+        ShaderProgram *_program; // current implementation does not use yet,
+                                 // remove attribute once used
     };
 
 } // namespace pogl

@@ -22,8 +22,6 @@ namespace pogl {
 
             ~ParticleRenderer() = default;
 
-            void render(std::vector<Particle> particles, Camera camera);
-
             /**
              * @brief Re-orient the particles to the view of the camera.
              */

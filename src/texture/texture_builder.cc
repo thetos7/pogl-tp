@@ -156,7 +156,6 @@ namespace pogl
             auto depth = buffers.size();
             auto pixel_data_count = width * height * channels;
             auto bytes = std::vector<GLubyte>(pixel_data_count * depth);
-            auto it = bytes.begin();
             for (size_t i = 0; i < buffers.size(); ++i)
             {
                 const auto &buf = buffers[i];
