@@ -67,4 +67,15 @@ namespace pogl
     {
         get_input_state().focused = focused != 0;
     }
+
+    void on_mouse_button(GLFWwindow *window, int button, int action, int)
+    {
+        auto &input = get_input_state();
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS
+            && glfwGetWindowAttrib(window, GLFW_HOVERED) && input.focused)
+        {
+            input.capture_cursor = true;
+            update_cursor_capture(window, input);
+        }
+    }
 } // namespace pogl

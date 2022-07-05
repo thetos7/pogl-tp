@@ -68,6 +68,7 @@ namespace pogl
         glfwSetKeyCallback(window, on_key_update);
         glfwSetFramebufferSizeCallback(window, on_framebuffer_resize);
         glfwSetWindowFocusCallback(window, on_focus);
+        glfwSetMouseButtonCallback(window, on_mouse_button);
 
         update_cursor_capture(window, get_input_state());
 

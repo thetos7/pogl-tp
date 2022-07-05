@@ -11,4 +11,5 @@ namespace pogl
     void on_key_update(GLFWwindow *window, int key, int scancode, int action,
                       int mods);
     void on_focus(GLFWwindow *window, int focused);
+    void on_mouse_button(GLFWwindow *window, int button, int action, int mods);
 } // namespace pogl
