@@ -10,14 +10,14 @@ namespace pogl
     using Self = MeshRenderer;
     MeshRenderer::MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
                                const ShaderType &shader,
-                               size_t vertex_array_index_count,
+                               size_t vertex_count,
                                std::vector<GLuint> buffer_ids,
                                const Matrix4 &transform,
                                UniformType transform_uniform)
         : _shader(shader)
         , _vao_id(vao_id)
         , _draw_mode(draw_mode)
-        , _vertex_array_index_count(vertex_array_index_count)
+        , _vertex_count(vertex_count)
         , _buffer_ids(buffer_ids)
         , _transform(transform)
         , _transform_uniform(transform_uniform)
@@ -43,7 +43,7 @@ namespace pogl
         }
         glBindVertexArray(_vao_id);
         CHECK_GL_ERROR();
-        glDrawArrays(_draw_mode, 0, _vertex_array_index_count);
+        glDrawArrays(_draw_mode, 0, _vertex_count);
         CHECK_GL_ERROR();
         glBindVertexArray(0);
         CHECK_GL_ERROR();

@@ -132,7 +132,7 @@ namespace pogl
 
         glGenBuffers(_buffers.size(), buffer_ids.data());
         CHECK_GL_ERROR();
-
+        std::vector<size_t> strides(buffer_ids.size());
         for (size_t i = 0; i < buffer_ids.size(); ++i)
         {
             glBindBuffer(GL_ARRAY_BUFFER, buffer_ids[i]);
@@ -145,6 +145,7 @@ namespace pogl
             {
                 stride += size;
             }
+            strides[i] = stride;
 
             size_t offset = 0;
             for (auto [name, size] : _attribute_config.at(i))
@@ -171,8 +172,8 @@ namespace pogl
         CHECK_GL_ERROR();
 
         return std::make_shared<MeshRenderer>(
-            vao_id, _draw_mode, *_shader, _buffers[0].size(), buffer_ids,
-            _transform,
+            vao_id, _draw_mode, *_shader, _buffers[0].size() / strides[0],
+            buffer_ids, _transform,
             (*_shader)->uniform(definitions::MODEL_TRANSFORM_UNIFORM_NAME));
     }
 

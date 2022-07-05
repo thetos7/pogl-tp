@@ -52,7 +52,7 @@ namespace pogl
         };
 
         MeshRenderer(VaoType vao_id, DrawModeType draw_mode,
-                     const ShaderType &shader, size_t vertex_array_index_count,
+                     const ShaderType &shader, size_t vertex_count,
                      std::vector<GLuint> _buffer_ids, const Matrix4 &transform,
                      UniformType transform_uniform);
         virtual ~MeshRenderer();
@@ -69,7 +69,7 @@ namespace pogl
         ShaderType _shader;
         VaoType _vao_id;
         DrawModeType _draw_mode;
-        size_t _vertex_array_index_count;
+        size_t _vertex_count;
         std::vector<GLuint> _buffer_ids;
         Matrix4 _transform;
         UniformType _transform_uniform;
