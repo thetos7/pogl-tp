@@ -9,7 +9,7 @@ namespace pogl
         , right(false)
         , up(false)
         , down(false)
-        , capture_cursor(true)
+        , capture_cursor(false)
         , mouse_x_axis(0.0)
         , mouse_y_axis(0.0)
         , focused(true)
