@@ -1,14 +1,14 @@
 # TODO
 
 ## mandatory
-- [ ] Snow particle system
-  - [ ] Simulation of individual particles
-  - [ ] Billboard rendering
-  - [ ] Generation of multiple meshes
+- [x] Snow particle system
+  - [x] Simulation of individual particles
+  - [x] Billboard rendering
+  - [x] Generation of multiple meshes
 - [x] Ground object
   - [x] Snow displacement shader
 - [x] Multiple object rendering w/ different shaders/programs
-- [ ] Snow halo lighting effect
+- [ ] Snow halo lighting effect - not done ☹️
 - [x] Textures
 
 
