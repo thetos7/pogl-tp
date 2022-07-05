@@ -3,9 +3,10 @@
 #include "vector3/vector3.hh"
 
 namespace pogl {
-    Particle::Particle(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale) {
+    Particle::Particle(Vector3 position, Vector3 velocity, float life_e, float time_alive, float rotation, float scale) {
         this->position = position;
         this->velocity= velocity;
+        this->timeAlive = time_alive;
         this->life_expectancy = life_e;
         this->rotation = rotation;
         this->scale = scale;
@@ -51,7 +52,6 @@ namespace pogl {
     }
 
     bool Particle::Update(double delta) {
-        // velocity.z += GRAVITY * delta; // we may want to add the second
         position += velocity * delta;
         timeAlive += delta;
         return timeAlive < life_expectancy;

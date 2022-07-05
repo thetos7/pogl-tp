@@ -7,7 +7,8 @@ namespace pogl {
     class Particle
     {
         public:
-            Particle(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale);
+            Particle(Vector3 position, Vector3 velocity, float life_e, float time_alive, float rotation, float scale);
+
             Vector3 getPosition();
             Vector3 getVelocity();
             float getRotation();

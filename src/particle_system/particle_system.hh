@@ -13,6 +13,9 @@ namespace pogl {
     {
         public:
             ParticleSystem(std::shared_ptr<ShaderProgram> shader);
+
+            virtual ~ParticleSystem() = default;
+
             void update(double delta);
             void renderAllParticles(Camera camera);
             void clean();
