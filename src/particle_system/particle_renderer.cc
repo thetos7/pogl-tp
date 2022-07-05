@@ -48,7 +48,7 @@ namespace pogl {
         const auto x_axis = Vector3::up().cross(y_axis).normalized();
         const auto z_axis = y_axis.cross(x_axis).normalized();
         const auto rotation_transform = Matrix4::basis_change(x_axis, y_axis, z_axis)
-            * Matrix4::scale(0.3);
+            * Matrix4::scale(0.225);
 
         for(size_t i = 0; i < particles->size(); i++) {
             const auto &p = particles->at(i);
