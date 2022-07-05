@@ -3,12 +3,14 @@
 
 #include "engine/engine.hh"
 #include "utils/log.hh"
+#include "image/stb_image.h"
 
 using namespace pogl;
 
 int main()
 {
     std::srand(std::time(nullptr));
+    stbi_set_flip_vertically_on_load(true);
     auto &engine = Engine::instance();
     engine.init();
     std::cout << LOG_INFO << "launching\n";
