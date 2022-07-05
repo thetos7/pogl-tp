@@ -16,10 +16,12 @@ namespace pogl {
 
         std::vector<GLuint> VBO_ids;
         createVBO(VBO_ids);
-        Attribute("vPosition", 3);
+        Attribute("vPosition", GL_FLOAT, 3);
         createUV(VBO_ids);
+        createTexId(VBO_ids);
         storeData(VBO_ids[0], positions, GL_DYNAMIC_DRAW);
         storeData(VBO_ids[1], UV, GL_STATIC_DRAW);
+        storeData(VBO_ids[2], std::vector<float>(4*particle_num), GL_DYNAMIC_DRAW);
         unbindVBO();
         unbindVAO();
         return RawModel(VAO, particle_num, VBO_ids);
@@ -56,18 +58,29 @@ namespace pogl {
         CHECK_GL_ERROR();
         glBindBuffer(GL_ARRAY_BUFFER, VBO_uv);
         CHECK_GL_ERROR();
-        Attribute("vUV", 2);
+        Attribute("vUV", GL_FLOAT, 2);
         VBO_ids.push_back(VBO_uv);
     }
 
-    void Loader::Attribute(const GLchar* s, int elt_num) {
+    void Loader::createTexId(std::vector<GLuint> &VBO_ids)
+    {
+        GLuint VBO_tex_id;
+        glGenBuffers(1, &VBO_tex_id);
+        CHECK_GL_ERROR();
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_tex_id);
+        CHECK_GL_ERROR();
+        Attribute("vTexId", GL_FLOAT, 1);
+        VBO_ids.push_back(VBO_tex_id);
+    }
+
+    void Loader::Attribute(const GLchar* s, GLint type, int elt_num) {
         auto program_id = shader->get_program();
         const auto location = glGetAttribLocation(program_id, s);
         CHECK_GL_ERROR();
         if (location == -1) {
             std::cerr << "ParticleSystem : Attribute not found" << std::endl;
         }
-        glVertexAttribPointer(location, elt_num, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(location, elt_num, type, GL_FALSE, 0, 0);
         CHECK_GL_ERROR();
         glEnableVertexAttribArray(location);
         CHECK_GL_ERROR();

@@ -5,12 +5,13 @@
 namespace pogl {
     constexpr Vector3 center = Vector3(0,0,10);
 
-    ParticleSystem::ParticleSystem(std::shared_ptr<ShaderProgram> shader)
+    ParticleSystem::ParticleSystem(std::shared_ptr<ShaderProgram> shader, size_t textureCount)
     {
         std::vector<Particle> particles;
         this->shader = shader;
         this->respawnHeight = -1.1; // hardcode for now, parametrize later
         this->particles = particles;
+        this->textureCount = (float)textureCount;
         generate_particles(Vector3(0,0,6), 300, 1, 2);
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
@@ -55,7 +56,8 @@ namespace pogl {
             // velocity->normalized();
             // *velocity *= speed;
             const auto timeAlive = float_rand_range(0, life);
-            Particle newParticle = Particle(position, velocity, life, timeAlive, 0, 1);
+            const auto texId = float_rand_range(0, textureCount);
+            Particle newParticle = Particle(position, velocity, life, timeAlive, 0, 1, texId);
             addParticle(newParticle);
         }
     }
@@ -65,7 +67,8 @@ namespace pogl {
         const auto py = center.x + float_rand_range(-3,3);
         const auto position = Vector3(px, py, center.z);
         Vector3 velocity(float_rand_range(-0.5, 0.5), float_rand_range(-0.5, 0.5), float_rand_range(-1, -2));
-        particle.reset(position, velocity, particle.getLifeExpectancy(), particle.getRotation(), particle.getScale());
+        const auto texId = float_rand_range(0, textureCount);
+        particle.reset(position, velocity, particle.getLifeExpectancy(), particle.getRotation(), particle.getScale(), texId);
     }
 
     void ParticleSystem::draw() {

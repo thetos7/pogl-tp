@@ -12,6 +12,7 @@ namespace pogl {
         this->shader = shader;
         this->particles = particles;
         this->vertexPositionData = std::vector<GLfloat> (12*particles->size());
+        this->vertexTexIdData = std::vector<GLfloat>(4*particles->size());
         instanceIndices = std::vector<GLint>(particles->size());
         instanceDataCounts = std::vector<GLsizei>(particles->size());
         for(int i = 0; i < instanceIndices.size(); i++) {
@@ -56,11 +57,16 @@ namespace pogl {
                 vertexPositionData[i*12+j*3] = vert_pos.x;
                 vertexPositionData[i*12+j*3+1] = vert_pos.y;
                 vertexPositionData[i*12+j*3+2] = vert_pos.z;
+                vertexTexIdData[i*4+j] = particles->at(i).getTexId();
             }
         } 
         glBindBuffer(GL_ARRAY_BUFFER, quad.getVBOs()[0]);
         CHECK_GL_ERROR();
         glBufferData(GL_ARRAY_BUFFER, vertexPositionData.size() * sizeof(GLfloat), vertexPositionData.data(), GL_DYNAMIC_DRAW);
+        CHECK_GL_ERROR();
+        glBindBuffer(GL_ARRAY_BUFFER, quad.getVBOs()[2]);
+        CHECK_GL_ERROR();
+        glBufferData(GL_ARRAY_BUFFER, vertexTexIdData.size() * sizeof(GLfloat), vertexTexIdData.data(), GL_DYNAMIC_DRAW);
         CHECK_GL_ERROR();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         CHECK_GL_ERROR();

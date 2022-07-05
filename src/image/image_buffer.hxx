@@ -18,7 +18,7 @@ namespace pogl
     template <typename T>
     ImageBuffer<T>::ImageBuffer(BufferType bytes, DimensionType width,
                                 DimensionType height, DimensionType channels)
-        : _bytes(bytes)
+        : _pixel_data(bytes)
         , _width(width)
         , _height(height)
         , _channels(channels)
@@ -38,12 +38,24 @@ namespace pogl
     template <typename T>
     const typename ImageBuffer<T>::BufferElemType *ImageBuffer<T>::data() const
     {
-        return _bytes.data();
+        return _pixel_data.data();
     }
     template <typename T>
     typename ImageBuffer<T>::BufferElemType *ImageBuffer<T>::data()
     {
-        return _bytes.data();
+        return _pixel_data.data();
+    }
+
+    template <typename T>
+    const typename ImageBuffer<T>::BufferType &ImageBuffer<T>::pixels() const
+    {
+        return _pixel_data;
+    }
+
+    template <typename T>
+    typename ImageBuffer<T>::BufferType &ImageBuffer<T>::pixels()
+    {
+        return _pixel_data;
     }
 
     template <typename T>
@@ -62,7 +74,7 @@ namespace pogl
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels;
-        return &_bytes[idx];
+        return &_pixel_data[idx];
     }
 
     template <typename T>
@@ -80,7 +92,7 @@ namespace pogl
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels;
-        return &_bytes[idx];
+        return &_pixel_data[idx];
     }
 
     template <typename T>
@@ -98,7 +110,7 @@ namespace pogl
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels + ch;
-        return _bytes[idx];
+        return _pixel_data[idx];
     }
 
     template <typename T>
@@ -117,7 +129,7 @@ namespace pogl
             throw std::logic_error("Out of bounds acces to image buffer");
         }
         DimensionType idx = row * _line_stride + col * _channels + ch;
-        return _bytes[idx];
+        return _pixel_data[idx];
     }
 
     template <typename T>

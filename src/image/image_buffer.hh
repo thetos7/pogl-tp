@@ -31,6 +31,9 @@ namespace pogl
         static std::optional<ImageBuffer> load(const fs::path &path,
                                                int channel_hint = 0);
 
+        const BufferType &pixels() const;
+        BufferType &pixels();
+
         const BufferElemType *data() const;
         BufferElemType *data();
 
@@ -52,7 +55,7 @@ namespace pogl
         Self &channels(DimensionType value);
         void update_dims();
 
-        BufferType _bytes;
+        BufferType _pixel_data;
         DimensionType _width;
         DimensionType _height;
         DimensionType _channels;

@@ -12,7 +12,7 @@ namespace pogl {
     class ParticleSystem : public Updateable, public Drawable
     {
         public:
-            ParticleSystem(std::shared_ptr<ShaderProgram> shader);
+            ParticleSystem(std::shared_ptr<ShaderProgram> shader, size_t textureCount);
 
             virtual ~ParticleSystem() = default;
 
@@ -34,5 +34,6 @@ namespace pogl {
             ParticleRenderer renderer;
             std::shared_ptr<ShaderProgram> shader;
             float respawnHeight;
+            float textureCount; // shaders need texture id in float
     };
 }

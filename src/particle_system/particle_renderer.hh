@@ -43,5 +43,6 @@ namespace pogl {
             std::vector<GLfloat> vertexPositionData;
             std::vector<GLint> instanceIndices;
             std::vector<GLsizei> instanceDataCounts;
+            std::vector<GLfloat> vertexTexIdData;
     };
 }
