@@ -93,7 +93,7 @@ namespace pogl
         CHECK_GL_ERROR();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         CHECK_GL_ERROR();
-        glClearColor(0.800, 0.839, 0.902, 1.0); // "sky" color
+        glClearColor(0.66f, 0.66f, 0.66f, 1.0f); // "sky" color
         CHECK_GL_ERROR();
         glPixelStorei(GL_PACK_ALIGNMENT, PIXEL_BYTE_ALIGNEMENT_LEN);
         CHECK_GL_ERROR();
