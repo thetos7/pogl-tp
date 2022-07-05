@@ -1,4 +1,5 @@
 #include "particle_renderer.hh"
+#include "engine/engine.hh"
 #include "loader.hh"
 #include "RawModel.hh"
 
@@ -42,12 +43,19 @@ namespace pogl {
     }
 
     void ParticleRenderer::genMesh() {
+        const auto y_axis = -Engine::instance().main_camera->get_forward();
+        const auto x_axis = Vector3::up().cross(y_axis).normalized();
+        const auto z_axis = y_axis.cross(x_axis).normalized();
+        const auto rotation_transform = Matrix4::basis_change(x_axis, y_axis, z_axis)
+            * Matrix4::scale(0.2);
+
         for(size_t i = 0; i < particles->size(); i++) {
             auto center = particles->at(i).getPosition();
             for(size_t j = 0; j < 4; j++) {
-                vertexPositionData[i*12+j*3] = VERTICES[j*2]*1.0 +center.x;
-                vertexPositionData[i*12+j*3+1] = center.y;
-                vertexPositionData[i*12+j*3+2] = VERTICES[j*2+1]*1.0 + center.z;
+                const auto vert_pos = (rotation_transform * Vector4(VERTICES[j * 2], 0, VERTICES[j * 2 + 1], 1)).to_spatial() + center;
+                vertexPositionData[i*12+j*3] = vert_pos.x;
+                vertexPositionData[i*12+j*3+1] = vert_pos.y;
+                vertexPositionData[i*12+j*3+2] = vert_pos.z;
             }
         } 
         glBindBuffer(GL_ARRAY_BUFFER, quad.getVBOs()[0]);
