@@ -9,6 +9,8 @@
 #include "utils/utils.hh"
 #include "vector3/vector3.hh"
 
+#define PI 3.14159265
+
 namespace pogl
 {
     using ElementType = Matrix4::ElementType;
@@ -119,6 +121,35 @@ namespace pogl
             0, 0, factor, 0, // l3
             0, 0, 0, 1 //  l4
         });
+    }
+
+    Matrix4 Matrix4::rotate(float angle, char* axe)
+    {
+        auto param = angle * PI/180.0;
+        if (axe == "x") {
+            return Matrix4(Matrix4::ElementsBufferType{
+                1, 0, 0, 0,                                    // l1
+                0, (float) cos(param), (float) -sin(param), 0, // l2
+                0, (float) sin(param), (float) cos(param), 0,  // l3
+                0, 0, 0, 1                                     // l4
+            });
+        }
+        else if (axe == "y") {
+            return Matrix4(Matrix4::ElementsBufferType{
+                (float) cos(param), 0, (float) sin(param), 0,   // l1
+                0, 1, 0, 0,                                     // l2
+                (float) -sin(param), 0, (float) cos(param), 0,  // l3
+                0, 0, 0, 1                                      // l4
+            });
+        }
+        else {
+            return Matrix4(Matrix4::ElementsBufferType{
+                (float) cos(param), (float) -sin(param), 0, 0,  // l1
+                (float) sin(param), (float) cos(param), 0, 0,   // l2
+                0, 0, 1, 0,                                     // l3
+                0, 0, 0, 1                                      // l4
+            });
+        }
     }
 
     Matrix4 Matrix4::basis_change(const Vector3 &x_axis, const Vector3 &y_axis,
