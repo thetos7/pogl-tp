@@ -67,7 +67,7 @@ namespace pogl {
     }
 
 
-    bool CompareDisctance(Particle A, Particle B);
+    bool CompareDistance(Particle A, Particle B);
 
     void ParticleRenderer::sort_particles() {
         const Vector3 cameraPositon = -Engine::instance().main_camera->get_position();
@@ -75,10 +75,10 @@ namespace pogl {
            particle.setDistanceFromCamera(cameraPositon); 
         }
 
-        std::sort(particles->begin(), particles->end(), CompareDisctance);
+        std::sort(particles->begin(), particles->end(), CompareDistance);
     }
 
-    bool CompareDisctance(Particle A, Particle B) {
+    bool CompareDistance(Particle A, Particle B) {
         return A.getDistanceFromCamera() < B.getDistanceFromCamera();
     }
 
