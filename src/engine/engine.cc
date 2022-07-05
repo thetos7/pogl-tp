@@ -371,7 +371,7 @@ namespace pogl
         std::shared_ptr<ParticleSystem> particle_sys =
             std::make_shared<ParticleSystem>(shaders["particle_system"]);
         this->add_renderer(particle_sys);
-        //this->add_dynamic(particle_sys);
+        this->add_dynamic(particle_sys);
 
 #if DEFAULT_SCENE
         auto plane_renderer = MeshRenderer::builder()
