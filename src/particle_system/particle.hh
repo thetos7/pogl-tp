@@ -7,7 +7,7 @@ namespace pogl {
     class Particle
     {
         public:
-            Particle(Vector3 position, Vector3 velocity, float life_e, float time_alive, float rotation, float scale, float tex_id);
+            Particle(Vector3 position, Vector3 velocity, float life_e, float time_alive, float rotation, float angular_velocity, float scale, float tex_id);
 
             Vector3 getPosition() const;
             Vector3 getVelocity() const;
@@ -18,7 +18,7 @@ namespace pogl {
             void setDistanceFromCamera(Vector3 point);
             float getDistanceFromCamera() const;
             bool Update(double delta);
-            void reset(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale, float tex_id);
+            void reset(Vector3 position, Vector3 velocity, float life_e, float rotation, float angular_velocity, float scale, float tex_id);
             bool isAlive();
 
         private:
@@ -27,6 +27,7 @@ namespace pogl {
             float tex_id; // shader needs a float
             float life_expectancy;
             float scale;
+            float angular_velocity;
             float rotation;
             float distanceFromCamera = 0;
             float timeAlive = 0;

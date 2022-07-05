@@ -4,6 +4,7 @@
 
 namespace pogl {
     constexpr Vector3 center = Vector3(0,0,10);
+    constexpr float MAX_ANGULAR_VELOCITY = 120;
 
     ParticleSystem::ParticleSystem(std::shared_ptr<ShaderProgram> shader, size_t textureCount)
     {
@@ -57,7 +58,9 @@ namespace pogl {
             // *velocity *= speed;
             const auto timeAlive = float_rand_range(0, life);
             const auto texId = float_rand_range(0, textureCount);
-            Particle newParticle = Particle(position, velocity, life, timeAlive, 0, 1, texId);
+            const auto angle = float_rand_range(0,360);
+            const auto angular_velocity = float_rand_range(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+            Particle newParticle = Particle(position, velocity, life, timeAlive, angle, angular_velocity, 1, texId);
             addParticle(newParticle);
         }
     }
@@ -68,7 +71,9 @@ namespace pogl {
         const auto position = Vector3(px, py, center.z);
         Vector3 velocity(float_rand_range(-0.5, 0.5), float_rand_range(-0.5, 0.5), float_rand_range(-1, -2));
         const auto texId = float_rand_range(0, textureCount);
-        particle.reset(position, velocity, particle.getLifeExpectancy(), particle.getRotation(), particle.getScale(), texId);
+        const auto angle = float_rand_range(0,360);
+        const auto angular_velocity = float_rand_range(-MAX_ANGULAR_VELOCITY, MAX_ANGULAR_VELOCITY);
+        particle.reset(position, velocity, particle.getLifeExpectancy(), angle, angular_velocity, particle.getScale(), texId);
     }
 
     void ParticleSystem::draw() {

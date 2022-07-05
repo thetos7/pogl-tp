@@ -3,12 +3,13 @@
 #include "vector3/vector3.hh"
 
 namespace pogl {
-    Particle::Particle(Vector3 position, Vector3 velocity, float life_e, float time_alive, float rotation, float scale, float tex_id) {
+    Particle::Particle(Vector3 position, Vector3 velocity, float life_e, float time_alive, float rotation, float angular_velocity, float scale, float tex_id) {
         this->position = position;
         this->velocity= velocity;
         this->timeAlive = time_alive;
         this->life_expectancy = life_e;
         this->rotation = rotation;
+        this->angular_velocity = angular_velocity;
         this->scale = scale;
         this->timeAlive = 0;
         this->tex_id = tex_id;
@@ -51,11 +52,12 @@ namespace pogl {
         return timeAlive > life_expectancy;
     }
 
-    void Particle::reset(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale, float tex_id) {
+    void Particle::reset(Vector3 position, Vector3 velocity, float life_e, float rotation, float angular_velocity, float scale, float tex_id) {
         this->position = position;
         this->velocity= velocity;
         this->life_expectancy = life_e;
         this->rotation = rotation;
+        this->angular_velocity = angular_velocity;
         this->scale = scale;
         this->timeAlive = 0;
         this->distanceFromCamera = 0;
@@ -65,6 +67,7 @@ namespace pogl {
     bool Particle::Update(double delta) {
         position += velocity * delta;
         timeAlive += delta;
+        rotation += angular_velocity * delta;
         return timeAlive < life_expectancy;
     }
 }

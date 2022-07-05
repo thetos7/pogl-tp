@@ -51,14 +51,15 @@ namespace pogl {
             * Matrix4::scale(0.3);
 
         for(size_t i = 0; i < particles->size(); i++) {
-            auto center = particles->at(i).getPosition();
+            const auto &p = particles->at(i);
+            auto center = p.getPosition();
             for(size_t j = 0; j < 4; j++) {
-                //const auto vert_pos = (rotation_transform * Matrix4::rotate(30.0, "y") * Vector4(VERTICES[j * 2], 0, VERTICES[j * 2 + 1], 1)).to_spatial() + center;
-                const auto vert_pos = (rotation_transform * Vector4(VERTICES[j * 2], 0, VERTICES[j * 2 + 1], 1)).to_spatial() + center;
+                const auto vert_pos = (rotation_transform * Matrix4::rotate(p.getRotation(), "y") * Vector4(VERTICES[j * 2], 0, VERTICES[j * 2 + 1], 1)).to_spatial() + center;
+                // const auto vert_pos = (rotation_transform * Vector4(VERTICES[j * 2], 0, VERTICES[j * 2 + 1], 1)).to_spatial() + center;
                 vertexPositionData[i*12+j*3] = vert_pos.x;
                 vertexPositionData[i*12+j*3+1] = vert_pos.y;
                 vertexPositionData[i*12+j*3+2] = vert_pos.z;
-                vertexTexIdData[i*4+j] = particles->at(i).getTexId();
+                vertexTexIdData[i*4+j] = p.getTexId();
             }
         }
         
