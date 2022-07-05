@@ -13,23 +13,23 @@ namespace pogl {
         this->timeAlive = 0;
     }
 
-    Vector3 Particle::getPosition() {
+    Vector3 Particle::getPosition() const {
         return position;
     }
 
-    float Particle::getRotation() {
+    float Particle::getRotation() const {
         return rotation;
     }
 
-    float Particle::getScale() {
+    float Particle::getScale() const {
         return scale;
     }
 
-    float Particle::getLifeExpectancy() {
+    float Particle::getLifeExpectancy() const {
         return life_expectancy;
     }
 
-    Vector3 Particle::getVelocity() {
+    Vector3 Particle::getVelocity() const {
         return velocity;
     }
 
@@ -38,7 +38,7 @@ namespace pogl {
         this->distanceFromCamera = (point - position).norm();
     }
 
-    float Particle::getDistanceFromCamera() {
+    float Particle::getDistanceFromCamera() const {
         return distanceFromCamera;
     }
 
