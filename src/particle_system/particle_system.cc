@@ -9,6 +9,7 @@ namespace pogl {
     {
         std::vector<Particle> particles;
         this->shader = shader;
+        this->respawnHeight = -1.1; // hardcode for now, parametrize later
         this->particles = particles;
         generate_particles(Vector3(0,0,6), 300, 1, 2);
         ParticleRenderer PR(shader, &this->particles);
@@ -17,7 +18,7 @@ namespace pogl {
 
     bool ParticleSystem::shouldParticleReset(const Particle &particle)
     {
-        return particle.getPosition().z < -1.1; // hardcode for now, parametrize later
+        return particle.getPosition().z < respawnHeight;
     }
 
     void ParticleSystem::update(double delta) {
@@ -46,7 +47,8 @@ namespace pogl {
         for(float i = 0; i < number; i++) {
             const auto px = center.x + float_rand_range(-3, 3);
             const auto py = center.y + float_rand_range(-3, 3);
-            const auto position = Vector3(px, py, center.z);
+            const auto pz = float_rand_range(respawnHeight, center.z);
+            const auto position = Vector3(px, py, pz);
             Vector3 velocity(float_rand_range(-0.5, 0.5), float_rand_range(-0.5, 0.5), float_rand_range(-1, -2));
 
 

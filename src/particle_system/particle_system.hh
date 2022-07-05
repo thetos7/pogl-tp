@@ -33,5 +33,6 @@ namespace pogl {
             std::vector<Particle> particles;
             ParticleRenderer renderer;
             std::shared_ptr<ShaderProgram> shader;
+            float respawnHeight;
     };
 }
