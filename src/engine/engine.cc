@@ -9,6 +9,7 @@
 #include "inputstate/inputstate.hh"
 #include "object/ground_object.hh"
 #include "object/mesh_renderer.hh"
+#include "particle_system/particle_system.hh"
 #include "utils/definitions.hh"
 #include "utils/gl_check.hh"
 #include "utils/log.hh"
@@ -185,6 +186,11 @@ namespace pogl
         shaders.emplace("ground", ground_shader);
         // </ground shader>
 
+        auto particles_shader = ShaderProgram::make_program(
+            "../resources/shaders/particle_system/vertex.glsl",
+            "../resources/shaders/particle_system/fragment.glsl");
+        shaders.emplace("particle_system", particles_shader);
+
         _init_camera_dependent_shader_map();
         return true;
     }
@@ -340,6 +346,11 @@ namespace pogl
             this->add_renderer(ground);
             this->add_dynamic(ground);
         }
+
+        std::shared_ptr<ParticleSystem> particle_sys = std::make_shared<ParticleSystem>(shaders["particle_system"]);
+        this->add_renderer(particle_sys);
+        this->add_dynamic(particle_sys);
+
 #if DEFAULT_SCENE
         auto plane_renderer = MeshRenderer::builder()
                                   .shader(shaders["plane_shader"])
@@ -386,10 +397,11 @@ namespace pogl
         _init_shaders();
         std::cout << LOG_INFO << "initialising textures...\n";
         _init_textures();
-        std::cout << LOG_INFO << "initialising objects...\n";
-        _init_objects();
         std::cout << LOG_INFO << "initialising POV...\n";
         _init_POV();
+        std::cout << LOG_INFO << "initialising objects...\n";
+        _init_objects();
+
     }
 
     void Engine::display()
