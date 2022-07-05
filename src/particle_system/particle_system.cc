@@ -14,13 +14,18 @@ namespace pogl {
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
     }
-    
+
+    bool ParticleSystem::shouldParticleReset(const Particle &particle)
+    {
+        return particle.getPosition().z < -1.1; // hardcode for now, parametrize later
+    }
+
     void ParticleSystem::update(double delta) {
         for (auto &particle : particles) {
-            if(!particle.isAlive())
-                particle.Update(delta);
-            else
+            if(shouldParticleReset(particle))
                 particleReset(particle, center);
+            else
+                particle.Update(delta);
         }
     }
             

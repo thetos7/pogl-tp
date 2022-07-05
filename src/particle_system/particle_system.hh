@@ -25,6 +25,8 @@ namespace pogl {
 
             void particleReset(Particle& particle, Vector3 center);
 
+            bool shouldParticleReset(const Particle &particle);
+
             void draw();
 
         private:
