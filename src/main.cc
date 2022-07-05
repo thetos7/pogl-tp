@@ -1,9 +1,18 @@
 #include <iostream>
+#include <string>
 
 #include "engine/engine.hh"
 #include "utils/log.hh"
 
 using namespace pogl;
+
+std::string toupper(const std::string &in)
+{
+    std::string out(in.length(), '\0');
+    std::transform(in.begin(), in.end(), out.begin(),
+                   [](char c) { return std::toupper(c); });
+    return out;
+}
 
 int main()
 {
@@ -11,10 +20,17 @@ int main()
     engine.init();
     std::cout << LOG_INFO << "launching\n";
     std::cout << "Camera controls:\n";
-    std::cout << "Z/S: Forward/Backwards\n";
-    std::cout << "Q/D: Left/Right\n";
+    std::cout << toupper(glfwGetKeyName(GLFW_KEY_W, 0)) << "/"
+              << toupper(glfwGetKeyName(GLFW_KEY_S, 0))
+              << ": Forward/Backwards\n";
+    std::cout << toupper(glfwGetKeyName(GLFW_KEY_Q, 0)) << "/"
+              << toupper(glfwGetKeyName(GLFW_KEY_D, 0)) << ": Left/Right\n";
     std::cout << "Space/Left Shift: Up/Down\n";
-    std::cout << "C: Toggle cursor capture\n";
+    std::cout << toupper(glfwGetKeyName(GLFW_KEY_C, 0))
+              << ": Toggle cursor capture\n";
+    std::cout << "\n";
+    std::cout << "Escape: Exit application\n";
+
     while (!glfwWindowShouldClose(engine.window))
     {
         engine.update();
