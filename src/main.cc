@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 
 #include "engine/engine.hh"
@@ -7,6 +8,7 @@ using namespace pogl;
 
 int main()
 {
+    std::srand(std::time(nullptr));
     auto &engine = Engine::instance();
     engine.init();
     std::cout << LOG_INFO << "launching\n";
