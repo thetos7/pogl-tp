@@ -10,6 +10,7 @@ namespace pogl {
         quad = loader.LoadVAO(shader, VERTICES, particles->size());
         this->shader = shader;
         this->particles = particles;
+        this->vertexPositionData = std::vector<GLfloat> (12*particles->size());
     }
 
     void ParticleRenderer::render(std::vector<Particle> particles, Camera camera) {
@@ -17,9 +18,9 @@ namespace pogl {
         glBindVertexArray(quad.getVAO());
         glEnable(GL_BLEND);
         glDepthMask(false);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
         for (auto &particle : particles) {
-            //updateModelViewMatrix(current_particle.position, current_particle.rotation, current_particle.scale, viewMatrix);
             glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
         }
 
@@ -34,11 +35,27 @@ namespace pogl {
         glDeleteVertexArrays(1, &VAO);              // destroy the particles from the shader
     }
 
+    void ParticleRenderer::genMesh() {
+        for(size_t i = 0; i < particles->size(); i++) {
+            auto center = particles->at(i).getPosition();
+            for(size_t j = 0; j < 4; j++) {
+                vertexPositionData[i*12+j*3] = VERTICES[j*2]*0.2 +center.x;
+                vertexPositionData[i*12+j*3+1] = center.y;
+                vertexPositionData[i*12+j*3+2] = VERTICES[j*2+1]*0.2 + center.z;
+            }
+        } 
+        glBindBuffer(GL_ARRAY_BUFFER, quad.getVBOs()[0]);
+        glBufferData(GL_ARRAY_BUFFER, vertexPositionData.size() * sizeof(GLfloat), vertexPositionData.data(), GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        CHECK_GL_ERROR();
+    }
+
     void ParticleRenderer::draw() {
         shader->use();
         glBindVertexArray(quad.getVAO());
         CHECK_GL_ERROR();
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 8);
+        genMesh();
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexPositionData.size());
         CHECK_GL_ERROR();
         glBindVertexArray(0);
         CHECK_GL_ERROR();

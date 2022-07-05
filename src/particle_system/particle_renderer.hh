@@ -13,11 +13,14 @@ namespace pogl {
     {
         public:
             static const std::vector<float> VERTICES;
+
             ParticleRenderer() = default;
 
             ParticleRenderer(ParticleRenderer& PR) = default;
 
             ParticleRenderer(std::shared_ptr<ShaderProgram> shader, std::vector<Particle> *particles);
+
+            ~ParticleRenderer() = default;
 
             void render(std::vector<Particle> particles, Camera camera);
 
@@ -26,6 +29,7 @@ namespace pogl {
              */
             void updateModelViewMatrix(Vector3 position, float rotation, float scale, Matrix4 ViewMatrix);
 
+            void genMesh();
             void draw();
 
             void clean();
@@ -34,5 +38,6 @@ namespace pogl {
             RawModel quad;
             std::vector<Particle> *particles;
             std::shared_ptr<ShaderProgram> shader;
+            std::vector<GLfloat> vertexPositionData;
     };
 }

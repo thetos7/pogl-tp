@@ -8,7 +8,7 @@ namespace pogl {
         std::vector<Particle> particles;
         this->shader = shader;
         this->particles = particles;
-        generate_particles(Vector3(0,0,3), 500, 1, -1, 2);
+        generate_particles(Vector3(0,0,6), 1, 1, -1, 2);
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
     }
