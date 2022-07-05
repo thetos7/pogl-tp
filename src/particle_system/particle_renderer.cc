@@ -11,6 +11,12 @@ namespace pogl {
         this->shader = shader;
         this->particles = particles;
         this->vertexPositionData = std::vector<GLfloat> (12*particles->size());
+        instanceIndices = std::vector<GLint>(particles->size());
+        instanceDataCounts = std::vector<GLsizei>(particles->size());
+        for(int i = 0; i < instanceIndices.size(); i++) {
+            instanceIndices[i] = i*4;
+            instanceDataCounts[i] = 4;
+        }
     }
 
     void ParticleRenderer::render(std::vector<Particle> particles, Camera camera) {
@@ -39,13 +45,15 @@ namespace pogl {
         for(size_t i = 0; i < particles->size(); i++) {
             auto center = particles->at(i).getPosition();
             for(size_t j = 0; j < 4; j++) {
-                vertexPositionData[i*12+j*3] = VERTICES[j*2]*0.2 +center.x;
+                vertexPositionData[i*12+j*3] = VERTICES[j*2]*1.0 +center.x;
                 vertexPositionData[i*12+j*3+1] = center.y;
-                vertexPositionData[i*12+j*3+2] = VERTICES[j*2+1]*0.2 + center.z;
+                vertexPositionData[i*12+j*3+2] = VERTICES[j*2+1]*1.0 + center.z;
             }
         } 
         glBindBuffer(GL_ARRAY_BUFFER, quad.getVBOs()[0]);
+        CHECK_GL_ERROR();
         glBufferData(GL_ARRAY_BUFFER, vertexPositionData.size() * sizeof(GLfloat), vertexPositionData.data(), GL_DYNAMIC_DRAW);
+        CHECK_GL_ERROR();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         CHECK_GL_ERROR();
     }
@@ -55,7 +63,7 @@ namespace pogl {
         glBindVertexArray(quad.getVAO());
         CHECK_GL_ERROR();
         genMesh();
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexPositionData.size());
+        glMultiDrawArrays(GL_TRIANGLE_STRIP, instanceIndices.data(), instanceDataCounts.data(), instanceIndices.size());
         CHECK_GL_ERROR();
         glBindVertexArray(0);
         CHECK_GL_ERROR();

@@ -8,14 +8,14 @@ namespace pogl {
         std::vector<Particle> particles;
         this->shader = shader;
         this->particles = particles;
-        generate_particles(Vector3(0,0,6), 1, 1, -1, 2);
+        generate_particles(Vector3(0,0,6), 2, 1, -1, 2);
         ParticleRenderer PR(shader, &this->particles);
         this->renderer = PR;
     }
     
     void ParticleSystem::update(double delta) {
         for (auto &particle : particles) {
-            if(particle.isAlive())
+            if(!particle.isAlive())
                 particle.Update(delta);
             else
                 particleReset(particle, center);
@@ -41,9 +41,9 @@ namespace pogl {
             center.y += (std::rand()%15) - 14;
             float x = center.x + std::rand() % 10;
             float z = center.z + std::rand() % 10;
-            Vector3* velocity = new Vector3(x, 1, z);
-            velocity->normalized();
-            *velocity *= speed;
+            Vector3* velocity = new Vector3(0, 0, -2); // leaks
+            // velocity->normalized();
+            // *velocity *= speed;
             Particle newParticle = Particle(center, *velocity, gravity, life, 0, 1);
             addParticle(newParticle);
         }

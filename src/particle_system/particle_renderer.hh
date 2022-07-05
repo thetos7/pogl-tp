@@ -39,5 +39,7 @@ namespace pogl {
             std::vector<Particle> *particles;
             std::shared_ptr<ShaderProgram> shader;
             std::vector<GLfloat> vertexPositionData;
+            std::vector<GLint> instanceIndices;
+            std::vector<GLsizei> instanceDataCounts;
     };
 }

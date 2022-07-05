@@ -45,13 +45,12 @@ namespace pogl {
         this->life_expectancy = life_e;
         this->rotation = rotation;
         this->scale = scale;
+        this->timeAlive = 0;
     }
 
     bool Particle::Update(double delta) {
-        velocity.y += GRAVITY * gravity * delta; // we may want to add the second
-        Vector3 new_velocity(velocity);
-        new_velocity * delta;
-        new_velocity + position;
+        // velocity.z += GRAVITY * delta; // we may want to add the second
+        position += velocity * delta;
         timeAlive += delta;
         return timeAlive < life_expectancy;
     }

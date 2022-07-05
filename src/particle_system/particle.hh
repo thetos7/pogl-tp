@@ -6,7 +6,7 @@ namespace pogl {
     class Particle
     {
         public:
-            static constexpr float GRAVITY = -3;
+            static constexpr float GRAVITY = -1;
 
             Particle(Vector3 position, Vector3 velocity, float gravity, float life_e, float rotation, float scale);
 

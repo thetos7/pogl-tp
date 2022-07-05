@@ -46,7 +46,7 @@ namespace pogl {
         if (location == -1) {
             std::cerr << "ParticleSystem : Attribute not found" << std::endl;
         }
-        glVertexAttribPointer(location, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 0, 0);
         CHECK_GL_ERROR();
         glEnableVertexAttribArray(location);
         CHECK_GL_ERROR();
