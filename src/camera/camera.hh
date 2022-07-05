@@ -26,6 +26,8 @@ namespace pogl
 
         void set_projection(const Matrix4 &projection);
 
+        const Vector3 &get_position() const;
+
         virtual void update(double delta) override;
 
     private:
