@@ -9,6 +9,7 @@
 #include "inputstate/inputstate.hh"
 #include "object/ground_object.hh"
 #include "object/mesh_renderer.hh"
+#include "particle_system/particle_system.hh"
 #include "utils/definitions.hh"
 #include "utils/gl_check.hh"
 #include "utils/log.hh"
@@ -93,7 +94,7 @@ namespace pogl
         CHECK_GL_ERROR();
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         CHECK_GL_ERROR();
-        glClearColor(0.800, 0.839, 0.902, 1.0); // "sky" color
+        glClearColor(0.66f, 0.66f, 0.66f, 1.0f); // "sky" color
         CHECK_GL_ERROR();
         glPixelStorei(GL_PACK_ALIGNMENT, PIXEL_BYTE_ALIGNEMENT_LEN);
         CHECK_GL_ERROR();
@@ -135,6 +136,8 @@ namespace pogl
             "../resources/shaders/uv_debug/vertex.glsl",
             "../resources/shaders/uv_debug/fragment.glsl");
 
+        uv_debug_shader->uniform("model_transform")
+            ->set_mat4(Matrix4::identity());
         shaders.emplace("uv_debug", uv_debug_shader);
 
         // <ground shader>
@@ -185,6 +188,19 @@ namespace pogl
         }
         shaders.emplace("ground", ground_shader);
         // </ground shader>
+
+        auto particles_shader = ShaderProgram::make_program(
+            "../resources/shaders/particle_system/vertex.glsl",
+            "../resources/shaders/particle_system/fragment.glsl");
+        {
+            particles_shader->set_unit_name("flocon_texture", 0);
+        }
+        particles_shader->uniform("model_transform")
+            ->set_mat4(Matrix4::identity());
+        particles_shader->uniform("layer_count")
+            ->set_float(5);
+        // particles_shader->uniform("obj_color")->set_vec4(1.0, 1.0, 0.0, 1.0);
+        shaders.emplace("particle_system", particles_shader);
 
         _init_camera_dependent_shader_map();
         return true;
@@ -305,6 +321,31 @@ namespace pogl
                 .build();
         ground_shader->set_texture("snow_height", snow_height_tex);
         this->add_texture("snow_height", snow_height_tex);
+
+        auto particle_shader = shaders["particle_system"];
+
+        auto layers = Texture::RGBBuffersType();
+        std::vector<const char *> filenames = {
+            "../resources/textures/flocon0.png",
+            "../resources/textures/flocon1.png",
+            "../resources/textures/flocon2.png",
+            "../resources/textures/flocon3.png",
+            "../resources/textures/flocon4.png",
+        };
+        for (auto file : filenames)
+        {
+            layers.push_back(RGBImageBuffer::load(file, 0).value());
+        }
+        auto particle_text = Texture::builder()
+                                 .buffer(layers)
+                                 .target(GL_TEXTURE_2D_ARRAY)
+                                 .wrap(GL_REPEAT)
+                                 .src_format(GL_RGBA)
+                                 .format(GL_RGBA)
+                                 .build();
+        particle_shader->set_texture("flocon_texture", particle_text);
+        this->add_texture("flocon_texture", particle_text);
+
         return true;
     }
 
@@ -341,6 +382,12 @@ namespace pogl
             this->add_renderer(ground);
             this->add_dynamic(ground);
         }
+
+        std::shared_ptr<ParticleSystem> particle_sys =
+            std::make_shared<ParticleSystem>(shaders["particle_system"], 5);
+        this->add_renderer(particle_sys);
+        this->add_dynamic(particle_sys);
+
 #if DEFAULT_SCENE
         auto plane_renderer = MeshRenderer::builder()
                                   .shader(shaders["plane_shader"])
@@ -387,10 +434,10 @@ namespace pogl
         _init_shaders();
         std::cout << LOG_INFO << "initialising textures...\n";
         _init_textures();
-        std::cout << LOG_INFO << "initialising objects...\n";
-        _init_objects();
         std::cout << LOG_INFO << "initialising POV...\n";
         _init_POV();
+        std::cout << LOG_INFO << "initialising objects...\n";
+        _init_objects();
     }
 
     void Engine::display()

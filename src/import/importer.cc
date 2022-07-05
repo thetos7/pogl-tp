@@ -38,8 +38,7 @@ namespace pogl
 
     Importer::Importer(const fs::path &path)
         : _path(path)
-        , _flags(aiProcess_CalcTangentSpace | aiProcess_Triangulate
-                 | aiProcess_FlipUVs)
+        , _flags(aiProcess_CalcTangentSpace | aiProcess_Triangulate)
         , _extractors()
     {}
 

@@ -15,6 +15,9 @@ namespace pogl
     class Texture
     {
     public:
+        using RGBBuffersType = std::vector<RGBImageBuffer>;
+        using BufferVariantType = std::optional<std::variant<RGBImageBuffer, FloatImageBuffer, RGBBuffersType>>;
+
         class Builder
         {
         public:
@@ -29,14 +32,7 @@ namespace pogl
              * @param buffer
              * @return Self&
              */
-            Self &buffer(const RGBImageBuffer &buffer);
-            /**
-             * @brief sets the buffer of the texture
-             *
-             * @param buffer
-             * @return Self&
-             */
-            Self &buffer(const FloatImageBuffer &buffer);
+            Self &buffer(const BufferVariantType &buffer);
 
             /**
              * @brief sets the color of the border
@@ -114,7 +110,7 @@ namespace pogl
         private:
             void assert_integrity();
 
-            std::optional<std::variant<RGBImageBuffer, FloatImageBuffer>> _texture_buffer;
+            BufferVariantType _texture_buffer;
             std::optional<Vector4> _border_color;
             GLenum _s_wrap_mode; // "x" axis
             GLenum _t_wrap_mode; // "y" axis

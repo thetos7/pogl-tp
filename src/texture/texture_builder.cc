@@ -18,13 +18,7 @@ namespace pogl
         , _target(GL_TEXTURE_2D)
     {}
 
-    Self &Self::buffer(const RGBImageBuffer &buffer)
-    {
-        _texture_buffer = buffer;
-        return *this;
-    }
-
-    Self &Self::buffer(const FloatImageBuffer &buffer)
+    Self &Self::buffer(const BufferVariantType &buffer)
     {
         _texture_buffer = buffer;
         return *this;
@@ -92,6 +86,34 @@ namespace pogl
                       << "Texture builder misses a texture buffer.\n ";
             error = true;
         }
+        else if (std::holds_alternative<RGBBuffersType>(*_texture_buffer))
+        {
+            auto &buffers = std::get<RGBBuffersType>(*_texture_buffer);
+            auto width = buffers[0].width();
+            auto height = buffers[0].height();
+            auto channels = buffers[0].channels();
+            for (size_t i = 1; i < buffers.size(); ++i)
+            {
+                auto &buf = buffers[i];
+                if (buf.width() != width || buf.height() != height
+                    || buf.channels() != channels)
+                {
+                    std::cerr << LOG_ERROR
+                              << "Texture builder is asked to build an atlas "
+                                 "from texture with inconsistent sizes.\n";
+                    std::cerr << LOG_INFO << "First image has width = " << width
+                              << ", height = " << height
+                              << ", channels = " << channels
+                              << ", image number " << i
+                              << " has width = " << buf.width()
+                              << ", height = " << buf.height()
+                              << ", channels = " << buf.channels() << ".\n";
+                    error = true;
+                    break;
+                }
+            }
+        }
+
         if (error)
         {
             throw std::logic_error(
@@ -125,19 +147,40 @@ namespace pogl
             _border_color.value_or(DEFAULT_BORDER_COLOR).as_vec().data());
         CHECK_GL_ERROR();
 
-        if (std::holds_alternative<RGBImageBuffer>(*_texture_buffer))
+        if (std::holds_alternative<RGBBuffersType>(*_texture_buffer))
+        {
+            auto &buffers = std::get<RGBBuffersType>(*_texture_buffer);
+            auto width = buffers[0].width();
+            auto height = buffers[0].height();
+            auto channels = buffers[0].channels();
+            auto depth = buffers.size();
+            auto pixel_data_count = width * height * channels;
+            auto bytes = std::vector<GLubyte>(pixel_data_count * depth);
+            auto it = bytes.begin();
+            for (size_t i = 0; i < buffers.size(); ++i)
+            {
+                const auto &buf = buffers[i];
+                std::copy(buf.pixels().begin(), buf.pixels().end(),
+                          bytes.begin() + i * pixel_data_count);
+            }
+            glTexImage3D(_target, 0, _format, width, height, depth, 0,
+                         _src_format, GL_UNSIGNED_BYTE, bytes.data());
+            CHECK_GL_ERROR();
+        }
+        else if (std::holds_alternative<RGBImageBuffer>(*_texture_buffer))
         {
             auto &buffer = std::get<RGBImageBuffer>(*_texture_buffer);
             glTexImage2D(_target, 0, _format, buffer.width(), buffer.height(),
                          0, _src_format, GL_UNSIGNED_BYTE, buffer.data());
+            CHECK_GL_ERROR();
         }
         else
         {
             auto &buffer = std::get<FloatImageBuffer>(*_texture_buffer);
             glTexImage2D(_target, 0, _format, buffer.width(), buffer.height(),
                          0, _src_format, GL_FLOAT, buffer.data());
+            CHECK_GL_ERROR();
         }
-        CHECK_GL_ERROR();
         glGenerateMipmap(_target);
         CHECK_GL_ERROR();
 

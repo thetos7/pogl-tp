@@ -74,6 +74,11 @@ namespace pogl
         _projection = projection;
     }
 
+    const Vector3 &Camera::get_position() const
+    {
+        return _position;
+    }
+
     void Camera::update(double delta)
     {
         auto &input_state = get_input_state();
