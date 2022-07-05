@@ -19,7 +19,7 @@ namespace pogl {
 
             void Attribute(const GLchar* s, int elt_num);
 
-            void storeData(int VBO_id, std::vector<float> positions);
+            void storeData(int VBO_id, std::vector<float> positions, GLenum hint);
 
             void createVBO(std::vector<GLuint> &VBO_ids);
 

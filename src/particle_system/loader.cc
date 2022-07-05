@@ -18,8 +18,8 @@ namespace pogl {
         createVBO(VBO_ids);
         Attribute("vPosition", 3);
         createUV(VBO_ids);
-        storeData(VBO_ids[0], positions);
-        storeData(VBO_ids[1], UV);
+        storeData(VBO_ids[0], positions, GL_DYNAMIC_DRAW);
+        storeData(VBO_ids[1], UV, GL_STATIC_DRAW);
         unbindVBO();
         unbindVAO();
         return RawModel(VAO, particle_num, VBO_ids);
@@ -34,10 +34,10 @@ namespace pogl {
         return VAO;
     }
 
-    void Loader::storeData(int VBO_id, std::vector<float> positions) {
+    void Loader::storeData(int VBO_id, std::vector<float> positions, GLenum hint) {
         glBindBuffer(GL_ARRAY_BUFFER, VBO_id);
         CHECK_GL_ERROR();
-        glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), hint);
         CHECK_GL_ERROR();
     }
 
