@@ -14,6 +14,7 @@ namespace pogl {
             float getRotation();
             float getScale();
             float getLifeExpectancy();
+            void setDistanceFromCamera(Vector3 point);
             float getDistanceFromCamera();
             bool Update(double delta);
             void reset(Vector3 position, Vector3 velocity, float life_e, float rotation, float scale);

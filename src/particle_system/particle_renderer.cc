@@ -65,15 +65,20 @@ namespace pogl {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         CHECK_GL_ERROR();
     }
-/*
-    void ParticleRenderer::sort_particles() {
-        for (auto particle : *particles) {
 
-        this->distanceFromCamera = (cameraPositon - position).norm();
-        }
+    void ParticleRenderer::sort_particles() {
         const Vector3 cameraPositon = -Engine::instance().main_camera->get_position();
+        for (auto particle : *particles) {
+           particle.setDistanceFromCamera(cameraPositon); 
+        }
+
+        sort(particles->begin(), particles->end(), CompareDisctance);
     }
-*/
+
+    bool CompareDisctance(Particle A, Particle B) {
+        return A.getDistanceFromCamera() > B.getDistanceFromCamera();
+    }
+
     void ParticleRenderer::draw() {
         shader->use();
         glBindVertexArray(quad.getVAO());

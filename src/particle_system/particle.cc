@@ -33,6 +33,11 @@ namespace pogl {
         return velocity;
     }
 
+    void Particle::setDistanceFromCamera(Vector3 point) {
+
+        this->distanceFromCamera = (point - position).norm();
+    }
+
     float Particle::getDistanceFromCamera() {
         return distanceFromCamera;
     }
