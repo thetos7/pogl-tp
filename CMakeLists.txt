@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(opengl-tp VERSION 0.1.0)
+project(opengl VERSION 0.1.0)
 
 include(CTest)
 enable_testing()
@@ -39,7 +39,7 @@ file(GLOB_RECURSE all_SRCS CONFIGURE_DEPENDS
         "${PROJECT_SOURCE_DIR}/src/*.c"
         )
 
-add_executable(opengl-tp ${all_SRCS})
+add_executable(opengl ${all_SRCS})
 
 include_directories(
     ${OPENGL_INCLUDE_DIRS}
@@ -47,7 +47,7 @@ include_directories(
 )
 
 target_link_libraries(
-    opengl-tp
+    opengl
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     glfw
