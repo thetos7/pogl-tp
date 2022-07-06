@@ -35,4 +35,4 @@ archive:
 clean:
 	@rm -rf ${CLEAN_FILES}
 
-.PHONY: default debug release archive cmake_setup
+.PHONY: default debug release archive cmake_setup clean
