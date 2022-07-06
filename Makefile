@@ -8,6 +8,7 @@ EXPORT_LIST:=\
 	libs.md \
 	blender_export.md \
 	work_share.md \
+	README.md \
 
 CLEAN_FILES :=\
 	${BUILD_DIR} \
