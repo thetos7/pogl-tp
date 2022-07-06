@@ -22,4 +22,9 @@
 
 ## Thibaut Ambrosino
 - particle system
-
+- particle texture
+- VAO / VBO for particles (Rawmodel and Loader)
+- particle rotation
+- partcule shader
+- particle renderer
+- particle class
