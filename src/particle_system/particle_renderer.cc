@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "particle_renderer.hh"
 #include "engine/engine.hh"
 #include "loader.hh"

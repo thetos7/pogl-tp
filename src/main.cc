@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 #include "engine/engine.hh"
 #include "utils/log.hh"

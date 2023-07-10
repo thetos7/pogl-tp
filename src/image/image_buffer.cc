@@ -1,5 +1,7 @@
 #include "image_buffer.hh"
 
+#include <algorithm>
+
 namespace pogl
 {
     template <>
